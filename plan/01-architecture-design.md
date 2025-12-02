@@ -699,26 +699,68 @@ class UFCClient private constructor(
         /**
          * UFCClient 인스턴스 생성
          *
+         * 이 메서드는 다음 순서로 클라이언트를 초기화합니다:
+         * 1. HTTP 클라이언트 생성 (공유 리소스)
+         * 2. 캐시 초기화 (LRU Cache)
+         * 3. Yahoo Finance Source 초기화 (인증 포함)
+         * 4. FRED Source 초기화 (API Key가 있을 때만)
+         * 5. Domain API 구현체 생성
+         *
          * @param config 클라이언트 설정
          * @return UFCClient 인스턴스
+         * @throws UFCException 초기화 실패 시
          */
         suspend fun create(
             config: UFCClientConfig = UFCClientConfig()
         ): UFCClient {
-            // Yahoo Finance Source 생성
-            val yahooSource = YahooFinanceSource(
+            // 1. 공통 HTTP 클라이언트 생성
+            val httpClient = HttpClientFactory.create(config.httpConfig)
+
+            // 2. 캐시 초기화
+            val cache = LRUCache<String, Any>(
+                maxSize = config.cacheConfig.maxSize,
+                ttl = config.cacheConfig.ttl
+            )
+
+            // 3. Yahoo Finance Source 생성 및 초기화
+            val yahooSource = YahooFinanceSourceImpl(
+                httpClient = httpClient,
+                cache = cache,
                 config = config.yahooConfig
             )
-            yahooSource.initialize()
 
-            // FRED Source 생성 (API Key가 있을 때만)
+            // Yahoo Finance 인증 초기화 (Cookie/Crumb 획득)
+            try {
+                yahooSource.initialize()
+            } catch (e: Exception) {
+                httpClient.close()
+                throw UFCException(
+                    errorCode = ErrorCode.INITIALIZATION_FAILED,
+                    message = "Failed to initialize Yahoo Finance source",
+                    cause = e
+                )
+            }
+
+            // 4. FRED Source 생성 및 초기화 (API Key가 있을 때만)
             val fredSource = config.fredApiKey?.let { apiKey ->
-                FREDSource(apiKey = apiKey, config = config.fredConfig).also {
-                    it.initialize()
+                val source = FREDSourceImpl(
+                    httpClient = httpClient,
+                    apiKey = apiKey,
+                    cache = cache,
+                    config = config.fredConfig
+                )
+
+                try {
+                    source.initialize()
+                    source
+                } catch (e: Exception) {
+                    // FRED 초기화 실패 시 경고만 로그하고 null 반환
+                    logger.warn("Failed to initialize FRED source, macro API will be unavailable", e)
+                    null
                 }
             }
 
-            // 도메인 API 구현체 생성
+            // 5. 도메인 API 구현체 생성
             val stockApi = StockApiImpl(yahooSource)
             val etfApi = EtfApiImpl(yahooSource)
             val macroApi = fredSource?.let { MacroApiImpl(it) }
@@ -729,17 +771,54 @@ class UFCClient private constructor(
                 etf = etfApi,
                 macro = macroApi,
                 search = searchApi,
+                yahooSource = yahooSource,
+                fredSource = fredSource,
+                httpClient = httpClient,
+                cache = cache,
                 config = config
             )
         }
     }
 
+    // Internal references for cleanup
+    private val yahooSource: YahooFinanceSource
+    private val fredSource: FREDSource?
+    private val httpClient: HttpClient
+    private val cache: LRUCache<String, Any>
+
     /**
      * 모든 리소스 정리
+     *
+     * 리소스 정리는 역순으로 진행됩니다:
+     * 1. Domain API (참조만 제거)
+     * 2. FRED Source 종료
+     * 3. Yahoo Finance Source 종료
+     * 4. 캐시 정리
+     * 5. HTTP 클라이언트 종료
+     *
+     * 이 메서드는 idempotent하며, 여러 번 호출해도 안전합니다.
      */
     override fun close() {
-        // 내부 Source들을 정리
-        // (Domain API는 Source를 참조만 하므로 Source만 닫으면 됨)
+        try {
+            // 1. Domain API는 Source를 참조만 하므로 별도 정리 불필요
+
+            // 2. FRED Source 종료 (있을 경우)
+            fredSource?.close()
+
+            // 3. Yahoo Finance Source 종료
+            yahooSource.close()
+
+            // 4. 캐시 정리
+            cache.clear()
+
+            // 5. HTTP 클라이언트 종료 (모든 연결 종료)
+            httpClient.close()
+
+            logger.info("UFCClient closed successfully")
+        } catch (e: Exception) {
+            logger.error("Error while closing UFCClient", e)
+            // 예외를 던지지 않고 로그만 남김 (close는 best-effort)
+        }
     }
 }
 ```

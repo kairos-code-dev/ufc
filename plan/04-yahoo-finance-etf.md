@@ -430,7 +430,195 @@ sectorWeightings?.let { sw ->
 
 ---
 
-## 6. 사용 예시
+## 6. ETF 판별 로직
+
+### 6.1 ETF 판별 방법
+
+Yahoo Finance API에서는 특정 심볼이 ETF인지 주식인지 판별하기 위해 여러 필드를 확인해야 합니다.
+
+**판별 기준 (우선순위 순):**
+1. `quoteType` 필드가 "ETF"
+2. `fundFamily` 필드가 존재 (null이 아님)
+3. `legalType` 필드에 "Exchange Traded Fund" 포함
+
+### 6.2 isEtf() 헬퍼 함수
+
+```kotlin
+/**
+ * QuoteSummary 응답을 기반으로 ETF 여부 판별
+ *
+ * @param quoteSummaryResult QuoteSummary API 응답의 result 객체
+ * @return ETF일 경우 true, 주식일 경우 false
+ */
+fun isEtf(quoteSummaryResult: QuoteSummaryResponse.Result): Boolean {
+    // 1. quoteType 필드 확인 (가장 신뢰할 수 있는 방법)
+    val quoteType = quoteSummaryResult.quoteType?.quoteType
+    if (quoteType != null) {
+        return quoteType.equals("ETF", ignoreCase = true)
+    }
+
+    // 2. fundFamily 필드 확인 (ETF는 보통 fundFamily가 있음)
+    val fundFamily = quoteSummaryResult.summaryDetail?.fundFamily
+    if (fundFamily != null && fundFamily.isNotBlank()) {
+        return true
+    }
+
+    // 3. legalType 필드 확인
+    val legalType = quoteSummaryResult.fundProfile?.legalType
+    if (legalType != null) {
+        return legalType.contains("Exchange Traded Fund", ignoreCase = true) ||
+               legalType.contains("ETF", ignoreCase = true)
+    }
+
+    // 4. 기본값: 주식으로 간주
+    return false
+}
+
+/**
+ * 심볼만으로 ETF 여부 확인 (API 호출 필요)
+ *
+ * @param symbol 심볼
+ * @return ETF일 경우 true, 주식일 경우 false
+ * @throws UFCException API 호출 실패 시
+ */
+suspend fun YahooFinanceSource.isEtf(symbol: String): Boolean {
+    val response = fetchQuoteSummary(
+        symbol = symbol,
+        modules = listOf("quoteType", "summaryDetail", "fundProfile")
+    )
+
+    val result = response.quoteSummary.result?.firstOrNull()
+        ?: throw UFCException(
+            errorCode = ErrorCode.NO_DATA_AVAILABLE,
+            message = "No data available for symbol: $symbol"
+        )
+
+    return isEtf(result)
+}
+```
+
+### 6.3 심볼 패턴 기반 빠른 판별 (휴리스틱)
+
+API 호출 없이 심볼 패턴만으로 ETF를 추측할 수 있습니다 (100% 정확하지 않음).
+
+```kotlin
+/**
+ * 심볼 패턴 기반 ETF 추측
+ *
+ * 이 메서드는 API 호출 없이 심볼 패턴만으로 ETF를 추측합니다.
+ * 정확한 판별이 필요한 경우 isEtf(symbol) 메서드를 사용하세요.
+ *
+ * @param symbol 심볼
+ * @return ETF일 가능성이 높으면 true
+ */
+fun guessEtfBySymbol(symbol: String): Boolean {
+    val upperSymbol = symbol.uppercase()
+
+    // 일반적인 ETF 심볼 패턴
+    val etfPatterns = listOf(
+        "SPY", "QQQ", "IWM", "DIA", "VOO", "VTI", "VEA", "VWO",  // 주요 ETF
+        "AGG", "BND", "LQD", "HYG", "TLT", "SHY",                // 채권 ETF
+        "GLD", "SLV", "USO", "UNG",                              // 원자재 ETF
+        "XLF", "XLE", "XLK", "XLV", "XLI", "XLP", "XLU", "XLY", "XLC", "XLB", "XLRE" // 섹터 ETF
+    )
+
+    // 정확히 일치하는 주요 ETF
+    if (upperSymbol in etfPatterns) {
+        return true
+    }
+
+    // Vanguard ETF (V로 시작하는 3-4자 심볼)
+    if (upperSymbol.startsWith("V") && upperSymbol.length in 3..4) {
+        return true
+    }
+
+    // iShares ETF (I로 시작하는 3-4자 심볼)
+    if (upperSymbol.startsWith("I") && upperSymbol.length in 3..4) {
+        return true
+    }
+
+    // SPDR ETF (SPY, XL로 시작)
+    if (upperSymbol.startsWith("XL") || upperSymbol.startsWith("SPY")) {
+        return true
+    }
+
+    // Invesco ETF (Q로 시작하는 3자 심볼)
+    if (upperSymbol.startsWith("Q") && upperSymbol.length == 3) {
+        return true
+    }
+
+    // 기본값: 주식으로 간주
+    return false
+}
+```
+
+### 6.4 사용 예시
+
+```kotlin
+suspend fun checkIfEtf() {
+    val ufc = UFCClient.create()
+
+    // 방법 1: API 호출로 정확한 판별
+    val isSpyEtf = ufc.yahoo.isEtf("SPY")
+    println("SPY is ETF: $isSpyEtf")  // true
+
+    val isAaplEtf = ufc.yahoo.isEtf("AAPL")
+    println("AAPL is ETF: $isAaplEtf")  // false
+
+    // 방법 2: 심볼 패턴 기반 빠른 추측 (API 호출 없음)
+    println("SPY likely ETF: ${guessEtfBySymbol("SPY")}")    // true
+    println("QQQ likely ETF: ${guessEtfBySymbol("QQQ")}")    // true
+    println("AAPL likely ETF: ${guessEtfBySymbol("AAPL")}")  // false
+    println("TSLA likely ETF: ${guessEtfBySymbol("TSLA")}")  // false
+}
+```
+
+### 6.5 통합 사용 예시 (스마트 팩토리 패턴)
+
+```kotlin
+/**
+ * 심볼에 따라 자동으로 Stock 또는 ETF 객체 생성
+ */
+suspend fun smartTicker(symbol: String): Any {
+    val ufc = UFCClient.create()
+
+    // 1. 빠른 추측으로 먼저 확인
+    if (guessEtfBySymbol(symbol)) {
+        // ETF일 가능성이 높으면 ETF API 사용
+        return ufc.etf.getHoldings(symbol)
+    }
+
+    // 2. 확실하지 않으면 API 호출로 정확히 판별
+    return if (ufc.yahoo.isEtf(symbol)) {
+        ufc.etf.getHoldings(symbol)
+    } else {
+        ufc.stock.info(symbol)
+    }
+}
+
+// 사용
+val spyData = smartTicker("SPY")   // ETF 데이터 반환
+val aaplData = smartTicker("AAPL") // 주식 데이터 반환
+```
+
+### 6.6 QuoteType 값 종류
+
+Yahoo Finance API에서 반환하는 `quoteType` 값들:
+
+| quoteType 값 | 설명 |
+|-------------|------|
+| EQUITY | 주식 |
+| ETF | ETF (Exchange Traded Fund) |
+| MUTUALFUND | 뮤추얼 펀드 |
+| INDEX | 지수 |
+| CURRENCY | 통화 |
+| CRYPTOCURRENCY | 암호화폐 |
+| FUTURE | 선물 |
+| OPTION | 옵션 |
+
+---
+
+## 7. 사용 예시
 
 ```kotlin
 suspend fun main() {

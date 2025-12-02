@@ -287,11 +287,234 @@ enum class Period(val value: String) {
 
 ---
 
-## 4. Corporate Actions
+## 4. Adjusted Price 계산
+
+### 4.1 Adjusted Close 개념
+
+**Adjusted Close (조정 종가)**는 배당금 지급과 주식 분할을 고려하여 과거 주가를 조정한 값입니다. 이를 통해 시간에 따른 순수한 가격 변화를 정확하게 분석할 수 있습니다.
+
+**조정이 필요한 이유:**
+- **배당금 지급**: 배당 지급일에 주가가 배당금만큼 하락하므로, 과거 가격을 배당금만큼 조정
+- **주식 분할**: 분할 시 주가가 비례하여 하락하므로, 과거 가격을 분할 비율로 조정
+
+### 4.2 조정 가격 계산 공식
+
+Yahoo Finance는 다음 공식을 사용하여 과거 주가를 조정합니다:
+
+```kotlin
+/**
+ * Adjusted Close 계산 알고리즘
+ *
+ * 최신 날짜부터 역순으로 계산하며, 배당과 분할을 모두 고려합니다.
+ */
+fun calculateAdjustedPrices(
+    prices: List<PriceBar>,
+    dividends: Map<LocalDate, Dividend>,
+    splits: Map<LocalDate, Split>
+): List<PriceBar> {
+    if (prices.isEmpty()) return emptyList()
+
+    val sortedPrices = prices.sortedByDescending { it.date }
+    val adjustedPrices = mutableListOf<PriceBar>()
+
+    // 누적 조정 계수 (최신 날짜 = 1.0)
+    var cumulativeAdjustmentFactor = 1.0
+
+    sortedPrices.forEachIndexed { index, priceBar ->
+        val currentDate = priceBar.date.toLocalDate()
+
+        // 1. 배당 조정
+        dividends[currentDate]?.let { dividend ->
+            val close = priceBar.close ?: return@let
+            // Adjustment factor = (Close - Dividend) / Close
+            val dividendFactor = (close - dividend.amount) / close
+            cumulativeAdjustmentFactor *= dividendFactor
+        }
+
+        // 2. 주식 분할 조정
+        splits[currentDate]?.let { split ->
+            // Adjustment factor = 1 / Split Ratio
+            // 예: 2-for-1 분할 (ratio = 2.0) → factor = 0.5
+            val splitFactor = 1.0 / split.ratio
+            cumulativeAdjustmentFactor *= splitFactor
+        }
+
+        // 3. 모든 가격 필드에 누적 조정 계수 적용
+        val adjustedBar = priceBar.copy(
+            open = priceBar.open?.let { it * cumulativeAdjustmentFactor },
+            high = priceBar.high?.let { it * cumulativeAdjustmentFactor },
+            low = priceBar.low?.let { it * cumulativeAdjustmentFactor },
+            close = priceBar.close?.let { it * cumulativeAdjustmentFactor },
+            adjClose = priceBar.close?.let { it * cumulativeAdjustmentFactor }
+        )
+
+        adjustedPrices.add(adjustedBar)
+    }
+
+    // 원래 순서로 복원 (오래된 날짜 → 최신 날짜)
+    return adjustedPrices.reversed()
+}
+```
+
+### 4.3 계산 예시
+
+**시나리오:**
+- 2024-01-01: Close = $100
+- 2024-06-01: 배당 $2 지급
+- 2024-09-01: 2-for-1 주식 분할
+- 2024-12-01: Close = $60 (최신)
+
+**계산 과정 (역순):**
+
+```
+2024-12-01: Close = $60
+  → Adjusted = $60 * 1.0 = $60.00
+  → cumulative_factor = 1.0
+
+2024-09-01: Split 2:1 발생
+  → split_factor = 1 / 2.0 = 0.5
+  → cumulative_factor = 1.0 * 0.5 = 0.5
+
+2024-06-01: Dividend $2 지급, Close = $120 (분할 전)
+  → dividend_factor = (120 - 2) / 120 = 0.9833
+  → cumulative_factor = 0.5 * 0.9833 = 0.4917
+
+2024-01-01: Close = $100
+  → Adjusted = $100 * 0.4917 = $49.17
+```
+
+**결과:**
+- 2024-01-01부터 2024-12-01까지 순수 수익률 = ($60 - $49.17) / $49.17 = 22.0%
+
+### 4.4 auto_adjust 옵션
+
+```kotlin
+/**
+ * 가격 이력 조회 시 자동 조정 옵션
+ *
+ * @param symbol 주식 심볼
+ * @param period 조회 기간
+ * @param interval 데이터 간격
+ * @param autoAdjust true일 경우 모든 가격 필드를 조정, false일 경우 adjClose만 제공
+ * @return 가격 이력 데이터
+ */
+suspend fun history(
+    symbol: String,
+    period: Period = Period.OneYear,
+    interval: Interval = Interval.OneDay,
+    autoAdjust: Boolean = false
+): List<PriceBar>
+```
+
+**autoAdjust = false (기본값):**
+```kotlin
+PriceBar(
+    date = 2024-01-01,
+    open = 100.0,      // 원본 가격
+    high = 105.0,      // 원본 가격
+    low = 98.0,        // 원본 가격
+    close = 100.0,     // 원본 가격
+    adjClose = 49.17,  // 조정 종가만 제공
+    volume = 1000000
+)
+```
+
+**autoAdjust = true:**
+```kotlin
+PriceBar(
+    date = 2024-01-01,
+    open = 49.17,      // 조정된 시가
+    high = 51.63,      // 조정된 고가
+    low = 48.18,       // 조정된 저가
+    close = 49.17,     // 조정된 종가
+    adjClose = 49.17,  // 조정 종가
+    volume = 1000000   // 거래량은 조정 안 함
+)
+```
+
+### 4.5 실제 구현 예시
+
+```kotlin
+/**
+ * Chart API 응답을 PriceBar 리스트로 변환
+ */
+fun ChartResult.toPriceBars(autoAdjust: Boolean = false): List<PriceBar> {
+    val timestamps = this.timestamp
+    val quotes = this.indicators.quote.firstOrNull() ?: return emptyList()
+    val adjCloseList = this.indicators.adjclose?.firstOrNull()?.adjclose
+
+    val priceBars = timestamps.indices.map { i ->
+        val timestamp = Instant.ofEpochSecond(timestamps[i])
+        val date = LocalDateTime.ofInstant(timestamp, ZoneId.of("America/New_York"))
+
+        PriceBar(
+            date = date,
+            open = quotes.open.getOrNull(i),
+            high = quotes.high.getOrNull(i),
+            low = quotes.low.getOrNull(i),
+            close = quotes.close.getOrNull(i),
+            adjClose = adjCloseList?.getOrNull(i),
+            volume = quotes.volume.getOrNull(i)
+        )
+    }
+
+    if (!autoAdjust) {
+        return priceBars
+    }
+
+    // autoAdjust = true일 경우, adjClose를 기준으로 모든 가격 조정
+    return priceBars.map { bar ->
+        if (bar.close == null || bar.adjClose == null || bar.close == 0.0) {
+            bar
+        } else {
+            val adjustmentFactor = bar.adjClose / bar.close
+            bar.copy(
+                open = bar.open?.let { it * adjustmentFactor },
+                high = bar.high?.let { it * adjustmentFactor },
+                low = bar.low?.let { it * adjustmentFactor },
+                close = bar.adjClose,
+                adjClose = bar.adjClose
+            )
+        }
+    }
+}
+```
+
+### 4.6 사용 예시
+
+```kotlin
+suspend fun compareAdjustedVsRaw() {
+    val ufc = UFCClient.create()
+    val aapl = ufc.stock.ticker("AAPL")
+
+    // 원본 가격 (adjClose만 조정됨)
+    val rawPrices = aapl.history(
+        period = Period.FiveYears,
+        autoAdjust = false
+    )
+
+    // 모든 가격 필드 조정
+    val adjustedPrices = aapl.history(
+        period = Period.FiveYears,
+        autoAdjust = true
+    )
+
+    // 수익률 계산 (조정 가격 사용)
+    val firstBar = adjustedPrices.first()
+    val lastBar = adjustedPrices.last()
+    val totalReturn = ((lastBar.close!! - firstBar.close!!) / firstBar.close!!) * 100
+
+    println("Total Return (5 years): ${totalReturn.format(2)}%")
+}
+```
+
+---
+
+## 5. Corporate Actions
 
 Corporate Actions는 별도로 `08-data-models-reference.md`에 정의되어 있습니다.
 
-### 4.1 Dividends
+### 5.1 Dividends
 
 배당 정보는 `Dividend` 데이터 클래스로 표현됩니다 (상세는 08번 문서 참조).
 
@@ -302,7 +525,7 @@ data class Dividend(
 )
 ```
 
-### 4.2 Splits
+### 5.2 Splits
 
 주식 분할 정보는 `Split` 데이터 클래스로 표현됩니다 (상세는 08번 문서 참조).
 
@@ -319,7 +542,7 @@ data class Split(
 
 ---
 
-## 5. Ticker Info
+## 6. Ticker Info
 
 종목 정보 모델입니다.
 
@@ -351,9 +574,9 @@ data class TickerInfo(
 
 ---
 
-## 6. 사용 예시
+## 7. 사용 예시
 
-### 6.1 기본 사용
+### 7.1 기본 사용
 
 ```kotlin
 suspend fun main() {
@@ -378,7 +601,7 @@ suspend fun main() {
 }
 ```
 
-### 6.2 날짜 범위 지정
+### 7.2 날짜 범위 지정
 
 ```kotlin
 suspend fun specificDateRange() {
@@ -404,7 +627,7 @@ suspend fun specificDateRange() {
 }
 ```
 
-### 6.3 배당 및 분할 조회
+### 7.3 배당 및 분할 조회
 
 ```kotlin
 suspend fun dividendsAndSplits() {
@@ -427,7 +650,7 @@ suspend fun dividendsAndSplits() {
 }
 ```
 
-### 6.4 종목 정보 조회
+### 7.4 종목 정보 조회
 
 ```kotlin
 suspend fun tickerInfo() {
@@ -448,7 +671,7 @@ suspend fun tickerInfo() {
 }
 ```
 
-### 6.5 장전/장후 거래 포함
+### 7.5 장전/장후 거래 포함
 
 ```kotlin
 suspend fun includePrePost() {

@@ -373,13 +373,13 @@ data class ETFData(
 
 ## 6. Yahoo Finance - Search & Screener
 
-### 6.1 SearchResult
+### 6.1 SearchResult (Yahoo Finance)
 
 종목 검색 결과입니다.
 
 ```kotlin
 /**
- * 종목 검색 결과
+ * 종목 검색 결과 (Yahoo Finance)
  */
 @Serializable
 data class SearchResult(
@@ -394,7 +394,97 @@ data class SearchResult(
 )
 ```
 
-### 6.2 ScreenerQuery
+### 6.2 통합 검색 모델 (SearchApi용)
+
+SearchApi는 여러 소스의 검색 결과를 통합하여 제공합니다.
+
+```kotlin
+/**
+ * 통합 검색 결과
+ *
+ * Yahoo Finance 또는 FRED 검색 결과를 담는 통합 모델입니다.
+ */
+sealed class UnifiedSearchResult {
+    abstract val name: String
+    abstract val description: String?
+    abstract val source: DataSource
+}
+
+/**
+ * 주식 검색 결과
+ *
+ * @property symbol 주식/ETF 심볼
+ * @property name 종목명
+ * @property exchange 거래소
+ * @property type 타입 (EQUITY, ETF 등)
+ * @property description 설명
+ * @property source 데이터 소스 (항상 YAHOO_FINANCE)
+ */
+data class StockSearchResult(
+    val symbol: String,
+    override val name: String,
+    val exchange: String?,
+    val type: String?,
+    override val description: String?,
+    override val source: DataSource = DataSource.YAHOO_FINANCE
+) : UnifiedSearchResult()
+
+/**
+ * 매크로 지표 검색 결과
+ *
+ * @property seriesId FRED 시리즈 ID
+ * @property name 지표명
+ * @property frequency 데이터 주기
+ * @property units 단위
+ * @property description 설명
+ * @property source 데이터 소스 (항상 FRED)
+ */
+data class MacroSearchResult(
+    val seriesId: String,
+    override val name: String,
+    val frequency: String?,
+    val units: String?,
+    override val description: String?,
+    val popularity: Int?,
+    override val source: DataSource = DataSource.FRED
+) : UnifiedSearchResult()
+
+/**
+ * 데이터 소스
+ */
+enum class DataSource {
+    YAHOO_FINANCE,  // Yahoo Finance
+    FRED            // Federal Reserve Economic Data
+}
+```
+
+**사용 예시:**
+
+```kotlin
+// 주식 검색
+val stockResults: List<StockSearchResult> = ufc.search.stocks("Apple")
+stockResults.forEach { result ->
+    println("${result.symbol}: ${result.name} (${result.exchange})")
+}
+
+// 매크로 지표 검색
+val macroResults: List<MacroSearchResult> = ufc.search.economicData("GDP")
+macroResults.forEach { result ->
+    println("${result.seriesId}: ${result.name}")
+    println("  Frequency: ${result.frequency}, Units: ${result.units}")
+}
+
+// 타입별 처리
+val allResults: List<UnifiedSearchResult> = stockResults + macroResults
+allResults.forEach { result ->
+    when (result) {
+        is StockSearchResult -> println("Stock: ${result.symbol}")
+        is MacroSearchResult -> println("Macro: ${result.seriesId}")
+    }
+}
+```
+
+### 6.3 ScreenerQuery
 
 스크리너 조회 조건입니다.
 
@@ -469,7 +559,7 @@ enum class ComparisonOperator {
 }
 ```
 
-### 6.3 ScreenerResult
+### 6.4 ScreenerResult
 
 스크리너 결과입니다.
 
