@@ -175,8 +175,19 @@
         },
         "price": {
           "maxAge": 1,
-          "preMarketChange": {},
-          "preMarketPrice": {},
+          "preMarketChangePercent": {
+            "raw": -0.0023667023,
+            "fmt": "-0.24%"
+          },
+          "preMarketChange": {
+            "raw": -0.6700134,
+            "fmt": "-0.67"
+          },
+          "preMarketTime": 1764670981,
+          "preMarketPrice": {
+            "raw": 282.43,
+            "fmt": "282.43"
+          },
           "preMarketSource": "FREE_REALTIME",
           "postMarketChangePercent": {
             "raw": 2.673387E-4,
@@ -247,7 +258,7 @@
           "exchange": "NMS",
           "exchangeName": "NasdaqGS",
           "exchangeDataDelayedBy": 0,
-          "marketState": "PREPRE",
+          "marketState": "PRE",
           "quoteType": "EQUITY",
           "symbol": "AAPL",
           "shortName": "Apple Inc.",

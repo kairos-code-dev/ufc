@@ -163,8 +163,19 @@
         },
         "price": {
           "maxAge": 1,
-          "preMarketChange": {},
-          "preMarketPrice": {},
+          "preMarketChangePercent": {
+            "raw": 0.0018365602,
+            "fmt": "0.18%"
+          },
+          "preMarketChange": {
+            "raw": 0.789978,
+            "fmt": "0.79"
+          },
+          "preMarketTime": 1764671066,
+          "preMarketPrice": {
+            "raw": 430.93,
+            "fmt": "430.93"
+          },
           "preMarketSource": "FREE_REALTIME",
           "postMarketChangePercent": {
             "raw": -0.0036965332,
@@ -235,7 +246,7 @@
           "exchange": "NMS",
           "exchangeName": "NasdaqGS",
           "exchangeDataDelayedBy": 0,
-          "marketState": "PREPRE",
+          "marketState": "PRE",
           "quoteType": "EQUITY",
           "symbol": "TSLA",
           "shortName": "Tesla, Inc.",

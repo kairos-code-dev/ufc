@@ -172,8 +172,19 @@
         },
         "price": {
           "maxAge": 1,
-          "preMarketChange": {},
-          "preMarketPrice": {},
+          "preMarketChangePercent": {
+            "raw": 0.005748031,
+            "fmt": "0.57%"
+          },
+          "preMarketChange": {
+            "raw": 1.8099976,
+            "fmt": "1.81"
+          },
+          "preMarketTime": 1764671062,
+          "preMarketPrice": {
+            "raw": 316.7,
+            "fmt": "316.70"
+          },
           "preMarketSource": "FREE_REALTIME",
           "postMarketChangePercent": {
             "raw": 0.002572319,
@@ -244,7 +255,7 @@
           "exchange": "NMS",
           "exchangeName": "NasdaqGS",
           "exchangeDataDelayedBy": 0,
-          "marketState": "PREPRE",
+          "marketState": "PRE",
           "quoteType": "EQUITY",
           "symbol": "GOOGL",
           "shortName": "Alphabet Inc.",
