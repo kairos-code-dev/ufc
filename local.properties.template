@@ -1,0 +1,6 @@
+# UFC Local Configuration Template
+# Copy this file to local.properties and fill in your API keys
+
+# FRED API Key (Required for FRED data access)
+# Get your free API key at: https://fred.stlouisfed.org/docs/api/api_key.html
+FRED_API_KEY=your_fred_api_key_here
