@@ -65,10 +65,34 @@ UFC는 다음과 같은 아키텍처 원칙을 따릅니다:
 │                                                              │
 │  ┌────────────────────────────────────────────────────┐     │
 │  │              UFCClient                              │     │
-│  │  - val yahoo: YahooFinanceSource                    │     │
-│  │  - val fred: FREDSource                             │     │
+│  │  - val stock: StockApi                              │     │
+│  │  - val etf: EtfApi                                  │     │
+│  │  - val macro: MacroApi                              │     │
+│  │  - val search: SearchApi                            │     │
 │  │  - fun close()                                      │     │
 │  └────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    Domain API Layer                         │
+│                                                              │
+│  ┌──────────────────────┐  ┌─────────────────────────┐      │
+│  │     StockApi         │  │       EtfApi            │      │
+│  ├──────────────────────┤  ├─────────────────────────┤      │
+│  │ - history()          │  │ - getHoldings()         │      │
+│  │ - info()             │  │ - getFundProfile()      │      │
+│  │ - financials()       │  │ - getFundPerformance()  │      │
+│  │                      │  │ - history()             │      │
+│  └──────────────────────┘  └─────────────────────────┘      │
+│                                                              │
+│  ┌──────────────────────┐  ┌─────────────────────────┐      │
+│  │     MacroApi         │  │     SearchApi           │      │
+│  ├──────────────────────┤  ├─────────────────────────┤      │
+│  │ - getSeries()        │  │ - stocks()              │      │
+│  │ - getSeriesInfo()    │  │ - economicData()        │      │
+│  │ - search()           │  │                         │      │
+│  │ - getCategory()      │  │                         │      │
+│  └──────────────────────┘  └─────────────────────────┘      │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -77,15 +101,11 @@ UFC는 다음과 같은 아키텍처 원칙을 따릅니다:
 │  ┌──────────────────────┐  ┌─────────────────────────┐      │
 │  │ YahooFinanceSource   │  │    FREDSource           │      │
 │  ├──────────────────────┤  ├─────────────────────────┤      │
-│  │ - ticker()           │  │ - getSeries()           │      │
-│  │ - etf()              │  │ - getSeriesInfo()       │      │
-│  │ - search()           │  │ - search()              │      │
-│  │ - screener()         │  │ - searchByCategory()    │      │
-│  │                      │  │ - getCategory()         │      │
-│  │ Internal:            │  │                         │      │
-│  │ - Authenticator      │  │ Internal:               │      │
-│  │ - ChartAPI           │  │ - FREDClient (HTTP)     │      │
+│  │ Internal:            │  │ Internal:               │      │
+│  │ - Authenticator      │  │ - FREDClient (HTTP)     │      │
+│  │ - ChartAPI           │  │                         │      │
 │  │ - QuoteSummaryAPI    │  │                         │      │
+│  │ - SearchAPI          │  │                         │      │
 │  └──────────────────────┘  └─────────────────────────┘      │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -199,42 +219,46 @@ class UFCClient(
 
 ### 3.1 설계 목표
 
-KFC(Korea Financial Client)의 Multi-Source 패턴을 참고하여 설계합니다:
+KFC(Korea Financial Client)의 Domain-Based 패턴을 참고하여 설계합니다:
 
-**KFC 구조:**
+**KFC 구조 (도메인별 분리):**
 ```kotlin
 class KfcClient(
-    val krx: KrxEtfApi,
-    val naver: NaverEtfApi,
-    val opendart: OpenDartApi?
+    val etf: EtfApi,      // ETF 도메인
+    val corp: CorpApi?    // 기업 공시 도메인
 )
 ```
 
-**UFC 구조:**
+**UFC 구조 (도메인별 분리):**
 ```kotlin
 class UFCClient(
-    val yahoo: YahooFinanceSource,
-    val fred: FREDSource
+    val stock: StockApi,    // 주식 도메인 (Yahoo Finance)
+    val etf: EtfApi,        // ETF 도메인 (Yahoo Finance)
+    val macro: MacroApi,    // 매크로 지표 도메인 (FRED)
+    val search: SearchApi   // 검색 도메인 (Yahoo + FRED)
 )
 ```
 
 ### 3.2 장점
 
-1. **명확한 책임 분리**
-   - 각 소스는 독립적인 모듈
-   - 변경 사항이 다른 소스에 영향 없음
+1. **도메인 중심 설계**
+   - 데이터 소스가 아닌 비즈니스 도메인으로 분류
+   - 사용자 관점에서 직관적인 API
+   - 도메인 컨텍스트에 따른 명확한 책임 분리
 
 2. **확장 용이성**
-   - 새로운 데이터 소스 추가 쉬움
-   - 기존 코드 수정 최소화
+   - 새로운 도메인 추가 쉬움
+   - 기존 도메인에 영향 없이 독립적 확장
 
 3. **사용 편의성**
-   - `ufc.yahoo.ticker("AAPL")`
-   - `ufc.fred.getSeries("GDPC1")`
+   - `ufc.stock.history("AAPL")` - 주식 가격 이력
+   - `ufc.etf.getHoldings("SPY")` - ETF 보유 종목
+   - `ufc.macro.getSeries("GDPC1")` - GDP 데이터
+   - `ufc.search.stocks("Apple")` - 주식 검색
 
 4. **독립적인 라이프사이클**
-   - 각 소스는 독립적으로 초기화/종료
-   - 선택적 소스 사용 가능 (예: FRED API Key 없을 때)
+   - 각 도메인은 필요한 Source만 사용
+   - 선택적 도메인 사용 가능 (예: FRED API Key 없을 때 macro 비활성화)
 
 ### 3.3 패키지 구조
 
@@ -244,37 +268,53 @@ com.ulalax.ufc/
 │   ├── UFCClient.kt
 │   └── UFCClientConfig.kt
 │
-├── source/
-│   ├── DataSource.kt                 # 공통 인터페이스
+├── api/                              # 도메인 API (Public)
+│   ├── StockApi.kt                   # 주식 도메인
+│   ├── EtfApi.kt                     # ETF 도메인
+│   ├── MacroApi.kt                   # 매크로 지표 도메인
+│   └── SearchApi.kt                  # 검색 도메인
+│
+├── internal/                         # 내부 구현 (Internal)
+│   ├── stock/
+│   │   └── StockApiImpl.kt
+│   ├── etf/
+│   │   └── EtfApiImpl.kt
+│   ├── macro/
+│   │   └── MacroApiImpl.kt
+│   ├── search/
+│   │   └── SearchApiImpl.kt
 │   │
-│   ├── yahoo/
-│   │   ├── YahooFinanceSource.kt     # Public API
-│   │   ├── internal/
-│   │   │   ├── YahooFinanceClient.kt (HTTP)
-│   │   │   ├── Authenticator.kt
-│   │   │   ├── ChartAPI.kt
-│   │   │   └── QuoteSummaryAPI.kt
-│   │   ├── Ticker.kt
-│   │   ├── ETF.kt
-│   │   └── Search.kt
+│   ├── yahoo/                        # Yahoo Finance Source
+│   │   ├── YahooFinanceSource.kt
+│   │   ├── YahooHttpClient.kt
+│   │   ├── Authenticator.kt
+│   │   ├── ChartAPI.kt
+│   │   ├── QuoteSummaryAPI.kt
+│   │   └── SearchAPI.kt
 │   │
-│   └── fred/
-│       ├── FREDSource.kt             # Public API
-│       └── internal/
-│           └── FREDClient.kt (HTTP)
+│   └── fred/                         # FRED Source
+│       ├── FREDSource.kt
+│       └── FREDClient.kt
 │
 ├── model/
 │   ├── common/
 │   │   ├── Period.kt
 │   │   ├── Interval.kt
 │   │   └── DataFrequency.kt
-│   ├── yahoo/
-│   │   ├── chart/
-│   │   ├── etf/
-│   │   └── quote/
-│   └── fred/
-│       ├── Series.kt
-│       └── SeriesInfo.kt
+│   ├── stock/
+│   │   ├── PriceBar.kt
+│   │   ├── StockInfo.kt
+│   │   └── Financials.kt
+│   ├── etf/
+│   │   ├── Holdings.kt
+│   │   ├── FundProfile.kt
+│   │   └── FundPerformance.kt
+│   ├── macro/
+│   │   ├── Series.kt
+│   │   ├── SeriesInfo.kt
+│   │   └── Observation.kt
+│   └── search/
+│       └── SearchResult.kt
 │
 ├── exception/
 │   ├── UFCException.kt
@@ -295,83 +335,147 @@ com.ulalax.ufc/
 
 ---
 
-## 4. DataSource 인터페이스
+## 4. Domain API 인터페이스
 
-### 4.1 공통 인터페이스
+### 4.1 StockApi (주식 도메인)
 
 ```kotlin
 /**
- * 모든 데이터 소스의 기본 인터페이스
+ * 주식 도메인 API
+ *
+ * 개별 주식의 가격, 정보, 재무제표 등을 조회합니다.
+ *
+ * @source Yahoo Finance
  */
-interface DataSource {
-    /**
-     * 데이터 소스 이름
-     */
-    val name: String
+interface StockApi {
 
     /**
-     * 데이터 소스 초기화
-     * 인증, 연결 풀 생성 등
+     * 주가 이력 조회
+     *
+     * @param symbol 주식 심볼 (예: "AAPL", "MSFT")
+     * @param period 조회 기간 (기본값: 1년)
+     * @param interval 데이터 간격 (기본값: 1일)
+     * @return 가격 이력 데이터
      */
-    suspend fun initialize()
+    suspend fun history(
+        symbol: String,
+        period: Period = Period.OneYear,
+        interval: Interval = Interval.OneDay
+    ): List<PriceBar>
 
     /**
-     * 데이터 소스 종료
-     * 리소스 정리
+     * 주가 이력 조회 (날짜 범위 지정)
+     *
+     * @param symbol 주식 심볼
+     * @param start 시작일
+     * @param end 종료일
+     * @param interval 데이터 간격
+     * @return 가격 이력 데이터
      */
-    fun close()
+    suspend fun history(
+        symbol: String,
+        start: LocalDate,
+        end: LocalDate,
+        interval: Interval = Interval.OneDay
+    ): List<PriceBar>
+
+    /**
+     * 주식 기본 정보 조회
+     *
+     * @param symbol 주식 심볼
+     * @return 주식 정보
+     */
+    suspend fun info(symbol: String): StockInfo
+
+    /**
+     * 재무제표 조회
+     *
+     * @param symbol 주식 심볼
+     * @return 재무제표 데이터
+     */
+    suspend fun financials(symbol: String): Financials
 }
 ```
 
-### 4.2 YahooFinanceSource
+### 4.2 EtfApi (ETF 도메인)
 
 ```kotlin
 /**
- * Yahoo Finance 데이터 소스
+ * ETF 도메인 API
+ *
+ * ETF의 보유 종목, 펀드 정보, 성과 등을 조회합니다.
+ *
+ * @source Yahoo Finance
  */
-interface YahooFinanceSource : DataSource {
+interface EtfApi {
 
     /**
-     * 주식/ETF Ticker 객체 생성
-     *
-     * @param symbol 종목 심볼 (예: "AAPL", "SPY")
-     * @return Ticker 객체
-     */
-    fun ticker(symbol: String): Ticker
-
-    /**
-     * ETF 전용 객체 생성
+     * ETF 보유 종목 조회
      *
      * @param symbol ETF 심볼 (예: "SPY", "QQQ")
-     * @return ETF 객체
+     * @return 상위 보유 종목
      */
-    fun etf(symbol: String): ETF
+    suspend fun getHoldings(symbol: String): Holdings
 
     /**
-     * 종목 검색
+     * ETF 펀드 프로필 조회
      *
-     * @param query 검색어
-     * @return 검색 결과
+     * @param symbol ETF 심볼
+     * @return 펀드 프로필
      */
-    suspend fun search(query: String): List<SearchResult>
+    suspend fun getFundProfile(symbol: String): FundProfile
 
     /**
-     * 스크리너 (필터링)
+     * ETF 성과 조회
      *
-     * @param screener 스크리너 조건
-     * @return 스크리너 결과
+     * @param symbol ETF 심볼
+     * @return 펀드 성과
      */
-    suspend fun screener(screener: ScreenerQuery): List<ScreenerResult>
+    suspend fun getFundPerformance(symbol: String): FundPerformance
+
+    /**
+     * ETF 가격 이력 조회
+     *
+     * @param symbol ETF 심볼
+     * @param period 조회 기간
+     * @param interval 데이터 간격
+     * @return 가격 이력 데이터
+     */
+    suspend fun history(
+        symbol: String,
+        period: Period = Period.OneYear,
+        interval: Interval = Interval.OneDay
+    ): List<PriceBar>
+
+    /**
+     * ETF 가격 이력 조회 (날짜 범위 지정)
+     *
+     * @param symbol ETF 심볼
+     * @param start 시작일
+     * @param end 종료일
+     * @param interval 데이터 간격
+     * @return 가격 이력 데이터
+     */
+    suspend fun history(
+        symbol: String,
+        start: LocalDate,
+        end: LocalDate,
+        interval: Interval = Interval.OneDay
+    ): List<PriceBar>
 }
 ```
 
-### 4.3 FREDSource
+### 4.3 MacroApi (매크로 지표 도메인)
 
 ```kotlin
 /**
- * FRED (Federal Reserve Economic Data) 데이터 소스
+ * 매크로 경제 지표 도메인 API
+ *
+ * FRED의 경제 지표 데이터를 조회합니다.
+ *
+ * @source FRED (Federal Reserve Economic Data)
  */
-interface FREDSource : DataSource {
+interface MacroApi {
 
     /**
      * 시계열 데이터 조회
@@ -444,7 +548,7 @@ interface FREDSource : DataSource {
     suspend fun getSeriesVintageDates(seriesId: String): List<LocalDate>
 
     /**
-     * 전문 검색
+     * 경제 지표 검색
      *
      * @param text 검색 텍스트
      * @param limit 결과 수 제한 (0 = 무제한)
@@ -495,6 +599,44 @@ interface FREDSource : DataSource {
 }
 ```
 
+### 4.4 SearchApi (검색 도메인)
+
+```kotlin
+/**
+ * 검색 도메인 API
+ *
+ * 주식, ETF, 경제 지표를 통합 검색합니다.
+ *
+ * @source Yahoo Finance + FRED
+ */
+interface SearchApi {
+
+    /**
+     * 주식/ETF 검색
+     *
+     * @param query 검색어
+     * @param limit 결과 수 제한
+     * @return 검색 결과
+     */
+    suspend fun stocks(
+        query: String,
+        limit: Int = 10
+    ): List<SearchResult>
+
+    /**
+     * 경제 지표 검색
+     *
+     * @param query 검색어
+     * @param limit 결과 수 제한
+     * @return 검색 결과
+     */
+    suspend fun economicData(
+        query: String,
+        limit: Int = 10
+    ): List<SearchResult>
+}
+```
+
 ---
 
 ## 5. UFCClient Facade
@@ -505,12 +647,12 @@ interface FREDSource : DataSource {
 /**
  * UFC (US Free Financial Data Collector) 통합 클라이언트
  *
- * Multi-Source 아키텍처를 사용하여 Yahoo Finance와 FRED 데이터를 통합 제공합니다.
+ * Domain-Based 아키텍처를 사용하여 주식, ETF, 매크로 지표, 검색 기능을 제공합니다.
  *
  * ## 사용 예시
  *
  * ```kotlin
- * // 기본 생성
+ * // 기본 생성 (FRED API Key 없이)
  * val ufc = UFCClient.create()
  *
  * // FRED API Key 포함
@@ -520,23 +662,36 @@ interface FREDSource : DataSource {
  *     )
  * )
  *
- * // Yahoo Finance 사용
- * val spy = ufc.yahoo.etf("SPY")
- * val holdings = spy.getTopHoldings()
+ * // 주식 도메인 사용
+ * val aaplHistory = ufc.stock.history("AAPL", period = Period.OneYear)
+ * val aaplInfo = ufc.stock.info("AAPL")
  *
- * // FRED 사용
- * val gdp = ufc.fred.getSeries("GDPC1")
+ * // ETF 도메인 사용
+ * val spyHoldings = ufc.etf.getHoldings("SPY")
+ * val spyProfile = ufc.etf.getFundProfile("SPY")
+ *
+ * // 매크로 지표 도메인 사용 (FRED API Key 필요)
+ * val gdp = ufc.macro.getSeries("GDPC1")
+ * val unemployment = ufc.macro.search("unemployment rate")
+ *
+ * // 검색 도메인 사용
+ * val stockResults = ufc.search.stocks("Apple")
+ * val macroResults = ufc.search.economicData("GDP")
  *
  * // 종료
  * ufc.close()
  * ```
  *
- * @property yahoo Yahoo Finance 데이터 소스
- * @property fred FRED 데이터 소스
+ * @property stock 주식 도메인 API
+ * @property etf ETF 도메인 API
+ * @property macro 매크로 지표 도메인 API (FRED API Key 필요)
+ * @property search 검색 도메인 API
  */
 class UFCClient private constructor(
-    val yahoo: YahooFinanceSource,
-    val fred: FREDSource,
+    val stock: StockApi,
+    val etf: EtfApi,
+    val macro: MacroApi?,
+    val search: SearchApi,
     private val config: UFCClientConfig
 ) : AutoCloseable {
 
@@ -551,23 +706,29 @@ class UFCClient private constructor(
             config: UFCClientConfig = UFCClientConfig()
         ): UFCClient {
             // Yahoo Finance Source 생성
-            val yahooSource = YahooFinanceSourceImpl(
+            val yahooSource = YahooFinanceSource(
                 config = config.yahooConfig
             )
-
-            // FRED Source 생성
-            val fredSource = FREDSourceImpl(
-                apiKey = config.fredApiKey,
-                config = config.fredConfig
-            )
-
-            // 초기화
             yahooSource.initialize()
-            fredSource.initialize()
+
+            // FRED Source 생성 (API Key가 있을 때만)
+            val fredSource = config.fredApiKey?.let { apiKey ->
+                FREDSource(apiKey = apiKey, config = config.fredConfig).also {
+                    it.initialize()
+                }
+            }
+
+            // 도메인 API 구현체 생성
+            val stockApi = StockApiImpl(yahooSource)
+            val etfApi = EtfApiImpl(yahooSource)
+            val macroApi = fredSource?.let { MacroApiImpl(it) }
+            val searchApi = SearchApiImpl(yahooSource, fredSource)
 
             return UFCClient(
-                yahoo = yahooSource,
-                fred = fredSource,
+                stock = stockApi,
+                etf = etfApi,
+                macro = macroApi,
+                search = searchApi,
                 config = config
             )
         }
@@ -577,8 +738,8 @@ class UFCClient private constructor(
      * 모든 리소스 정리
      */
     override fun close() {
-        yahoo.close()
-        fred.close()
+        // 내부 Source들을 정리
+        // (Domain API는 Source를 참조만 하므로 Source만 닫으면 됨)
     }
 }
 ```
@@ -1069,16 +1230,25 @@ companion object {
 
 ```
 UFCClient
-├── YahooFinanceSource
-│   ├── HttpClient (shared)
-│   ├── Authenticator
-│   ├── Cache (shared)
-│   └── YahooConfig
+├── StockApi (StockApiImpl)
+│   └── YahooFinanceSource
+│       ├── HttpClient
+│       ├── Authenticator
+│       ├── Cache
+│       └── YahooConfig
 │
-└── FREDSource
-    ├── HttpClient (shared)
-    ├── Cache (shared)
-    └── FREDConfig
+├── EtfApi (EtfApiImpl)
+│   └── YahooFinanceSource (shared)
+│
+├── MacroApi (MacroApiImpl) [optional]
+│   └── FREDSource
+│       ├── HttpClient
+│       ├── Cache
+│       └── FREDConfig
+│
+└── SearchApi (SearchApiImpl)
+    ├── YahooFinanceSource (shared)
+    └── FREDSource (shared, optional)
 ```
 
 ---

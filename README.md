@@ -67,6 +67,7 @@ FRED_API_KEY=your_fred_api_key_here
 ```kotlin
 import com.ulalax.ufc.UFCClient
 import com.ulalax.ufc.UFCClientConfig
+import com.ulalax.ufc.model.common.Period
 import java.time.LocalDate
 
 suspend fun main() {
@@ -75,33 +76,51 @@ suspend fun main() {
         config = UFCClientConfig(fredApiKey = "your_api_key")
     )
 
-    // Yahoo Finance: ETF 데이터
-    val spy = ufc.yahoo.etf("SPY")
-    val holdings = spy.getTopHoldings()
-    holdings.holdings?.take(5)?.forEach { holding ->
-        println("${holding.symbol}: ${holding.holdingPercent?.fmt}")
-    }
-
-    // Yahoo Finance: 주가 데이터
-    val aapl = ufc.yahoo.ticker("AAPL")
-    val history = aapl.history(period = Period.OneYear)
+    // 주식 도메인: 주가 데이터
+    val aaplHistory = ufc.stock.history("AAPL", period = Period.OneYear)
     println("Recent AAPL prices:")
-    history.takeLast(5).forEach { bar ->
+    aaplHistory.takeLast(5).forEach { bar ->
         println("${bar.date}: Close=${bar.close}")
     }
 
-    // FRED: GDP 조회
-    val gdp = ufc.fred.getSeries(
+    // 주식 도메인: 주식 정보
+    val aaplInfo = ufc.stock.info("AAPL")
+    println("AAPL: ${aaplInfo.longName} - ${aaplInfo.sector}")
+
+    // ETF 도메인: ETF 보유 종목
+    val spyHoldings = ufc.etf.getHoldings("SPY")
+    spyHoldings.holdings?.take(5)?.forEach { holding ->
+        println("${holding.symbol}: ${holding.holdingPercent?.fmt}")
+    }
+
+    // ETF 도메인: 펀드 프로필
+    val spyProfile = ufc.etf.getFundProfile("SPY")
+    println("SPY Fund Family: ${spyProfile.fundFamily}")
+
+    // 매크로 지표 도메인: GDP 조회
+    val gdp = ufc.macro?.getSeries(
         seriesId = "GDPC1",
         observationStart = LocalDate.of(2020, 1, 1),
         observationEnd = LocalDate.of(2024, 1, 1)
     )
-    println("GDP observations: ${gdp.observations.size}")
+    println("GDP observations: ${gdp?.observations?.size}")
 
-    // FRED: 검색
-    val unemployment = ufc.fred.search("unemployment rate", limit = 5)
-    unemployment.forEach {
+    // 매크로 지표 도메인: 검색
+    val unemployment = ufc.macro?.search("unemployment rate", limit = 5)
+    unemployment?.forEach {
         println("${it.id}: ${it.title}")
+    }
+
+    // 검색 도메인: 주식 검색
+    val searchResults = ufc.search.stocks("Apple")
+    searchResults.take(3).forEach {
+        println("${it.symbol}: ${it.name}")
+    }
+
+    // 검색 도메인: 경제 지표 검색
+    val macroResults = ufc.search.economicData("GDP")
+    macroResults.take(3).forEach {
+        println("${it.symbol}: ${it.name}")
     }
 
     // 종료
@@ -116,21 +135,39 @@ ufc/
 ├── src/
 │   ├── main/kotlin/com/ulalax/ufc/         # 프로덕션 코드
 │   │   ├── client/                         # UFCClient (Facade)
-│   │   ├── source/                         # DataSource 구현
-│   │   │   ├── yahoo/                      # Yahoo Finance
-│   │   │   └── fred/                       # FRED
+│   │   ├── api/                            # 도메인 API (Public)
+│   │   │   ├── StockApi.kt                 # 주식 도메인
+│   │   │   ├── EtfApi.kt                   # ETF 도메인
+│   │   │   ├── MacroApi.kt                 # 매크로 지표 도메인
+│   │   │   └── SearchApi.kt                # 검색 도메인
+│   │   ├── internal/                       # 내부 구현
+│   │   │   ├── stock/                      # 주식 도메인 구현
+│   │   │   ├── etf/                        # ETF 도메인 구현
+│   │   │   ├── macro/                      # 매크로 도메인 구현
+│   │   │   ├── search/                     # 검색 도메인 구현
+│   │   │   ├── yahoo/                      # Yahoo Finance Source
+│   │   │   └── fred/                       # FRED Source
 │   │   ├── model/                          # 데이터 모델
+│   │   │   ├── common/                     # 공통 모델
+│   │   │   ├── stock/                      # 주식 모델
+│   │   │   ├── etf/                        # ETF 모델
+│   │   │   ├── macro/                      # 매크로 모델
+│   │   │   └── search/                     # 검색 모델
 │   │   ├── exception/                      # 에러 처리
 │   │   └── infrastructure/                 # 공통 인프라
 │   │
 │   ├── liveTest/kotlin/                    # Live Test (실제 API 호출)
-│   │   ├── live/yahoo/                     # Yahoo Finance Live Tests
-│   │   ├── live/fred/                      # FRED Live Tests
+│   │   ├── live/stock/                     # 주식 도메인 Live Tests
+│   │   ├── live/etf/                       # ETF 도메인 Live Tests
+│   │   ├── live/macro/                     # 매크로 도메인 Live Tests
+│   │   ├── live/search/                    # 검색 도메인 Live Tests
 │   │   └── utils/                          # 테스트 유틸리티
 │   │
 │   └── test/kotlin/                        # Unit Test (레코딩된 데이터)
-│       ├── source/yahoo/                   # Yahoo Finance Tests
-│       └── source/fred/                    # FRED Tests
+│       ├── api/stock/                      # 주식 도메인 Tests
+│       ├── api/etf/                        # ETF 도메인 Tests
+│       ├── api/macro/                      # 매크로 도메인 Tests
+│       └── api/search/                     # 검색 도메인 Tests
 │
 ├── plan/                                   # 기술 명세서
 │   ├── 00-project-overview.md
@@ -142,7 +179,8 @@ ufc/
 │   ├── 06-fred-macro-indicators.md
 │   ├── 07-advanced-topics.md
 │   ├── 08-data-models-reference.md
-│   └── 09-testing-strategy.md
+│   ├── 09-testing-strategy.md
+│   └── 10-yahoo-finance-implementation-guide.md
 │
 ├── local.properties.template               # API Key 템플릿
 ├── build.gradle.kts
