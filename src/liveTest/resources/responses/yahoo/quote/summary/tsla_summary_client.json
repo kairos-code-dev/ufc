@@ -164,17 +164,17 @@
         "price": {
           "maxAge": 1,
           "preMarketChangePercent": {
-            "raw": 0.0018365602,
-            "fmt": "0.18%"
+            "raw": 0.003905688,
+            "fmt": "0.39%"
           },
           "preMarketChange": {
-            "raw": 0.789978,
-            "fmt": "0.79"
+            "raw": 1.6799927,
+            "fmt": "1.68"
           },
-          "preMarketTime": 1764671066,
+          "preMarketTime": 1764672880,
           "preMarketPrice": {
-            "raw": 430.93,
-            "fmt": "430.93"
+            "raw": 431.82,
+            "fmt": "431.82"
           },
           "preMarketSource": "FREE_REALTIME",
           "postMarketChangePercent": {
@@ -685,8 +685,8 @@
                   "fmt": "1.65"
                 },
                 "60daysAgo": {
-                  "raw": 1.68297,
-                  "fmt": "1.68"
+                  "raw": 1.68859,
+                  "fmt": "1.69"
                 },
                 "90daysAgo": {
                   "raw": 1.6747,
@@ -800,8 +800,8 @@
                   "fmt": "2.26"
                 },
                 "60daysAgo": {
-                  "raw": 2.39354,
-                  "fmt": "2.39"
+                  "raw": 2.3956,
+                  "fmt": "2.4"
                 },
                 "90daysAgo": {
                   "raw": 2.36581,
