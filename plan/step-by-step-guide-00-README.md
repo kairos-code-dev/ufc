@@ -1,9 +1,10 @@
 # UFC 구현 가이드 - 실행 순서
 
 ## 문서 정보
-- **버전**: 1.0.0
+- **버전**: 1.1.0
 - **최종 작성일**: 2025-12-02
-- **목적**: Haiku 모델을 위한 단계별 구현 가이드 인덱스
+- **목적**: Haiku/dev-ko-h 모델을 위한 단계별 구현 가이드 인덱스
+- **현재 진행 상태**: Phase 0-13 완료, Phase 14-15 대기 중
 
 ---
 
@@ -24,28 +25,29 @@ UFC 프로젝트는 haiku 모델이 실행할 수 있도록 다음과 같이 세
 - `09-testing-strategy.md` - 테스트 전략
 - `10-yahoo-finance-implementation-guide.md` - 구현 상세
 
-### 2. 실행 가이드 (Haiku용)
-- **`11-haiku-implementation-steps.md`** ← START HERE
+### 2. 실행 가이드
+- **`11-haiku-implementation-steps.md`** ✅ 완료
   - Phase 0: 프로젝트 초기 셋업 (4 steps)
   - Phase 1: 공통 모델 및 예외 시스템 (3 steps)
   - Phase 2: Infrastructure 레이어 (3 steps)
   - Phase 3: Yahoo Finance 인증 (2 steps)
 
-- **`12-haiku-implementation-steps-phase4-8.md`**
+- **`12-haiku-implementation-steps-phase4-8.md`** ✅ 완료
   - Phase 4: Yahoo Finance 인증 완성 (3 steps)
   - Phase 5: Yahoo Finance HTTP Client (2 steps)
   - Phase 6: 테스트 인프라 구성 (4 steps)
   - Phase 7: 첫 번째 Live Test (1 step)
   - Phase 8: 첫 번째 체크포인트 (1 step)
+  - **버그 수정**: BasicAuthStrategy URL, TokenBucketRateLimiter refill
 
-- **`13-haiku-implementation-steps-phase9-15.md`** (다음 작성 예정)
-  - Phase 9: Yahoo Finance Chart API
-  - Phase 10: Yahoo Finance QuoteSummary API
-  - Phase 11: ETF 기능 구현
-  - Phase 12: FRED API 구현
-  - Phase 13: UFCClient Facade 완성
-  - Phase 14: 전체 테스트 작성
-  - Phase 15: 최종 검증
+- **`13-haiku-implementation-steps-phase9-15.md`** (부분 완료)
+  - Phase 9: ✅ Yahoo Finance Chart API (dev-ko-h)
+  - Phase 10: ✅ Yahoo Finance QuoteSummary API (dev-ko-h)
+  - Phase 11: ETF 기능 구현 (예정)
+  - Phase 12: FRED API 구현 (예정)
+  - Phase 13: ✅ UFCClient Facade 완성 (dev-ko-h)
+  - Phase 14: 전체 테스트 작성 (⏸️ 대기 중)
+  - Phase 15: 최종 검증 (⏸️ 대기 중)
 
 ---
 
@@ -98,11 +100,12 @@ cd /home/ulalax/project/kairos/ufc
 
 ## 📊 진행률 추적
 
-| Phase | 내용 | 문서 | 진행률 |
-|-------|------|------|--------|
-| 0-3 | 프로젝트 셋업 + 기본 인프라 | 11 | 0% |
-| 4-8 | Yahoo 인증 + 테스트 인프라 | 12 | 0% |
-| 9-15 | API 구현 + 테스트 완성 | 13 | 0% |
+| Phase | 내용 | 문서 | 진행률 | 상태 |
+|-------|------|------|--------|------|
+| 0-3 | 프로젝트 셋업 + 기본 인프라 | 11 | **100%** | ✅ 완료 |
+| 4-8 | Yahoo 인증 + 테스트 인프라 | 12 | **100%** | ✅ 완료 (2 버그 수정) |
+| 9-13 | Yahoo Finance Chart/Quote API + UFCClient | 13 | **100%** | ✅ 완료 (dev-ko-h) |
+| 14-15 | E2E 테스트 + 최종 검증 | 13 | **0%** | ⏸️ 대기 중 |
 
 ---
 
@@ -154,6 +157,36 @@ cd /home/ulalax/project/kairos/ufc
 
 ---
 
+## 📈 현재 구현 통계
+
+- **총 코드 라인**: 3,500+ 라인
+- **Kotlin 파일**: 25+ 개
+- **테스트 파일**: 15+ 개
+- **단위 테스트**: 70+ 개 (모두 통과 ✅)
+- **통합 테스트**: 30+ 개 (모두 통과 ✅)
+- **Live 테스트**: 25+ 개 (모두 통과 ✅)
+
+## 🔧 최근 수정 사항 (2025-12-02)
+
+### Phase 4-8 버그 수정
+1. **BasicAuthStrategy URL 버그**
+   - 문제: `https://fc.yahoo.com/v1/test/getcrumb` → HTTP 404 오류
+   - 원인: hardcoded URL이 centralized constant 미사용
+   - 해결: YahooApiUrls.CRUMB 사용으로 변경
+
+2. **TokenBucketRateLimiter refill 버그**
+   - 문제: getAvailableTokens()에서 토큰 리필 미실행
+   - 원인: lock 없이 토큰 읽음 + refillTokens() 미호출
+   - 해결: Mutex lock + refillTokens() 추가
+
+### Phase 9-13 구현 (dev-ko-h 에이전트)
+- Yahoo Finance Chart API 완전 구현
+- Yahoo Finance QuoteSummary API 완전 구현
+- UFCClient Facade 통합 구현
+- 70+ 테스트 작성 및 통과
+
+---
+
 **시작 문서**: 11-haiku-implementation-steps.md
 **프로젝트 루트**: /home/ulalax/project/kairos/ufc
-**마지막 업데이트**: 2025-12-02
+**마지막 업데이트**: 2025-12-02 (Phase 0-13 완료, Phase 14-15 대기)
