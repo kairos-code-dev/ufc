@@ -1,0 +1,3250 @@
+{
+  "quoteSummary": {
+    "result": [
+      {
+        "summaryDetail": {
+          "maxAge": 1,
+          "priceHint": {
+            "raw": 2,
+            "fmt": "2",
+            "longFmt": "2"
+          },
+          "previousClose": {
+            "raw": 430.17,
+            "fmt": "430.17"
+          },
+          "open": {
+            "raw": 425.35,
+            "fmt": "425.35"
+          },
+          "dayLow": {
+            "raw": 425.3,
+            "fmt": "425.30"
+          },
+          "dayHigh": {
+            "raw": 433.6599,
+            "fmt": "433.66"
+          },
+          "regularMarketPreviousClose": {
+            "raw": 430.17,
+            "fmt": "430.17"
+          },
+          "regularMarketOpen": {
+            "raw": 425.35,
+            "fmt": "425.35"
+          },
+          "regularMarketDayLow": {
+            "raw": 425.3,
+            "fmt": "425.30"
+          },
+          "regularMarketDayHigh": {
+            "raw": 433.6599,
+            "fmt": "433.66"
+          },
+          "dividendRate": {},
+          "dividendYield": {},
+          "exDividendDate": {},
+          "payoutRatio": {
+            "raw": 0.0,
+            "fmt": "0.00%"
+          },
+          "fiveYearAvgDividendYield": {},
+          "beta": {
+            "raw": 1.872,
+            "fmt": "1.87"
+          },
+          "trailingPE": {
+            "raw": 294.61646,
+            "fmt": "294.62"
+          },
+          "forwardPE": {
+            "raw": 132.75926,
+            "fmt": "132.76"
+          },
+          "volume": {
+            "raw": 55108087,
+            "fmt": "55.11M",
+            "longFmt": "55,108,087"
+          },
+          "regularMarketVolume": {
+            "raw": 55108087,
+            "fmt": "55.11M",
+            "longFmt": "55,108,087"
+          },
+          "averageVolume": {
+            "raw": 89413446,
+            "fmt": "89.41M",
+            "longFmt": "89,413,446"
+          },
+          "averageVolume10days": {
+            "raw": 79470550,
+            "fmt": "79.47M",
+            "longFmt": "79,470,550"
+          },
+          "averageDailyVolume10Day": {
+            "raw": 79470550,
+            "fmt": "79.47M",
+            "longFmt": "79,470,550"
+          },
+          "bid": {
+            "raw": 430.09,
+            "fmt": "430.09"
+          },
+          "ask": {
+            "raw": 430.34,
+            "fmt": "430.34"
+          },
+          "bidSize": {
+            "raw": 100,
+            "fmt": "100",
+            "longFmt": "100"
+          },
+          "askSize": {
+            "raw": 100,
+            "fmt": "100",
+            "longFmt": "100"
+          },
+          "marketCap": {
+            "raw": 1430567911424,
+            "fmt": "1.43T",
+            "longFmt": "1,430,567,911,424"
+          },
+          "yield": {},
+          "ytdReturn": {},
+          "qtdReturn": {},
+          "totalAssets": {},
+          "expireDate": {},
+          "strikePrice": {},
+          "openInterest": {},
+          "fiftyTwoWeekLow": {
+            "raw": 214.25,
+            "fmt": "214.25"
+          },
+          "fiftyTwoWeekHigh": {
+            "raw": 488.54,
+            "fmt": "488.54"
+          },
+          "allTimeHigh": {
+            "raw": 488.54,
+            "fmt": "488.54"
+          },
+          "allTimeLow": {
+            "raw": 0.998667,
+            "fmt": "1.00"
+          },
+          "priceToSalesTrailing12Months": {
+            "raw": 14.958936,
+            "fmt": "14.96"
+          },
+          "fiftyDayAverage": {
+            "raw": 434.0316,
+            "fmt": "434.03"
+          },
+          "twoHundredDayAverage": {
+            "raw": 340.7869,
+            "fmt": "340.79"
+          },
+          "trailingAnnualDividendRate": {
+            "raw": 0.0,
+            "fmt": "0.00"
+          },
+          "trailingAnnualDividendYield": {
+            "raw": 0.0,
+            "fmt": "0.00%"
+          },
+          "navPrice": {},
+          "currency": "USD",
+          "volume24Hr": {},
+          "volumeAllCurrencies": {},
+          "circulatingSupply": {},
+          "maxSupply": {},
+          "startDate": {},
+          "tradeable": false
+        },
+        "price": {
+          "maxAge": 1,
+          "preMarketChange": {},
+          "preMarketPrice": {},
+          "preMarketSource": "FREE_REALTIME",
+          "postMarketChangePercent": {
+            "raw": -0.0036965332,
+            "fmt": "-0.37%"
+          },
+          "postMarketChange": {
+            "raw": -1.5900269,
+            "fmt": "-1.59"
+          },
+          "postMarketTime": 1764637198,
+          "postMarketPrice": {
+            "raw": 428.55,
+            "fmt": "428.55"
+          },
+          "postMarketSource": "FREE_REALTIME",
+          "regularMarketChangePercent": {
+            "raw": -6.9737E-5,
+            "fmt": "-0.01%"
+          },
+          "regularMarketChange": {
+            "raw": -0.0299988,
+            "fmt": "-0.03"
+          },
+          "regularMarketTime": 1764622800,
+          "priceHint": {
+            "raw": 2,
+            "fmt": "2",
+            "longFmt": "2"
+          },
+          "regularMarketPrice": {
+            "raw": 430.14,
+            "fmt": "430.14"
+          },
+          "regularMarketDayHigh": {
+            "raw": 433.6599,
+            "fmt": "433.66"
+          },
+          "regularMarketDayLow": {
+            "raw": 425.3,
+            "fmt": "425.30"
+          },
+          "regularMarketVolume": {
+            "raw": 55108087,
+            "fmt": "55.11M",
+            "longFmt": "55,108,087.00"
+          },
+          "averageDailyVolume10Day": {
+            "raw": 79470550,
+            "fmt": "79.47M",
+            "longFmt": "79,470,550"
+          },
+          "averageDailyVolume3Month": {
+            "raw": 89413446,
+            "fmt": "89.41M",
+            "longFmt": "89,413,446"
+          },
+          "regularMarketPreviousClose": {
+            "raw": 430.17,
+            "fmt": "430.17"
+          },
+          "regularMarketSource": "FREE_REALTIME",
+          "regularMarketOpen": {
+            "raw": 425.35,
+            "fmt": "425.35"
+          },
+          "strikePrice": {},
+          "openInterest": {},
+          "exchange": "NMS",
+          "exchangeName": "NasdaqGS",
+          "exchangeDataDelayedBy": 0,
+          "marketState": "PREPRE",
+          "quoteType": "EQUITY",
+          "symbol": "TSLA",
+          "shortName": "Tesla, Inc.",
+          "longName": "Tesla, Inc.",
+          "currency": "USD",
+          "quoteSourceName": "Nasdaq Real Time Price",
+          "currencySymbol": "$",
+          "volume24Hr": {},
+          "volumeAllCurrencies": {},
+          "circulatingSupply": {},
+          "marketCap": {
+            "raw": 1430567911424,
+            "fmt": "1.43T",
+            "longFmt": "1,430,567,911,424.00"
+          }
+        },
+        "earningsHistory": {
+          "history": [
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 0.73,
+                "fmt": "0.73"
+              },
+              "epsEstimate": {
+                "raw": 0.76703,
+                "fmt": "0.77"
+              },
+              "epsDifference": {
+                "raw": -0.04,
+                "fmt": "-0.04"
+              },
+              "surprisePercent": {
+                "raw": -0.048299998,
+                "fmt": "-4.83%"
+              },
+              "quarter": {
+                "raw": 1735603200,
+                "fmt": "2024-12-31"
+              },
+              "currency": "USD",
+              "period": "-4q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 0.27,
+                "fmt": "0.27"
+              },
+              "epsEstimate": {
+                "raw": 0.41468,
+                "fmt": "0.41"
+              },
+              "epsDifference": {
+                "raw": -0.14,
+                "fmt": "-0.14"
+              },
+              "surprisePercent": {
+                "raw": -0.3489,
+                "fmt": "-34.89%"
+              },
+              "quarter": {
+                "raw": 1743379200,
+                "fmt": "2025-03-31"
+              },
+              "currency": "USD",
+              "period": "-3q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 0.4,
+                "fmt": "0.4"
+              },
+              "epsEstimate": {
+                "raw": 0.40391,
+                "fmt": "0.4"
+              },
+              "epsDifference": {
+                "raw": -0.0,
+                "fmt": "-0"
+              },
+              "surprisePercent": {
+                "raw": -0.0097,
+                "fmt": "-0.97%"
+              },
+              "quarter": {
+                "raw": 1751241600,
+                "fmt": "2025-06-30"
+              },
+              "currency": "USD",
+              "period": "-2q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 0.5,
+                "fmt": "0.5"
+              },
+              "epsEstimate": {
+                "raw": 0.55885,
+                "fmt": "0.56"
+              },
+              "epsDifference": {
+                "raw": -0.06,
+                "fmt": "-0.06"
+              },
+              "surprisePercent": {
+                "raw": -0.105299994,
+                "fmt": "-10.53%"
+              },
+              "quarter": {
+                "raw": 1759190400,
+                "fmt": "2025-09-30"
+              },
+              "currency": "USD",
+              "period": "-1q"
+            }
+          ],
+          "defaultMethodology": "nongaap",
+          "maxAge": 86400
+        },
+        "earningsTrend": {
+          "trend": [
+            {
+              "maxAge": 1,
+              "period": "0q",
+              "endDate": "2025-12-31",
+              "growth": {
+                "raw": -0.3852,
+                "fmt": "-38.52%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 0.4488,
+                  "fmt": "0.45"
+                },
+                "low": {
+                  "raw": 0.14,
+                  "fmt": "0.14"
+                },
+                "high": {
+                  "raw": 0.73,
+                  "fmt": "0.73"
+                },
+                "yearAgoEps": {
+                  "raw": 0.73,
+                  "fmt": "0.73"
+                },
+                "numberOfAnalysts": {
+                  "raw": 26,
+                  "fmt": "26",
+                  "longFmt": "26"
+                },
+                "growth": {
+                  "raw": -0.3852,
+                  "fmt": "-38.52%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 25226077430,
+                  "fmt": "25.23B",
+                  "longFmt": "25,226,077,430"
+                },
+                "low": {
+                  "raw": 21164000000,
+                  "fmt": "21.16B",
+                  "longFmt": "21,164,000,000"
+                },
+                "high": {
+                  "raw": 28913000000,
+                  "fmt": "28.91B",
+                  "longFmt": "28,913,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 28,
+                  "fmt": "28",
+                  "longFmt": "28"
+                },
+                "yearAgoRevenue": {
+                  "raw": 25707000000,
+                  "fmt": "25.71B",
+                  "longFmt": "25,707,000,000"
+                },
+                "growth": {
+                  "raw": -0.0187,
+                  "fmt": "-1.87%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 0.4488,
+                  "fmt": "0.45"
+                },
+                "7daysAgo": {
+                  "raw": 0.4488,
+                  "fmt": "0.45"
+                },
+                "30daysAgo": {
+                  "raw": 0.43919,
+                  "fmt": "0.44"
+                },
+                "60daysAgo": {
+                  "raw": 0.46164,
+                  "fmt": "0.46"
+                },
+                "90daysAgo": {
+                  "raw": 0.46042,
+                  "fmt": "0.46"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 13,
+                  "fmt": "13",
+                  "longFmt": "13"
+                },
+                "downLast30days": {
+                  "raw": 8,
+                  "fmt": "8",
+                  "longFmt": "8"
+                },
+                "downLast7Days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "+1q",
+              "endDate": "2026-03-31",
+              "growth": {
+                "raw": 0.65230006,
+                "fmt": "65.23%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 0.44611,
+                  "fmt": "0.45"
+                },
+                "low": {
+                  "raw": 0.27725,
+                  "fmt": "0.28"
+                },
+                "high": {
+                  "raw": 0.57,
+                  "fmt": "0.57"
+                },
+                "yearAgoEps": {
+                  "raw": 0.27,
+                  "fmt": "0.27"
+                },
+                "numberOfAnalysts": {
+                  "raw": 11,
+                  "fmt": "11",
+                  "longFmt": "11"
+                },
+                "growth": {
+                  "raw": 0.65230006,
+                  "fmt": "65.23%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 23644164910,
+                  "fmt": "23.64B",
+                  "longFmt": "23,644,164,910"
+                },
+                "low": {
+                  "raw": 21147000000,
+                  "fmt": "21.15B",
+                  "longFmt": "21,147,000,000"
+                },
+                "high": {
+                  "raw": 27102000000,
+                  "fmt": "27.1B",
+                  "longFmt": "27,102,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 14,
+                  "fmt": "14",
+                  "longFmt": "14"
+                },
+                "yearAgoRevenue": {
+                  "raw": 19335000000,
+                  "fmt": "19.34B",
+                  "longFmt": "19,335,000,000"
+                },
+                "growth": {
+                  "raw": 0.2229,
+                  "fmt": "22.29%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 0.44611,
+                  "fmt": "0.45"
+                },
+                "7daysAgo": {
+                  "raw": 0.44611,
+                  "fmt": "0.45"
+                },
+                "30daysAgo": {
+                  "raw": 0.44842,
+                  "fmt": "0.45"
+                },
+                "60daysAgo": {
+                  "raw": 0.46567,
+                  "fmt": "0.47"
+                },
+                "90daysAgo": {
+                  "raw": 0.45152,
+                  "fmt": "0.45"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 2,
+                  "fmt": "2",
+                  "longFmt": "2"
+                },
+                "upLast30days": {
+                  "raw": 2,
+                  "fmt": "2",
+                  "longFmt": "2"
+                },
+                "downLast30days": {
+                  "raw": 5,
+                  "fmt": "5",
+                  "longFmt": "5"
+                },
+                "downLast7Days": {
+                  "raw": 5,
+                  "fmt": "5",
+                  "longFmt": "5"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "0y",
+              "endDate": "2025-12-31",
+              "growth": {
+                "raw": -0.3189,
+                "fmt": "-31.89%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 1.64838,
+                  "fmt": "1.65"
+                },
+                "low": {
+                  "raw": 1.15999,
+                  "fmt": "1.16"
+                },
+                "high": {
+                  "raw": 2.03,
+                  "fmt": "2.03"
+                },
+                "yearAgoEps": {
+                  "raw": 2.42,
+                  "fmt": "2.42"
+                },
+                "numberOfAnalysts": {
+                  "raw": 36,
+                  "fmt": "36",
+                  "longFmt": "36"
+                },
+                "growth": {
+                  "raw": -0.3189,
+                  "fmt": "-31.89%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 94937028050,
+                  "fmt": "94.94B",
+                  "longFmt": "94,937,028,050"
+                },
+                "low": {
+                  "raw": 87335000000,
+                  "fmt": "87.33B",
+                  "longFmt": "87,335,000,000"
+                },
+                "high": {
+                  "raw": 99027000000,
+                  "fmt": "99.03B",
+                  "longFmt": "99,027,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 47,
+                  "fmt": "47",
+                  "longFmt": "47"
+                },
+                "yearAgoRevenue": {
+                  "raw": 97690000000,
+                  "fmt": "97.69B",
+                  "longFmt": "97,690,000,000"
+                },
+                "growth": {
+                  "raw": -0.028199999,
+                  "fmt": "-2.82%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 1.64838,
+                  "fmt": "1.65"
+                },
+                "7daysAgo": {
+                  "raw": 1.64838,
+                  "fmt": "1.65"
+                },
+                "30daysAgo": {
+                  "raw": 1.65338,
+                  "fmt": "1.65"
+                },
+                "60daysAgo": {
+                  "raw": 1.68297,
+                  "fmt": "1.68"
+                },
+                "90daysAgo": {
+                  "raw": 1.6747,
+                  "fmt": "1.67"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "upLast30days": {
+                  "raw": 9,
+                  "fmt": "9",
+                  "longFmt": "9"
+                },
+                "downLast30days": {
+                  "raw": 19,
+                  "fmt": "19",
+                  "longFmt": "19"
+                },
+                "downLast7Days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "+1y",
+              "endDate": "2026-12-31",
+              "growth": {
+                "raw": 0.3789,
+                "fmt": "37.89%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 2.27296,
+                  "fmt": "2.27"
+                },
+                "low": {
+                  "raw": 1.33,
+                  "fmt": "1.33"
+                },
+                "high": {
+                  "raw": 3.8,
+                  "fmt": "3.8"
+                },
+                "yearAgoEps": {
+                  "raw": 1.64838,
+                  "fmt": "1.65"
+                },
+                "numberOfAnalysts": {
+                  "raw": 35,
+                  "fmt": "35",
+                  "longFmt": "35"
+                },
+                "growth": {
+                  "raw": 0.3789,
+                  "fmt": "37.89%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 109133324940,
+                  "fmt": "109.13B",
+                  "longFmt": "109,133,324,940"
+                },
+                "low": {
+                  "raw": 96390375940,
+                  "fmt": "96.39B",
+                  "longFmt": "96,390,375,940"
+                },
+                "high": {
+                  "raw": 143070000000,
+                  "fmt": "143.07B",
+                  "longFmt": "143,070,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 48,
+                  "fmt": "48",
+                  "longFmt": "48"
+                },
+                "yearAgoRevenue": {
+                  "raw": 94937028050,
+                  "fmt": "94.94B",
+                  "longFmt": "94,937,028,050"
+                },
+                "growth": {
+                  "raw": 0.1495,
+                  "fmt": "14.95%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 2.27296,
+                  "fmt": "2.27"
+                },
+                "7daysAgo": {
+                  "raw": 2.27296,
+                  "fmt": "2.27"
+                },
+                "30daysAgo": {
+                  "raw": 2.25753,
+                  "fmt": "2.26"
+                },
+                "60daysAgo": {
+                  "raw": 2.39354,
+                  "fmt": "2.39"
+                },
+                "90daysAgo": {
+                  "raw": 2.36581,
+                  "fmt": "2.37"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 8,
+                  "fmt": "8",
+                  "longFmt": "8"
+                },
+                "downLast30days": {
+                  "raw": 19,
+                  "fmt": "19",
+                  "longFmt": "19"
+                },
+                "downLast7Days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            }
+          ],
+          "defaultMethodology": "nongaap",
+          "maxAge": 1
+        },
+        "insiderTransactions": {
+          "transactions": [
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 14785,
+                "fmt": "14.79k",
+                "longFmt": "14,785"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1762732800,
+                "fmt": "2025-11-10"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 60000,
+                "fmt": "60k",
+                "longFmt": "60,000"
+              },
+              "value": {
+                "raw": 25360800,
+                "fmt": "25.36M",
+                "longFmt": "25,360,800"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 422.68 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1757894400,
+                "fmt": "2025-09-15"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2568732,
+                "fmt": "2.57M",
+                "longFmt": "2,568,732"
+              },
+              "value": {
+                "raw": 999959042,
+                "fmt": "999.96M",
+                "longFmt": "999,959,042"
+              },
+              "filerUrl": "",
+              "transactionText": "Purchase at price 371.90 - 396.36 per share.",
+              "filerName": "MUSK ELON REEVE",
+              "filerRelation": "Chief Executive Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1757635200,
+                "fmt": "2025-09-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 20000,
+                "fmt": "20k",
+                "longFmt": "20,000"
+              },
+              "value": {
+                "raw": 7275100,
+                "fmt": "7.28M",
+                "longFmt": "7,275,100"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 363.76 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1757548800,
+                "fmt": "2025-09-11"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2605,
+                "fmt": "2.6k",
+                "longFmt": "2,605"
+              },
+              "value": {
+                "raw": 918137,
+                "fmt": "918.14k",
+                "longFmt": "918,137"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 352.38 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1757289600,
+                "fmt": "2025-09-08"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6538,
+                "fmt": "6.54k",
+                "longFmt": "6,538"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1757030400,
+                "fmt": "2025-09-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 120000,
+                "fmt": "120k",
+                "longFmt": "120,000"
+              },
+              "value": {
+                "raw": 42034320,
+                "fmt": "42.03M",
+                "longFmt": "42,034,320"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 350.29 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1756166400,
+                "fmt": "2025-08-26"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 90000,
+                "fmt": "90k",
+                "longFmt": "90,000"
+              },
+              "value": {
+                "raw": 1572300,
+                "fmt": "1.57M",
+                "longFmt": "1,572,300"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 17.47 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1752192000,
+                "fmt": "2025-07-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6000,
+                "fmt": "6k",
+                "longFmt": "6,000"
+              },
+              "value": {
+                "raw": 1771545,
+                "fmt": "1.77M",
+                "longFmt": "1,771,545"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 289.95 - 300.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1751932800,
+                "fmt": "2025-07-08"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6000,
+                "fmt": "6k",
+                "longFmt": "6,000"
+              },
+              "value": {
+                "raw": 109320,
+                "fmt": "109.32k",
+                "longFmt": "109,320"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1751932800,
+                "fmt": "2025-07-08"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 15000,
+                "fmt": "15k",
+                "longFmt": "15,000"
+              },
+              "value": {
+                "raw": 4857105,
+                "fmt": "4.86M",
+                "longFmt": "4,857,105"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 323.81 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1749686400,
+                "fmt": "2025-06-12"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 15000,
+                "fmt": "15k",
+                "longFmt": "15,000"
+              },
+              "value": {
+                "raw": 308550,
+                "fmt": "308.55k",
+                "longFmt": "308,550"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 20.57 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1749686400,
+                "fmt": "2025-06-12"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2564,
+                "fmt": "2.56k",
+                "longFmt": "2,564"
+              },
+              "value": {
+                "raw": 732573,
+                "fmt": "732.57k",
+                "longFmt": "732,573"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 285.72 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1749427200,
+                "fmt": "2025-06-09"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6538,
+                "fmt": "6.54k",
+                "longFmt": "6,538"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1749081600,
+                "fmt": "2025-06-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 2396092,
+                "fmt": "2.4M",
+                "longFmt": "2,396,092"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 333.77 - 350.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748908800,
+                "fmt": "2025-06-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 127540,
+                "fmt": "127.54k",
+                "longFmt": "127,540"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748908800,
+                "fmt": "2025-06-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 477572,
+                "fmt": "477.57k",
+                "longFmt": "477,572"
+              },
+              "value": {
+                "raw": 170636358,
+                "fmt": "170.64M",
+                "longFmt": "170,636,358"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 347.61 - 363.24 per share.",
+              "filerName": "EHRENPREIS IRA MATTHEW",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748304000,
+                "fmt": "2025-05-27"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 91588,
+                "fmt": "91.59k",
+                "longFmt": "91,588"
+              },
+              "value": {
+                "raw": 32732230,
+                "fmt": "32.73M",
+                "longFmt": "32,732,230"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 347.88 - 363.11 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748304000,
+                "fmt": "2025-05-27"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 761961,
+                "fmt": "761.96k",
+                "longFmt": "761,961"
+              },
+              "value": {
+                "raw": 18170096,
+                "fmt": "18.17M",
+                "longFmt": "18,170,096"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 22.86 - 24.73 per share.",
+              "filerName": "EHRENPREIS IRA MATTHEW",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748304000,
+                "fmt": "2025-05-27"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 91588,
+                "fmt": "91.59k",
+                "longFmt": "91,588"
+              },
+              "value": {
+                "raw": 2264971,
+                "fmt": "2.26M",
+                "longFmt": "2,264,971"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1748304000,
+                "fmt": "2025-05-27"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 3000,
+                "fmt": "3k",
+                "longFmt": "3,000"
+              },
+              "value": {
+                "raw": 1050336,
+                "fmt": "1.05M",
+                "longFmt": "1,050,336"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 350.11 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1747353600,
+                "fmt": "2025-05-16"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 3000,
+                "fmt": "3k",
+                "longFmt": "3,000"
+              },
+              "value": {
+                "raw": 54660,
+                "fmt": "54.66k",
+                "longFmt": "54,660"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1747353600,
+                "fmt": "2025-05-16"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1200000,
+                "fmt": "1.2M",
+                "longFmt": "1,200,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 300.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746748800,
+                "fmt": "2025-05-09"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746748800,
+                "fmt": "2025-05-09"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112395,
+                "fmt": "112.39k",
+                "longFmt": "112,395"
+              },
+              "value": {
+                "raw": 30809625,
+                "fmt": "30.81M",
+                "longFmt": "30,809,625"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 272.27 - 277.14 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746489600,
+                "fmt": "2025-05-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112395,
+                "fmt": "112.39k",
+                "longFmt": "112,395"
+              },
+              "value": {
+                "raw": 2779528,
+                "fmt": "2.78M",
+                "longFmt": "2,779,528"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746489600,
+                "fmt": "2025-05-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1137599,
+                "fmt": "1.14M",
+                "longFmt": "1,137,599"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 280.30 - 289.48 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746057600,
+                "fmt": "2025-05-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1746057600,
+                "fmt": "2025-05-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 32096717,
+                "fmt": "32.1M",
+                "longFmt": "32,096,717"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 280.61 - 288.61 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1745884800,
+                "fmt": "2025-04-29"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 2779405,
+                "fmt": "2.78M",
+                "longFmt": "2,779,405"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1745884800,
+                "fmt": "2025-04-29"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1025232,
+                "fmt": "1.03M",
+                "longFmt": "1,025,232"
+              },
+              "filerUrl": "",
+              "transactionText": "Purchase at price 256.31 per share.",
+              "filerName": "GEBBIA JOSEPH",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1745452800,
+                "fmt": "2025-04-24"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1000000,
+                "fmt": "1M",
+                "longFmt": "1,000,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 250.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1743984000,
+                "fmt": "2025-04-07"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1743984000,
+                "fmt": "2025-04-07"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 54776,
+                "fmt": "54.78k",
+                "longFmt": "54,776"
+              },
+              "value": {
+                "raw": 13189403,
+                "fmt": "13.19M",
+                "longFmt": "13,189,403"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 240.79 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1741564800,
+                "fmt": "2025-03-10"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 531787,
+                "fmt": "531.79k",
+                "longFmt": "531,787"
+              },
+              "value": {
+                "raw": 12992693,
+                "fmt": "12.99M",
+                "longFmt": "12,992,693"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 23.85 - 24.73 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1741564800,
+                "fmt": "2025-03-10"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2672,
+                "fmt": "2.67k",
+                "longFmt": "2,672"
+              },
+              "value": {
+                "raw": 718111,
+                "fmt": "718.11k",
+                "longFmt": "718,111"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 268.73 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1741219200,
+                "fmt": "2025-03-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6538,
+                "fmt": "6.54k",
+                "longFmt": "6,538"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1741132800,
+                "fmt": "2025-03-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6000,
+                "fmt": "6k",
+                "longFmt": "6,000"
+              },
+              "value": {
+                "raw": 1776112,
+                "fmt": "1.78M",
+                "longFmt": "1,776,112"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 279.53 - 301.73 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1740960000,
+                "fmt": "2025-03-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 33672976,
+                "fmt": "33.67M",
+                "longFmt": "33,672,976"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 292.75 - 303.59 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1740960000,
+                "fmt": "2025-03-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6000,
+                "fmt": "6k",
+                "longFmt": "6,000"
+              },
+              "value": {
+                "raw": 109320,
+                "fmt": "109.32k",
+                "longFmt": "109,320"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1740960000,
+                "fmt": "2025-03-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 2779405,
+                "fmt": "2.78M",
+                "longFmt": "2,779,405"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1740960000,
+                "fmt": "2025-03-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 75000,
+                "fmt": "75k",
+                "longFmt": "75,000"
+              },
+              "value": {
+                "raw": 27590619,
+                "fmt": "27.59M",
+                "longFmt": "27,590,619"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 367.87 - 368.43 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738800000,
+                "fmt": "2025-02-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 2681789,
+                "fmt": "2.68M",
+                "longFmt": "2,681,789"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 375.05 - 387.76 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738540800,
+                "fmt": "2025-02-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 43162564,
+                "fmt": "43.16M",
+                "longFmt": "43,162,564"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 375.06 - 389.08 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738540800,
+                "fmt": "2025-02-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 127540,
+                "fmt": "127.54k",
+                "longFmt": "127,540"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738540800,
+                "fmt": "2025-02-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 2779405,
+                "fmt": "2.78M",
+                "longFmt": "2,779,405"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738540800,
+                "fmt": "2025-02-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 41162799,
+                "fmt": "41.16M",
+                "longFmt": "41,162,799"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 402.84 - 426.14 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1736121600,
+                "fmt": "2025-01-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 2894918,
+                "fmt": "2.89M",
+                "longFmt": "2,894,918"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 402.85 - 423.14 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1736121600,
+                "fmt": "2025-01-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 1499000,
+                "fmt": "1.5M",
+                "longFmt": "1,499,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 14.99 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1736121600,
+                "fmt": "2025-01-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 127540,
+                "fmt": "127.54k",
+                "longFmt": "127,540"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1736121600,
+                "fmt": "2025-01-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 268000,
+                "fmt": "268k",
+                "longFmt": "268,000"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "MUSK ELON REEVE",
+              "filerRelation": "Chief Executive Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1735516800,
+                "fmt": "2024-12-30"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 25000,
+                "fmt": "25k",
+                "longFmt": "25,000"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733875200,
+                "fmt": "2024-12-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2605,
+                "fmt": "2.6k",
+                "longFmt": "2,605"
+              },
+              "value": {
+                "raw": 975015,
+                "fmt": "975.01k",
+                "longFmt": "975,015"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 374.21 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733443200,
+                "fmt": "2024-12-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 6538,
+                "fmt": "6.54k",
+                "longFmt": "6,538"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733356800,
+                "fmt": "2024-12-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 35253875,
+                "fmt": "35.25M",
+                "longFmt": "35,253,875"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 349.20 - 357.93 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733270400,
+                "fmt": "2024-12-04"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 1499000,
+                "fmt": "1.5M",
+                "longFmt": "1,499,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 14.99 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733270400,
+                "fmt": "2024-12-04"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 2481039,
+                "fmt": "2.48M",
+                "longFmt": "2,481,039"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 352.70 - 359.94 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733097600,
+                "fmt": "2024-12-02"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 39793301,
+                "fmt": "39.79M",
+                "longFmt": "39,793,301"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 352.74 - 358.64 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733097600,
+                "fmt": "2024-12-02"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 7000,
+                "fmt": "7k",
+                "longFmt": "7,000"
+              },
+              "value": {
+                "raw": 127540,
+                "fmt": "127.54k",
+                "longFmt": "127,540"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733097600,
+                "fmt": "2024-12-02"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 2779405,
+                "fmt": "2.78M",
+                "longFmt": "2,779,405"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733097600,
+                "fmt": "2024-12-02"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 35339810,
+                "fmt": "35.34M",
+                "longFmt": "35,339,810"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 310.05 - 320.00 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731628800,
+                "fmt": "2024-11-15"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 112390,
+                "fmt": "112.39k",
+                "longFmt": "112,390"
+              },
+              "value": {
+                "raw": 2779405,
+                "fmt": "2.78M",
+                "longFmt": "2,779,405"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731628800,
+                "fmt": "2024-11-15"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 34602454,
+                "fmt": "34.6M",
+                "longFmt": "34,602,454"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 336.95 - 358.35 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731283200,
+                "fmt": "2024-11-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 12000,
+                "fmt": "12k",
+                "longFmt": "12,000"
+              },
+              "value": {
+                "raw": 3802956,
+                "fmt": "3.8M",
+                "longFmt": "3,802,956"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 300.00 - 350.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731283200,
+                "fmt": "2024-11-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 100000,
+                "fmt": "100k",
+                "longFmt": "100,000"
+              },
+              "value": {
+                "raw": 1504664,
+                "fmt": "1.5M",
+                "longFmt": "1,504,664"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 14.99 - 16.10 per share.",
+              "filerName": "WILSON - THOMPSON KATHLEEN",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731283200,
+                "fmt": "2024-11-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 12000,
+                "fmt": "12k",
+                "longFmt": "12,000"
+              },
+              "value": {
+                "raw": 218640,
+                "fmt": "218.64k",
+                "longFmt": "218,640"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731283200,
+                "fmt": "2024-11-11"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1007040,
+                "fmt": "1.01M",
+                "longFmt": "1,007,040"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 251.76 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730419200,
+                "fmt": "2024-11-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 60500,
+                "fmt": "60.5k",
+                "longFmt": "60,500"
+              },
+              "value": {
+                "raw": 15138945,
+                "fmt": "15.14M",
+                "longFmt": "15,138,945"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 247.32 - 253.78 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730419200,
+                "fmt": "2024-11-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 15000,
+                "fmt": "15k",
+                "longFmt": "15,000"
+              },
+              "value": {
+                "raw": 370950,
+                "fmt": "370.95k",
+                "longFmt": "370,950"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 24.73 per share.",
+              "filerName": "MUSK KIMBAL J",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730419200,
+                "fmt": "2024-11-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730419200,
+                "fmt": "2024-11-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1000000,
+                "fmt": "1M",
+                "longFmt": "1,000,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 250.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1729728000,
+                "fmt": "2024-10-24"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1729728000,
+                "fmt": "2024-10-24"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 8000,
+                "fmt": "8k",
+                "longFmt": "8,000"
+              },
+              "value": {
+                "raw": 2000000,
+                "fmt": "2M",
+                "longFmt": "2,000,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 250.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1727049600,
+                "fmt": "2024-09-23"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 8000,
+                "fmt": "8k",
+                "longFmt": "8,000"
+              },
+              "value": {
+                "raw": 145760,
+                "fmt": "145.76k",
+                "longFmt": "145,760"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1727049600,
+                "fmt": "2024-09-23"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 297,
+                "fmt": "297",
+                "longFmt": "297"
+              },
+              "value": {
+                "raw": 65867,
+                "fmt": "65.87k",
+                "longFmt": "65,867"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 221.77 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1725580800,
+                "fmt": "2024-09-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2633,
+                "fmt": "2.63k",
+                "longFmt": "2,633"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1725494400,
+                "fmt": "2024-09-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 66364,
+                "fmt": "66.36k",
+                "longFmt": "66,364"
+              },
+              "value": {
+                "raw": 14597629,
+                "fmt": "14.6M",
+                "longFmt": "14,597,629"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 216.72 - 223.47 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1721865600,
+                "fmt": "2024-07-25"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 136364,
+                "fmt": "136.36k",
+                "longFmt": "136,364"
+              },
+              "value": {
+                "raw": 3159554,
+                "fmt": "3.16M",
+                "longFmt": "3,159,554"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 23.17 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1721865600,
+                "fmt": "2024-07-25"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 649,
+                "fmt": "649",
+                "longFmt": "649"
+              },
+              "value": {
+                "raw": 113151,
+                "fmt": "113.15k",
+                "longFmt": "113,151"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 174.21 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1717632000,
+                "fmt": "2024-06-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2633,
+                "fmt": "2.63k",
+                "longFmt": "2,633"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1717545600,
+                "fmt": "2024-06-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 250020,
+                "fmt": "250.02k",
+                "longFmt": "250,020"
+              },
+              "value": {
+                "raw": 5327926,
+                "fmt": "5.33M",
+                "longFmt": "5,327,926"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 21.31 per share.",
+              "filerName": "MURDOCH JAMES RUPERT",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1717372800,
+                "fmt": "2024-06-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93705,
+                "fmt": "93.7k",
+                "longFmt": "93,705"
+              },
+              "value": {
+                "raw": 17322282,
+                "fmt": "17.32M",
+                "longFmt": "17,322,282"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 184.00 - 187.06 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1714953600,
+                "fmt": "2024-05-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93705,
+                "fmt": "93.7k",
+                "longFmt": "93,705"
+              },
+              "value": {
+                "raw": 2171145,
+                "fmt": "2.17M",
+                "longFmt": "2,171,145"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 23.17 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1714953600,
+                "fmt": "2024-05-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 10500,
+                "fmt": "10.5k",
+                "longFmt": "10,500"
+              },
+              "value": {
+                "raw": 1850100,
+                "fmt": "1.85M",
+                "longFmt": "1,850,100"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 176.20 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1711929600,
+                "fmt": "2024-04-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 10500,
+                "fmt": "10.5k",
+                "longFmt": "10,500"
+              },
+              "value": {
+                "raw": 180810,
+                "fmt": "180.81k",
+                "longFmt": "180,810"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 17.22 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1711929600,
+                "fmt": "2024-04-01"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93705,
+                "fmt": "93.7k",
+                "longFmt": "93,705"
+              },
+              "value": {
+                "raw": 16439650,
+                "fmt": "16.44M",
+                "longFmt": "16,439,650"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 173.06 - 177.77 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1710201600,
+                "fmt": "2024-03-12"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93705,
+                "fmt": "93.7k",
+                "longFmt": "93,705"
+              },
+              "value": {
+                "raw": 2171145,
+                "fmt": "2.17M",
+                "longFmt": "2,171,145"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 23.17 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1710201600,
+                "fmt": "2024-03-12"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 687,
+                "fmt": "687",
+                "longFmt": "687"
+              },
+              "value": {
+                "raw": 121716,
+                "fmt": "121.72k",
+                "longFmt": "121,716"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 177.11 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1709683200,
+                "fmt": "2024-03-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2633,
+                "fmt": "2.63k",
+                "longFmt": "2,633"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1709596800,
+                "fmt": "2024-03-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 10500,
+                "fmt": "10.5k",
+                "longFmt": "10,500"
+              },
+              "value": {
+                "raw": 2143785,
+                "fmt": "2.14M",
+                "longFmt": "2,143,785"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 204.17 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1709164800,
+                "fmt": "2024-02-29"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 10500,
+                "fmt": "10.5k",
+                "longFmt": "10,500"
+              },
+              "value": {
+                "raw": 180810,
+                "fmt": "180.81k",
+                "longFmt": "180,810"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 17.22 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1709164800,
+                "fmt": "2024-02-29"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93706,
+                "fmt": "93.71k",
+                "longFmt": "93,706"
+              },
+              "value": {
+                "raw": 18247018,
+                "fmt": "18.25M",
+                "longFmt": "18,247,018"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 193.43 - 198.78 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1708473600,
+                "fmt": "2024-02-21"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 93706,
+                "fmt": "93.71k",
+                "longFmt": "93,706"
+              },
+              "value": {
+                "raw": 2171168,
+                "fmt": "2.17M",
+                "longFmt": "2,171,168"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 23.17 per share.",
+              "filerName": "DENHOLM ROBYN M",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1708473600,
+                "fmt": "2024-02-21"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 38160,
+                "fmt": "38.16k",
+                "longFmt": "38,160"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1706659200,
+                "fmt": "2024-01-31"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 1000000,
+                "fmt": "1M",
+                "longFmt": "1,000,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 250.00 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1702512000,
+                "fmt": "2023-12-14"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 4000,
+                "fmt": "4k",
+                "longFmt": "4,000"
+              },
+              "value": {
+                "raw": 72880,
+                "fmt": "72.88k",
+                "longFmt": "72,880"
+              },
+              "filerUrl": "",
+              "transactionText": "Conversion of Exercise of derivative security at price 18.22 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1702512000,
+                "fmt": "2023-12-14"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 173,
+                "fmt": "173",
+                "longFmt": "173"
+              },
+              "value": {
+                "raw": 42332,
+                "fmt": "42.33k",
+                "longFmt": "42,332"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 244.34 per share.",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701820800,
+                "fmt": "2023-12-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1049,
+                "fmt": "1.05k",
+                "longFmt": "1,049"
+              },
+              "value": {
+                "raw": 256377,
+                "fmt": "256.38k",
+                "longFmt": "256,377"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 244.34 per share.",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701820800,
+                "fmt": "2023-12-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1298,
+                "fmt": "1.3k",
+                "longFmt": "1,298"
+              },
+              "value": {
+                "raw": 317279,
+                "fmt": "317.28k",
+                "longFmt": "317,279"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 244.34 per share.",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701820800,
+                "fmt": "2023-12-06"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 388,
+                "fmt": "388",
+                "longFmt": "388"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "TANEJA VAIBHAV",
+              "filerRelation": "Chief Financial Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701734400,
+                "fmt": "2023-12-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2586,
+                "fmt": "2.59k",
+                "longFmt": "2,586"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "BAGLINO ANDREW D",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701734400,
+                "fmt": "2023-12-05"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2633,
+                "fmt": "2.63k",
+                "longFmt": "2,633"
+              },
+              "filerUrl": "",
+              "transactionText": "",
+              "filerName": "ZHU XIAOTONG",
+              "filerRelation": "Officer",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1701734400,
+                "fmt": "2023-12-05"
+              },
+              "ownership": "D"
+            }
+          ],
+          "maxAge": 1
+        },
+        "financialData": {
+          "maxAge": 86400,
+          "currentPrice": {
+            "raw": 430.14,
+            "fmt": "430.14"
+          },
+          "targetHighPrice": {
+            "raw": 600.0,
+            "fmt": "600.00"
+          },
+          "targetLowPrice": {
+            "raw": 120.0,
+            "fmt": "120.00"
+          },
+          "targetMeanPrice": {
+            "raw": 392.9278,
+            "fmt": "392.93"
+          },
+          "targetMedianPrice": {
+            "raw": 420.0,
+            "fmt": "420.00"
+          },
+          "recommendationMean": {
+            "raw": 2.61702,
+            "fmt": "2.62"
+          },
+          "recommendationKey": "hold",
+          "numberOfAnalystOpinions": {
+            "raw": 41,
+            "fmt": "41",
+            "longFmt": "41"
+          },
+          "totalCash": {
+            "raw": 41647001600,
+            "fmt": "41.65B",
+            "longFmt": "41,647,001,600"
+          },
+          "totalCashPerShare": {
+            "raw": 12.522,
+            "fmt": "12.52"
+          },
+          "ebitda": {
+            "raw": 10768000000,
+            "fmt": "10.77B",
+            "longFmt": "10,768,000,000"
+          },
+          "totalDebt": {
+            "raw": 13788000256,
+            "fmt": "13.79B",
+            "longFmt": "13,788,000,256"
+          },
+          "quickRatio": {
+            "raw": 1.486,
+            "fmt": "1.49"
+          },
+          "currentRatio": {
+            "raw": 2.066,
+            "fmt": "2.07"
+          },
+          "totalRevenue": {
+            "raw": 95632998400,
+            "fmt": "95.63B",
+            "longFmt": "95,632,998,400"
+          },
+          "debtToEquity": {
+            "raw": 17.082,
+            "fmt": "17.08%"
+          },
+          "revenuePerShare": {
+            "raw": 29.697,
+            "fmt": "29.70"
+          },
+          "returnOnAssets": {
+            "raw": 0.0235,
+            "fmt": "2.35%"
+          },
+          "returnOnEquity": {
+            "raw": 0.06791,
+            "fmt": "6.79%"
+          },
+          "grossProfits": {
+            "raw": 16263999488,
+            "fmt": "16.26B",
+            "longFmt": "16,263,999,488"
+          },
+          "freeCashflow": {
+            "raw": 2979249920,
+            "fmt": "2.98B",
+            "longFmt": "2,979,249,920"
+          },
+          "operatingCashflow": {
+            "raw": 15747999744,
+            "fmt": "15.75B",
+            "longFmt": "15,747,999,744"
+          },
+          "earningsGrowth": {
+            "raw": -0.371,
+            "fmt": "-37.10%"
+          },
+          "revenueGrowth": {
+            "raw": 0.116,
+            "fmt": "11.60%"
+          },
+          "grossMargins": {
+            "raw": 0.17006999,
+            "fmt": "17.01%"
+          },
+          "ebitdaMargins": {
+            "raw": 0.1126,
+            "fmt": "11.26%"
+          },
+          "operatingMargins": {
+            "raw": 0.06628,
+            "fmt": "6.63%"
+          },
+          "profitMargins": {
+            "raw": 0.05314,
+            "fmt": "5.31%"
+          },
+          "financialCurrency": "USD"
+        }
+      }
+    ]
+  }
+}

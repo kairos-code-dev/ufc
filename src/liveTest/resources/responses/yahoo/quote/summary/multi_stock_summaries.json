@@ -1,0 +1,1467 @@
+{
+  "quoteSummary": {
+    "result": [
+      {
+        "summaryDetail": {
+          "maxAge": 1,
+          "priceHint": {
+            "raw": 2,
+            "fmt": "2",
+            "longFmt": "2"
+          },
+          "previousClose": {
+            "raw": 320.18,
+            "fmt": "320.18"
+          },
+          "open": {
+            "raw": 317.7,
+            "fmt": "317.70"
+          },
+          "dayLow": {
+            "raw": 313.89,
+            "fmt": "313.89"
+          },
+          "dayHigh": {
+            "raw": 319.85,
+            "fmt": "319.85"
+          },
+          "regularMarketPreviousClose": {
+            "raw": 320.18,
+            "fmt": "320.18"
+          },
+          "regularMarketOpen": {
+            "raw": 317.7,
+            "fmt": "317.70"
+          },
+          "regularMarketDayLow": {
+            "raw": 313.89,
+            "fmt": "313.89"
+          },
+          "regularMarketDayHigh": {
+            "raw": 319.85,
+            "fmt": "319.85"
+          },
+          "dividendRate": {
+            "raw": 0.84,
+            "fmt": "0.84"
+          },
+          "dividendYield": {
+            "raw": 0.0027,
+            "fmt": "0.27%"
+          },
+          "exDividendDate": {
+            "raw": 1765152000,
+            "fmt": "2025-12-08"
+          },
+          "payoutRatio": {
+            "raw": 0.0809,
+            "fmt": "8.09%"
+          },
+          "fiveYearAvgDividendYield": {},
+          "beta": {
+            "raw": 1.082,
+            "fmt": "1.08"
+          },
+          "trailingPE": {
+            "raw": 31.054241,
+            "fmt": "31.05"
+          },
+          "forwardPE": {
+            "raw": 35.143974,
+            "fmt": "35.14"
+          },
+          "volume": {
+            "raw": 39487927,
+            "fmt": "39.49M",
+            "longFmt": "39,487,927"
+          },
+          "regularMarketVolume": {
+            "raw": 39487927,
+            "fmt": "39.49M",
+            "longFmt": "39,487,927"
+          },
+          "averageVolume": {
+            "raw": 38221095,
+            "fmt": "38.22M",
+            "longFmt": "38,221,095"
+          },
+          "averageVolume10days": {
+            "raw": 59851220,
+            "fmt": "59.85M",
+            "longFmt": "59,851,220"
+          },
+          "averageDailyVolume10Day": {
+            "raw": 59851220,
+            "fmt": "59.85M",
+            "longFmt": "59,851,220"
+          },
+          "bid": {
+            "raw": 301.38,
+            "fmt": "301.38"
+          },
+          "ask": {
+            "raw": 333.59,
+            "fmt": "333.59"
+          },
+          "bidSize": {
+            "raw": 100,
+            "fmt": "100",
+            "longFmt": "100"
+          },
+          "askSize": {
+            "raw": 100,
+            "fmt": "100",
+            "longFmt": "100"
+          },
+          "marketCap": {
+            "raw": 3813986271232,
+            "fmt": "3.81T",
+            "longFmt": "3,813,986,271,232"
+          },
+          "yield": {},
+          "ytdReturn": {},
+          "qtdReturn": {},
+          "totalAssets": {},
+          "expireDate": {},
+          "strikePrice": {},
+          "openInterest": {},
+          "fiftyTwoWeekLow": {
+            "raw": 140.53,
+            "fmt": "140.53"
+          },
+          "fiftyTwoWeekHigh": {
+            "raw": 328.83,
+            "fmt": "328.83"
+          },
+          "allTimeHigh": {
+            "raw": 328.83,
+            "fmt": "328.83"
+          },
+          "allTimeLow": {
+            "raw": 2.401401,
+            "fmt": "2.40"
+          },
+          "priceToSalesTrailing12Months": {
+            "raw": 9.894225,
+            "fmt": "9.89"
+          },
+          "fiftyDayAverage": {
+            "raw": 269.1448,
+            "fmt": "269.14"
+          },
+          "twoHundredDayAverage": {
+            "raw": 202.69086,
+            "fmt": "202.69"
+          },
+          "trailingAnnualDividendRate": {
+            "raw": 1.02,
+            "fmt": "1.02"
+          },
+          "trailingAnnualDividendYield": {
+            "raw": 0.003185708,
+            "fmt": "0.32%"
+          },
+          "navPrice": {},
+          "currency": "USD",
+          "volume24Hr": {},
+          "volumeAllCurrencies": {},
+          "circulatingSupply": {},
+          "maxSupply": {},
+          "startDate": {},
+          "tradeable": false
+        },
+        "price": {
+          "maxAge": 1,
+          "preMarketChange": {},
+          "preMarketPrice": {},
+          "preMarketSource": "FREE_REALTIME",
+          "postMarketChangePercent": {
+            "raw": 0.002572319,
+            "fmt": "0.26%"
+          },
+          "postMarketChange": {
+            "raw": 0.80999756,
+            "fmt": "0.81"
+          },
+          "postMarketTime": 1764637197,
+          "postMarketPrice": {
+            "raw": 315.7,
+            "fmt": "315.70"
+          },
+          "postMarketSource": "FREE_REALTIME",
+          "regularMarketChangePercent": {
+            "raw": -0.016521899,
+            "fmt": "-1.65%"
+          },
+          "regularMarketChange": {
+            "raw": -5.28998,
+            "fmt": "-5.29"
+          },
+          "regularMarketTime": 1764622802,
+          "priceHint": {
+            "raw": 2,
+            "fmt": "2",
+            "longFmt": "2"
+          },
+          "regularMarketPrice": {
+            "raw": 314.89,
+            "fmt": "314.89"
+          },
+          "regularMarketDayHigh": {
+            "raw": 319.85,
+            "fmt": "319.85"
+          },
+          "regularMarketDayLow": {
+            "raw": 313.89,
+            "fmt": "313.89"
+          },
+          "regularMarketVolume": {
+            "raw": 39487927,
+            "fmt": "39.49M",
+            "longFmt": "39,487,927.00"
+          },
+          "averageDailyVolume10Day": {
+            "raw": 59851220,
+            "fmt": "59.85M",
+            "longFmt": "59,851,220"
+          },
+          "averageDailyVolume3Month": {
+            "raw": 38221095,
+            "fmt": "38.22M",
+            "longFmt": "38,221,095"
+          },
+          "regularMarketPreviousClose": {
+            "raw": 320.18,
+            "fmt": "320.18"
+          },
+          "regularMarketSource": "FREE_REALTIME",
+          "regularMarketOpen": {
+            "raw": 317.7,
+            "fmt": "317.70"
+          },
+          "strikePrice": {},
+          "openInterest": {},
+          "exchange": "NMS",
+          "exchangeName": "NasdaqGS",
+          "exchangeDataDelayedBy": 0,
+          "marketState": "PREPRE",
+          "quoteType": "EQUITY",
+          "symbol": "GOOGL",
+          "shortName": "Alphabet Inc.",
+          "longName": "Alphabet Inc.",
+          "currency": "USD",
+          "quoteSourceName": "Nasdaq Real Time Price",
+          "currencySymbol": "$",
+          "volume24Hr": {},
+          "volumeAllCurrencies": {},
+          "circulatingSupply": {},
+          "marketCap": {
+            "raw": 3813986271232,
+            "fmt": "3.81T",
+            "longFmt": "3,813,986,271,232.00"
+          }
+        },
+        "earningsHistory": {
+          "history": [
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 2.15,
+                "fmt": "2.15"
+              },
+              "epsEstimate": {
+                "raw": 2.12503,
+                "fmt": "2.13"
+              },
+              "epsDifference": {
+                "raw": 0.02,
+                "fmt": "0.02"
+              },
+              "surprisePercent": {
+                "raw": 0.0117999995,
+                "fmt": "1.18%"
+              },
+              "quarter": {
+                "raw": 1735603200,
+                "fmt": "2024-12-31"
+              },
+              "currency": "USD",
+              "period": "-4q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 2.81,
+                "fmt": "2.81"
+              },
+              "epsEstimate": {
+                "raw": 2.00576,
+                "fmt": "2.01"
+              },
+              "epsDifference": {
+                "raw": 0.8,
+                "fmt": "0.8"
+              },
+              "surprisePercent": {
+                "raw": 0.401,
+                "fmt": "40.10%"
+              },
+              "quarter": {
+                "raw": 1743379200,
+                "fmt": "2025-03-31"
+              },
+              "currency": "USD",
+              "period": "-3q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 2.31,
+                "fmt": "2.31"
+              },
+              "epsEstimate": {
+                "raw": 2.18615,
+                "fmt": "2.19"
+              },
+              "epsDifference": {
+                "raw": 0.12,
+                "fmt": "0.12"
+              },
+              "surprisePercent": {
+                "raw": 0.056700002,
+                "fmt": "5.67%"
+              },
+              "quarter": {
+                "raw": 1751241600,
+                "fmt": "2025-06-30"
+              },
+              "currency": "USD",
+              "period": "-2q"
+            },
+            {
+              "maxAge": 1,
+              "epsActual": {
+                "raw": 2.87,
+                "fmt": "2.87"
+              },
+              "epsEstimate": {
+                "raw": 2.26199,
+                "fmt": "2.26"
+              },
+              "epsDifference": {
+                "raw": 0.61,
+                "fmt": "0.61"
+              },
+              "surprisePercent": {
+                "raw": 0.2688,
+                "fmt": "26.88%"
+              },
+              "quarter": {
+                "raw": 1759190400,
+                "fmt": "2025-09-30"
+              },
+              "currency": "USD",
+              "period": "-1q"
+            }
+          ],
+          "defaultMethodology": "gaap",
+          "maxAge": 86400
+        },
+        "earningsTrend": {
+          "trend": [
+            {
+              "maxAge": 1,
+              "period": "0q",
+              "endDate": "2025-12-31",
+              "growth": {
+                "raw": 0.2199,
+                "fmt": "21.99%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 2.62197,
+                  "fmt": "2.62"
+                },
+                "low": {
+                  "raw": 2.46,
+                  "fmt": "2.46"
+                },
+                "high": {
+                  "raw": 3.01,
+                  "fmt": "3.01"
+                },
+                "yearAgoEps": {
+                  "raw": 2.15,
+                  "fmt": "2.15"
+                },
+                "numberOfAnalysts": {
+                  "raw": 46,
+                  "fmt": "46",
+                  "longFmt": "46"
+                },
+                "growth": {
+                  "raw": 0.2195,
+                  "fmt": "21.95%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 111121853680,
+                  "fmt": "111.12B",
+                  "longFmt": "111,121,853,680"
+                },
+                "low": {
+                  "raw": 107708000000,
+                  "fmt": "107.71B",
+                  "longFmt": "107,708,000,000"
+                },
+                "high": {
+                  "raw": 116161000000,
+                  "fmt": "116.16B",
+                  "longFmt": "116,161,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 41,
+                  "fmt": "41",
+                  "longFmt": "41"
+                },
+                "yearAgoRevenue": {
+                  "raw": 96469000000,
+                  "fmt": "96.47B",
+                  "longFmt": "96,469,000,000"
+                },
+                "growth": {
+                  "raw": 0.1519,
+                  "fmt": "15.19%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 2.62197,
+                  "fmt": "2.62"
+                },
+                "7daysAgo": {
+                  "raw": 2.62088,
+                  "fmt": "2.62"
+                },
+                "30daysAgo": {
+                  "raw": 2.61615,
+                  "fmt": "2.62"
+                },
+                "60daysAgo": {
+                  "raw": 2.54827,
+                  "fmt": "2.55"
+                },
+                "90daysAgo": {
+                  "raw": 2.54656,
+                  "fmt": "2.55"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 32,
+                  "fmt": "32",
+                  "longFmt": "32"
+                },
+                "downLast30days": {
+                  "raw": 7,
+                  "fmt": "7",
+                  "longFmt": "7"
+                },
+                "downLast7Days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "+1q",
+              "endDate": "2026-03-31",
+              "growth": {
+                "raw": -0.1073,
+                "fmt": "-10.73%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 2.51483,
+                  "fmt": "2.51"
+                },
+                "low": {
+                  "raw": 2.36,
+                  "fmt": "2.36"
+                },
+                "high": {
+                  "raw": 2.69,
+                  "fmt": "2.69"
+                },
+                "yearAgoEps": {
+                  "raw": 2.81,
+                  "fmt": "2.81"
+                },
+                "numberOfAnalysts": {
+                  "raw": 32,
+                  "fmt": "32",
+                  "longFmt": "32"
+                },
+                "growth": {
+                  "raw": -0.105,
+                  "fmt": "-10.50%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 103104278920,
+                  "fmt": "103.1B",
+                  "longFmt": "103,104,278,920"
+                },
+                "low": {
+                  "raw": 100704000000,
+                  "fmt": "100.7B",
+                  "longFmt": "100,704,000,000"
+                },
+                "high": {
+                  "raw": 105996000000,
+                  "fmt": "106B",
+                  "longFmt": "105,996,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 29,
+                  "fmt": "29",
+                  "longFmt": "29"
+                },
+                "yearAgoRevenue": {
+                  "raw": 90234000000,
+                  "fmt": "90.23B",
+                  "longFmt": "90,234,000,000"
+                },
+                "growth": {
+                  "raw": 0.1426,
+                  "fmt": "14.26%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 2.51483,
+                  "fmt": "2.51"
+                },
+                "7daysAgo": {
+                  "raw": 2.51044,
+                  "fmt": "2.51"
+                },
+                "30daysAgo": {
+                  "raw": 2.46948,
+                  "fmt": "2.47"
+                },
+                "60daysAgo": {
+                  "raw": 2.44219,
+                  "fmt": "2.44"
+                },
+                "90daysAgo": {
+                  "raw": 2.43148,
+                  "fmt": "2.43"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 17,
+                  "fmt": "17",
+                  "longFmt": "17"
+                },
+                "downLast30days": {
+                  "raw": 4,
+                  "fmt": "4",
+                  "longFmt": "4"
+                },
+                "downLast7Days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "0y",
+              "endDate": "2025-12-31",
+              "growth": {
+                "raw": 0.308,
+                "fmt": "30.80%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 10.54455,
+                  "fmt": "10.54"
+                },
+                "low": {
+                  "raw": 9.5,
+                  "fmt": "9.5"
+                },
+                "high": {
+                  "raw": 11.04,
+                  "fmt": "11.04"
+                },
+                "yearAgoEps": {
+                  "raw": 8.04,
+                  "fmt": "8.04"
+                },
+                "numberOfAnalysts": {
+                  "raw": 61,
+                  "fmt": "61",
+                  "longFmt": "61"
+                },
+                "growth": {
+                  "raw": 0.31149998,
+                  "fmt": "31.15%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 400101897510,
+                  "fmt": "400.1B",
+                  "longFmt": "400,101,897,510"
+                },
+                "low": {
+                  "raw": 392268000000,
+                  "fmt": "392.27B",
+                  "longFmt": "392,268,000,000"
+                },
+                "high": {
+                  "raw": 413919000000,
+                  "fmt": "413.92B",
+                  "longFmt": "413,919,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 56,
+                  "fmt": "56",
+                  "longFmt": "56"
+                },
+                "yearAgoRevenue": {
+                  "raw": 350018000000,
+                  "fmt": "350.02B",
+                  "longFmt": "350,018,000,000"
+                },
+                "growth": {
+                  "raw": 0.14310001,
+                  "fmt": "14.31%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 10.54455,
+                  "fmt": "10.54"
+                },
+                "7daysAgo": {
+                  "raw": 10.54373,
+                  "fmt": "10.54"
+                },
+                "30daysAgo": {
+                  "raw": 10.4619,
+                  "fmt": "10.46"
+                },
+                "60daysAgo": {
+                  "raw": 9.93823,
+                  "fmt": "9.94"
+                },
+                "90daysAgo": {
+                  "raw": 9.94343,
+                  "fmt": "9.94"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 54,
+                  "fmt": "54",
+                  "longFmt": "54"
+                },
+                "downLast30days": {
+                  "raw": 2,
+                  "fmt": "2",
+                  "longFmt": "2"
+                },
+                "downLast7Days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            },
+            {
+              "maxAge": 1,
+              "period": "+1y",
+              "endDate": "2026-12-31",
+              "growth": {
+                "raw": 0.060500003,
+                "fmt": "6.05%"
+              },
+              "earningsEstimate": {
+                "avg": {
+                  "raw": 11.15848,
+                  "fmt": "11.16"
+                },
+                "low": {
+                  "raw": 10.3,
+                  "fmt": "10.3"
+                },
+                "high": {
+                  "raw": 13.11,
+                  "fmt": "13.11"
+                },
+                "yearAgoEps": {
+                  "raw": 10.54455,
+                  "fmt": "10.54"
+                },
+                "numberOfAnalysts": {
+                  "raw": 60,
+                  "fmt": "60",
+                  "longFmt": "60"
+                },
+                "growth": {
+                  "raw": 0.0582,
+                  "fmt": "5.82%"
+                },
+                "earningsCurrency": "USD"
+              },
+              "revenueEstimate": {
+                "avg": {
+                  "raw": 454071784240,
+                  "fmt": "454.07B",
+                  "longFmt": "454,071,784,240"
+                },
+                "low": {
+                  "raw": 429200000000,
+                  "fmt": "429.2B",
+                  "longFmt": "429,200,000,000"
+                },
+                "high": {
+                  "raw": 492818000000,
+                  "fmt": "492.82B",
+                  "longFmt": "492,818,000,000"
+                },
+                "numberOfAnalysts": {
+                  "raw": 57,
+                  "fmt": "57",
+                  "longFmt": "57"
+                },
+                "yearAgoRevenue": {
+                  "raw": 400101897510,
+                  "fmt": "400.1B",
+                  "longFmt": "400,101,897,510"
+                },
+                "growth": {
+                  "raw": 0.1349,
+                  "fmt": "13.49%"
+                },
+                "revenueCurrency": "USD"
+              },
+              "epsTrend": {
+                "current": {
+                  "raw": 11.15848,
+                  "fmt": "11.16"
+                },
+                "7daysAgo": {
+                  "raw": 11.15131,
+                  "fmt": "11.15"
+                },
+                "30daysAgo": {
+                  "raw": 11.01601,
+                  "fmt": "11.02"
+                },
+                "60daysAgo": {
+                  "raw": 10.64512,
+                  "fmt": "10.65"
+                },
+                "90daysAgo": {
+                  "raw": 10.5677,
+                  "fmt": "10.57"
+                },
+                "epsTrendCurrency": "USD"
+              },
+              "epsRevisions": {
+                "upLast7days": {
+                  "raw": 1,
+                  "fmt": "1",
+                  "longFmt": "1"
+                },
+                "upLast30days": {
+                  "raw": 51,
+                  "fmt": "51",
+                  "longFmt": "51"
+                },
+                "downLast30days": {
+                  "raw": 5,
+                  "fmt": "5",
+                  "longFmt": "5"
+                },
+                "downLast7Days": {
+                  "raw": 0,
+                  "longFmt": "0"
+                },
+                "downLast90days": {},
+                "epsRevisionsCurrency": "USD"
+              }
+            }
+          ],
+          "defaultMethodology": "gaap",
+          "maxAge": 1
+        },
+        "insiderTransactions": {
+          "transactions": [
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 243508,
+                "fmt": "243.51k",
+                "longFmt": "243,508"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1758758400,
+                "fmt": "2025-09-25"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 26000,
+                "fmt": "26k",
+                "longFmt": "26,000"
+              },
+              "value": {
+                "raw": 5330000,
+                "fmt": "5.33M",
+                "longFmt": "5,330,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 205.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1755216000,
+                "fmt": "2025-08-15"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 33566,
+                "fmt": "33.57k",
+                "longFmt": "33,566"
+              },
+              "value": {
+                "raw": 6235220,
+                "fmt": "6.24M",
+                "longFmt": "6,235,220"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 185.76 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1752796800,
+                "fmt": "2025-07-18"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 19500,
+                "fmt": "19.5k",
+                "longFmt": "19,500"
+              },
+              "value": {
+                "raw": 3412500,
+                "fmt": "3.41M",
+                "longFmt": "3,412,500"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 175.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1747872000,
+                "fmt": "2025-05-22"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 53066,
+                "fmt": "53.07k",
+                "longFmt": "53,066"
+              },
+              "value": {
+                "raw": 9810567,
+                "fmt": "9.81M",
+                "longFmt": "9,810,567"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 182.49 - 185.51 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1739836800,
+                "fmt": "2025-02-18"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 26000,
+                "fmt": "26k",
+                "longFmt": "26,000"
+              },
+              "value": {
+                "raw": 5330000,
+                "fmt": "5.33M",
+                "longFmt": "5,330,000"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 205.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1738281600,
+                "fmt": "2025-01-31"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1500,
+                "fmt": "1.5k",
+                "longFmt": "1,500"
+              },
+              "value": {
+                "raw": 284693,
+                "fmt": "284.69k",
+                "longFmt": "284,693"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 187.90 - 190.40 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1736726400,
+                "fmt": "2025-01-13"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 65400,
+                "fmt": "65.4k",
+                "longFmt": "65,400"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1734480000,
+                "fmt": "2024-12-18"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1500,
+                "fmt": "1.5k",
+                "longFmt": "1,500"
+              },
+              "value": {
+                "raw": 291336,
+                "fmt": "291.34k",
+                "longFmt": "291,336"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 192.80 - 195.03 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733961600,
+                "fmt": "2024-12-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 72500,
+                "fmt": "72.5k",
+                "longFmt": "72,500"
+              },
+              "value": {
+                "raw": 13413721,
+                "fmt": "13.41M",
+                "longFmt": "13,413,721"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 185.01 - 185.02 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1733788800,
+                "fmt": "2024-12-10"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1500,
+                "fmt": "1.5k",
+                "longFmt": "1,500"
+              },
+              "value": {
+                "raw": 271125,
+                "fmt": "271.12k",
+                "longFmt": "271,125"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 179.80 - 182.03 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1731369600,
+                "fmt": "2024-11-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 19500,
+                "fmt": "19.5k",
+                "longFmt": "19,500"
+              },
+              "value": {
+                "raw": 3459495,
+                "fmt": "3.46M",
+                "longFmt": "3,459,495"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 177.41 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730937600,
+                "fmt": "2024-11-07"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 19500,
+                "fmt": "19.5k",
+                "longFmt": "19,500"
+              },
+              "value": {
+                "raw": 3525210,
+                "fmt": "3.53M",
+                "longFmt": "3,525,210"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 180.78 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1730246400,
+                "fmt": "2024-10-30"
+              },
+              "ownership": "D/I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1500,
+                "fmt": "1.5k",
+                "longFmt": "1,500"
+              },
+              "value": {
+                "raw": 247432,
+                "fmt": "247.43k",
+                "longFmt": "247,432"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 163.70 - 165.27 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1728864000,
+                "fmt": "2024-10-14"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 391400,
+                "fmt": "391.4k",
+                "longFmt": "391,400"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Gift at price 0.00 per share.",
+              "filerName": "SHRIRAM KAVITARK RAM",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1728518400,
+                "fmt": "2024-10-10"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 700,
+                "fmt": "700",
+                "longFmt": "700"
+              },
+              "value": {
+                "raw": 115500,
+                "fmt": "115.5k",
+                "longFmt": "115,500"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 165.00 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1727049600,
+                "fmt": "2024-09-23"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 800,
+                "fmt": "800",
+                "longFmt": "800"
+              },
+              "value": {
+                "raw": 123003,
+                "fmt": "123k",
+                "longFmt": "123,003"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 153.47 - 154.22 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1726099200,
+                "fmt": "2024-09-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 700,
+                "fmt": "700",
+                "longFmt": "700"
+              },
+              "value": {
+                "raw": 115500,
+                "fmt": "115.5k",
+                "longFmt": "115,500"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 165.00 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1723766400,
+                "fmt": "2024-08-16"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 800,
+                "fmt": "800",
+                "longFmt": "800"
+              },
+              "value": {
+                "raw": 130421,
+                "fmt": "130.42k",
+                "longFmt": "130,421"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 162.62 - 164.46 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1723420800,
+                "fmt": "2024-08-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 1500,
+                "fmt": "1.5k",
+                "longFmt": "1,500"
+              },
+              "value": {
+                "raw": 278775,
+                "fmt": "278.77k",
+                "longFmt": "278,775"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 185.59 - 186.41 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1720742400,
+                "fmt": "2024-07-12"
+              },
+              "ownership": "I"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 2790,
+                "fmt": "2.79k",
+                "longFmt": "2,790"
+              },
+              "value": {
+                "raw": 0,
+                "longFmt": "0"
+              },
+              "filerUrl": "",
+              "transactionText": "Stock Award(Grant) at price 0.00 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1719964800,
+                "fmt": "2024-07-03"
+              },
+              "ownership": "D"
+            },
+            {
+              "maxAge": 1,
+              "shares": {
+                "raw": 836,
+                "fmt": "836",
+                "longFmt": "836"
+              },
+              "value": {
+                "raw": 148124,
+                "fmt": "148.12k",
+                "longFmt": "148,124"
+              },
+              "filerUrl": "",
+              "transactionText": "Sale at price 176.73 - 179.19 per share.",
+              "filerName": "HENNESSY JOHN L",
+              "filerRelation": "Director",
+              "moneyText": "",
+              "startDate": {
+                "raw": 1718150400,
+                "fmt": "2024-06-12"
+              },
+              "ownership": "I"
+            }
+          ],
+          "maxAge": 1
+        },
+        "financialData": {
+          "maxAge": 86400,
+          "currentPrice": {
+            "raw": 314.89,
+            "fmt": "314.89"
+          },
+          "targetHighPrice": {
+            "raw": 390.0,
+            "fmt": "390.00"
+          },
+          "targetLowPrice": {
+            "raw": 185.0,
+            "fmt": "185.00"
+          },
+          "targetMeanPrice": {
+            "raw": 324.54718,
+            "fmt": "324.55"
+          },
+          "targetMedianPrice": {
+            "raw": 330.0,
+            "fmt": "330.00"
+          },
+          "recommendationMean": {
+            "raw": 1.45455,
+            "fmt": "1.45"
+          },
+          "recommendationKey": "strong_buy",
+          "numberOfAnalystOpinions": {
+            "raw": 53,
+            "fmt": "53",
+            "longFmt": "53"
+          },
+          "totalCash": {
+            "raw": 98496004096,
+            "fmt": "98.5B",
+            "longFmt": "98,496,004,096"
+          },
+          "totalCashPerShare": {
+            "raw": 8.162,
+            "fmt": "8.16"
+          },
+          "ebitda": {
+            "raw": 145174003712,
+            "fmt": "145.17B",
+            "longFmt": "145,174,003,712"
+          },
+          "totalDebt": {
+            "raw": 44195000320,
+            "fmt": "44.2B",
+            "longFmt": "44,195,000,320"
+          },
+          "quickRatio": {
+            "raw": 1.563,
+            "fmt": "1.56"
+          },
+          "currentRatio": {
+            "raw": 1.747,
+            "fmt": "1.75"
+          },
+          "totalRevenue": {
+            "raw": 385476001792,
+            "fmt": "385.48B",
+            "longFmt": "385,476,001,792"
+          },
+          "debtToEquity": {
+            "raw": 11.424,
+            "fmt": "11.42%"
+          },
+          "revenuePerShare": {
+            "raw": 31.714,
+            "fmt": "31.71"
+          },
+          "returnOnAssets": {
+            "raw": 0.16275999,
+            "fmt": "16.28%"
+          },
+          "returnOnEquity": {
+            "raw": 0.3545,
+            "fmt": "35.45%"
+          },
+          "grossProfits": {
+            "raw": 228095000576,
+            "fmt": "228.1B",
+            "longFmt": "228,095,000,576"
+          },
+          "freeCashflow": {
+            "raw": 47997751296,
+            "fmt": "48B",
+            "longFmt": "47,997,751,296"
+          },
+          "operatingCashflow": {
+            "raw": 151424008192,
+            "fmt": "151.42B",
+            "longFmt": "151,424,008,192"
+          },
+          "earningsGrowth": {
+            "raw": 0.353,
+            "fmt": "35.30%"
+          },
+          "revenueGrowth": {
+            "raw": 0.159,
+            "fmt": "15.90%"
+          },
+          "grossMargins": {
+            "raw": 0.59172,
+            "fmt": "59.17%"
+          },
+          "ebitdaMargins": {
+            "raw": 0.37660998,
+            "fmt": "37.66%"
+          },
+          "operatingMargins": {
+            "raw": 0.30512,
+            "fmt": "30.51%"
+          },
+          "profitMargins": {
+            "raw": 0.32233003,
+            "fmt": "32.23%"
+          },
+          "financialCurrency": "USD"
+        }
+      }
+    ]
+  }
+}
