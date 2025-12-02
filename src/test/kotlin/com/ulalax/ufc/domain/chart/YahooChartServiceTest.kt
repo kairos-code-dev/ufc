@@ -4,12 +4,12 @@ import com.ulalax.ufc.exception.ApiException
 import com.ulalax.ufc.exception.DataParsingException
 import com.ulalax.ufc.exception.ErrorCode
 import com.ulalax.ufc.exception.UfcException
-import com.ulalax.ufc.infrastructure.ratelimit.fakes.FakeRateLimiter
+import com.ulalax.ufc.fakes.FakeRateLimiter
 import com.ulalax.ufc.internal.yahoo.auth.AuthResult
 import com.ulalax.ufc.model.common.Interval
 import com.ulalax.ufc.model.common.Period
-import com.ulalax.ufc.internal.fakes.TestHttpClientFactory
-import com.ulalax.ufc.domain.auth.fakes.FakeAuthStrategy
+import com.ulalax.ufc.fakes.TestHttpClientFactory
+import com.ulalax.ufc.fakes.FakeAuthStrategy
 import org.assertj.core.api.Assertions.*
 import kotlinx.coroutines.runBlocking
 import io.ktor.client.HttpClient

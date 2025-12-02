@@ -1,4 +1,4 @@
-package com.ulalax.ufc.infrastructure.ratelimit.fakes
+package com.ulalax.ufc.fakes
 
 import com.ulalax.ufc.infrastructure.ratelimit.RateLimiter
 import com.ulalax.ufc.infrastructure.ratelimit.RateLimitConfig

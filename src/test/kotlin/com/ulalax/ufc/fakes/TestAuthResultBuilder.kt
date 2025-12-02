@@ -1,4 +1,4 @@
-package com.ulalax.ufc.domain.auth.fakes
+package com.ulalax.ufc.fakes
 
 import com.ulalax.ufc.internal.yahoo.auth.AuthResult
 

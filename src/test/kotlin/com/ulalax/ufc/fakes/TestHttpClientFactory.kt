@@ -1,4 +1,4 @@
-package com.ulalax.ufc.internal.fakes
+package com.ulalax.ufc.fakes
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine

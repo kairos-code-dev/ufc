@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 /**
- * UFCClient Live Test
+ * UFCClient Integration Test
  *
  * 실제 Yahoo Finance API와의 통신을 테스트합니다.
  */
 @DisplayName("UFCClient - UFC 통합 클라이언트 테스트")
-class UFCClientLiveTest : LiveTestBase() {
+class UFCClientSpec : LiveTestBase() {
 
     // ===== Initialization Tests =====
     @Nested

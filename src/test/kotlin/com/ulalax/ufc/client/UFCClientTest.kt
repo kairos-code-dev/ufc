@@ -2,10 +2,10 @@ package com.ulalax.ufc.client
 
 import com.ulalax.ufc.domain.chart.YahooChartService
 import com.ulalax.ufc.domain.quote.YahooQuoteSummaryService
-import com.ulalax.ufc.infrastructure.ratelimit.fakes.FakeRateLimiter
+import com.ulalax.ufc.fakes.FakeRateLimiter
 import com.ulalax.ufc.infrastructure.ratelimit.TokenBucketRateLimiter
-import com.ulalax.ufc.internal.fakes.TestHttpClientFactory
-import com.ulalax.ufc.domain.auth.fakes.FakeAuthStrategy
+import com.ulalax.ufc.fakes.TestHttpClientFactory
+import com.ulalax.ufc.fakes.FakeAuthStrategy
 import com.ulalax.ufc.model.common.Interval
 import com.ulalax.ufc.model.common.Period
 import org.assertj.core.api.Assertions.*

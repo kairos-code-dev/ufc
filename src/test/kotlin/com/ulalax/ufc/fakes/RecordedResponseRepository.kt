@@ -1,4 +1,4 @@
-package com.ulalax.ufc.internal.fakes
+package com.ulalax.ufc.fakes
 
 import java.io.File
 import java.nio.file.Files

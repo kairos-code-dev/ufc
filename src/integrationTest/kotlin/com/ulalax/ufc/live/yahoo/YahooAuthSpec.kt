@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import org.assertj.core.api.Assertions.assertThat
 
 /**
- * Yahoo Finance API 인증 기능에 대한 라이브 테스트
+ * Yahoo Finance API 인증 기능에 대한 통합 테스트
  *
  * 실제 Yahoo Finance API에 연결하여 다음을 검증합니다:
  * - Crumb 토큰 획득 성공
@@ -28,7 +28,7 @@ import org.assertj.core.api.Assertions.assertThat
  * - 타임아웃은 기본값으로 설정되어 있습니다 (30초)
  *
  * ## 테스트 환경
- * - Tag: "live" - 라이브 테스트임을 표시
+ * - Tag: "integration" - 통합 테스트임을 표시
  * - TestInstance: PER_CLASS - 클래스 인스턴스 재사용으로 setUp/tearDown 최소화
  *
  * ## 구현 내용
@@ -43,17 +43,17 @@ import org.assertj.core.api.Assertions.assertThat
  *
  * ## 실행 방법
  * ```bash
- * # 라이브 테스트만 실행
- * ./gradlew liveTest --tests "YahooAuthLiveTest"
+ * # 통합 테스트만 실행
+ * ./gradlew integrationTest --tests "YahooAuthSpec"
  *
  * # 특정 메서드만 실행
- * ./gradlew liveTest --tests "YahooAuthLiveTest.testAuthentication"
+ * ./gradlew integrationTest --tests "YahooAuthSpec.testAuthentication"
  *
- * # 빌드만 수행 (라이브 테스트 제외)
- * ./gradlew build -x liveTest
+ * # 빌드만 수행 (통합 테스트 제외)
+ * ./gradlew build -x integrationTest
  *
- * # 라이브 테스트 감지 확인 (dry-run)
- * ./gradlew liveTest --dry-run
+ * # 통합 테스트 감지 확인 (dry-run)
+ * ./gradlew integrationTest --dry-run
  * ```
  *
  * ## 주의사항
@@ -62,10 +62,10 @@ import org.assertj.core.api.Assertions.assertThat
  * - 테스트 실행 간 충분한 간격을 두기를 권장합니다
  * - 실패 원인은 네트워크, Yahoo API 상태 등 다양할 수 있습니다
  */
-class YahooAuthLiveTest : LiveTestBase() {
+class YahooAuthSpec : LiveTestBase() {
 
     private companion object {
-        private val logger = LoggerFactory.getLogger(YahooAuthLiveTest::class.java)
+        private val logger = LoggerFactory.getLogger(YahooAuthSpec::class.java)
     }
 
     /**

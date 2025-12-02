@@ -91,47 +91,47 @@ dependencies {
 
 // 소스셋 설정
 sourceSets {
-    create("liveTest") {
+    create("integrationTest") {
         kotlin {
-            srcDir("src/liveTest/kotlin")
+            srcDir("src/integrationTest/kotlin")
         }
         resources {
-            srcDir("src/liveTest/resources")
+            srcDir("src/integrationTest/resources")
         }
-        compileClasspath += sourceSets["main"].output
-        runtimeClasspath += sourceSets["main"].output
+        compileClasspath += sourceSets["main"].output + sourceSets["test"].output
+        runtimeClasspath += sourceSets["main"].output + sourceSets["test"].output
     }
 }
 
-// LiveTest 테스트 작업 설정
-val liveTestImplementation by configurations.getting {
+// IntegrationTest 테스트 작업 설정
+val integrationTestImplementation by configurations.getting {
     extendsFrom(configurations["testImplementation"])
 }
 
-// liveTest에 GSON 의존성 추가
+// integrationTest에 GSON 의존성 추가
 dependencies {
-    liveTestImplementation("com.google.code.gson:gson:$gsonVersion")
+    integrationTestImplementation("com.google.code.gson:gson:$gsonVersion")
 }
 
-val liveTest = tasks.register<Test>("liveTest") {
+val integrationTest = tasks.register<Test>("integrationTest") {
     useJUnitPlatform()
-    testClassesDirs = sourceSets["liveTest"].output.classesDirs
-    classpath = sourceSets["liveTest"].runtimeClasspath
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
     shouldRunAfter("test")
 
-    // 라이브 테스트 필터 설정
+    // 통합 테스트 필터 설정
     filter {
         setFailOnNoMatchingTests(false)
     }
 
     // 환경 변수 설정
-    environment("TEST_ENV", "live")
+    environment("TEST_ENV", "integration")
 }
 
 // 빌드 작업 설정
 tasks {
-    // LiveTest 리소스 중복 처리 전략
-    named<Copy>("processLiveTestResources") {
+    // IntegrationTest 리소스 중복 처리 전략
+    named<Copy>("processIntegrationTestResources") {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 

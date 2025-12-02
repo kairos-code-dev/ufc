@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 
 /**
- * Yahoo Chart Service Live Test
+ * Yahoo Chart Service Integration Test
  *
  * 이 테스트는 실제 Yahoo Finance API와 통신합니다.
  * 개발 환경에서 API의 실제 동작을 검증하기 위해 사용됩니다.
@@ -28,7 +28,7 @@ import java.time.Instant
  * - API 변경 시 테스트 실패가 발생할 수 있습니다
  */
 @DisplayName("YahooChartService - Yahoo Finance 차트 데이터 조회")
-class YahooChartServiceLiveTest : LiveTestBase() {
+class YahooChartServiceSpec : LiveTestBase() {
 
     private val httpClient = YahooHttpClientFactory.create()
     private val rateLimiter = TokenBucketRateLimiter(
