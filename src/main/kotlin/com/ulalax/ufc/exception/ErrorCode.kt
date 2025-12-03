@@ -46,6 +46,24 @@ enum class ErrorCode(
     DATA_RETRIEVAL_ERROR(4004, "데이터 조회 중 오류가 발생했습니다.", true),
     INCONSISTENT_DATA(4005, "데이터 일관성 오류가 발생했습니다.", false),
     EMPTY_RESPONSE(4006, "서버에서 빈 응답을 반환했습니다.", true),
+    INVALID_ETF_TYPE(4010, "심볼이 ETF 또는 뮤추얼펀드가 아닙니다.", false),
+    INVALID_MACRO_INDICATOR(4011, "유효하지 않은 거시경제 지표입니다.", false),
+
+    // ufc.stock
+    STOCK_DATA_NOT_FOUND(4020, "주식 정보를 찾을 수 없습니다.", false),
+    ISIN_NOT_FOUND(4021, "ISIN 정보를 찾을 수 없습니다.", false),
+    SHARES_DATA_NOT_FOUND(4022, "발행주식수 정보를 찾을 수 없습니다.", false),
+
+    // ufc.funds
+    FUND_DATA_NOT_FOUND(4030, "펀드 정보를 찾을 수 없습니다.", false),
+    INVALID_FUND_TYPE(4031, "유효하지 않은 펀드 타입입니다.", false),
+    INCOMPLETE_FUND_DATA(4032, "펀드 데이터가 불완전합니다.", false),
+
+    // ufc.price
+    PRICE_DATA_NOT_FOUND(4040, "가격 정보를 찾을 수 없습니다.", false),
+    INVALID_PERIOD_INTERVAL(4041, "유효하지 않은 기간과 간격 조합입니다.", false),
+    INVALID_DATE_RANGE(4042, "유효하지 않은 날짜 범위입니다.", false),
+    INCOMPLETE_PRICE_DATA(4043, "가격 데이터가 불완전합니다.", false),
 
     // 5000번대: 파싱 오류
     JSON_PARSING_ERROR(5001, "JSON 파싱 중 오류가 발생했습니다.", false),
@@ -54,11 +72,11 @@ enum class ErrorCode(
     CSV_PARSING_ERROR(5004, "CSV 파싱 중 오류가 발생했습니다.", false),
     UNSUPPORTED_CONTENT_TYPE(5005, "지원하지 않는 컨텐츠 타입입니다.", false),
     ENCODING_ERROR(5006, "인코딩 오류가 발생했습니다.", false),
+    DATA_PARSING_ERROR(5010, "데이터 파싱 중 오류가 발생했습니다.", false),
 
     // 6000번대: 파라미터 오류
     INVALID_PARAMETER(6001, "유효하지 않은 파라미터입니다.", false),
     MISSING_REQUIRED_PARAMETER(6002, "필수 파라미터가 누락되었습니다.", false),
-    INVALID_DATE_RANGE(6003, "유효하지 않은 날짜 범위입니다.", false),
     INVALID_PERIOD(6004, "유효하지 않은 기간입니다.", false),
     INVALID_INTERVAL(6005, "유효하지 않은 간격입니다.", false),
     INVALID_SYMBOL(6006, "유효하지 않은 심볼입니다.", false),

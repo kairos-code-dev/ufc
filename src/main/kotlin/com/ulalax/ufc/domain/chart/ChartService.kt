@@ -67,12 +67,14 @@ interface ChartService {
      * @param symbol 조회할 심볼
      * @param interval 데이터 간격
      * @param period 조회 기간
+     * @param includeEvents 이벤트 데이터(배당금, 분할, 자본이득) 포함 여부 (기본값: false)
      * @return 원본 ChartDataResponse 객체
      * @throws UfcException 데이터 조회 실패 시
      */
     suspend fun getRawChartData(
         symbol: String,
         interval: Interval = Interval.OneDay,
-        period: Period = Period.OneYear
+        period: Period = Period.OneYear,
+        includeEvents: Boolean = false
     ): ChartDataResponse
 }

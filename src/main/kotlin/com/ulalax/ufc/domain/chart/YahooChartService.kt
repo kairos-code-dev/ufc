@@ -83,7 +83,7 @@ class YahooChartService(
 
         return try {
             // 원본 응답 조회
-            val response = getRawChartData(symbol, interval, period)
+            val response = getRawChartData(symbol, interval, period, includeEvents = false)
 
             // OHLCV 데이터로 변환
             val ohlcvDataList = response.toOHLCVDataList()
@@ -161,13 +161,15 @@ class YahooChartService(
      * @param symbol 조회할 심볼
      * @param interval 데이터 간격
      * @param period 조회 기간
+     * @param includeEvents 이벤트 데이터(배당금, 분할, 자본이득) 포함 여부
      * @return ChartDataResponse 객체
      * @throws UfcException 조회 실패 시
      */
     override suspend fun getRawChartData(
         symbol: String,
         interval: Interval,
-        period: Period
+        period: Period,
+        includeEvents: Boolean
     ): ChartDataResponse {
         validateSymbol(symbol)
 
@@ -176,8 +178,8 @@ class YahooChartService(
 
         return try {
             logger.debug(
-                "Calling Yahoo Finance Chart API: symbol={}, interval={}, range={}",
-                symbol, interval.value, period.value
+                "Calling Yahoo Finance Chart API: symbol={}, interval={}, range={}, includeEvents={}",
+                symbol, interval.value, period.value, includeEvents
             )
 
             // API 요청 수행
@@ -185,6 +187,9 @@ class YahooChartService(
                 parameter("interval", interval.value)
                 parameter("range", period.value)
                 parameter("crumb", authResult.crumb)
+                if (includeEvents) {
+                    parameter("events", "div,splits,capitalGains")
+                }
             }
 
             // HTTP 상태 코드 확인

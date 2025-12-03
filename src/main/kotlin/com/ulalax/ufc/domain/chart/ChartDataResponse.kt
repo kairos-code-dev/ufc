@@ -42,7 +42,11 @@ data class ChartResult(
     val timestamp: List<Long>? = null,
 
     @SerialName("indicators")
-    val indicators: ChartIndicators? = null
+    val indicators: ChartIndicators? = null,
+
+    // 이벤트 데이터 (배당금, 주식분할, 자본이득 등)
+    @SerialName("events")
+    val events: ChartEvents? = null
 )
 
 /**
@@ -178,6 +182,52 @@ data class ChartError(
 
     @SerialName("description")
     val description: String? = null
+)
+
+/**
+ * 차트 이벤트 데이터
+ *
+ * 배당금, 주식분할, 자본이득 등의 이벤트 정보를 포함합니다.
+ */
+@Serializable
+data class ChartEvents(
+    @SerialName("dividends")
+    val dividends: Map<String, DividendEvent>? = null,
+
+    @SerialName("splits")
+    val splits: Map<String, SplitEvent>? = null,
+
+    @SerialName("capitalGains")
+    val capitalGains: Map<String, CapitalGainEvent>? = null
+)
+
+/**
+ * 배당금 이벤트
+ */
+@Serializable
+data class DividendEvent(
+    val amount: Double? = null,
+    val date: Long? = null
+)
+
+/**
+ * 주식 분할 이벤트
+ */
+@Serializable
+data class SplitEvent(
+    val date: Long? = null,
+    val numerator: Int? = null,
+    val denominator: Int? = null,
+    val splitRatio: String? = null
+)
+
+/**
+ * 자본이득 이벤트
+ */
+@Serializable
+data class CapitalGainEvent(
+    val amount: Double? = null,
+    val date: Long? = null
 )
 
 /**

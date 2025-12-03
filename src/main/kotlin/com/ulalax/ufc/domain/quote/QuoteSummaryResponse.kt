@@ -94,7 +94,21 @@ data class QuoteSummaryResult(
 
     // 내부자 거래
     @SerialName("insiderTransactions")
-    val insiderTransactions: InsiderTransactions? = null
+    val insiderTransactions: InsiderTransactions? = null,
+
+    // ufc.stock용 필드
+    @SerialName("quoteType")
+    val quoteType: QuoteType? = null,
+
+    @SerialName("assetProfile")
+    val assetProfile: AssetProfile? = null,
+
+    // ufc.funds용 필드
+    @SerialName("topHoldings")
+    val topHoldings: TopHoldings? = null,
+
+    @SerialName("fundProfile")
+    val fundProfile: FundProfile? = null
 )
 
 /**
@@ -489,6 +503,127 @@ data class QuoteError(
 
     @SerialName("description")
     val description: String? = null
+)
+
+// =========================================
+// ufc.stock용 데이터 클래스
+// =========================================
+
+/**
+ * 자산의 기본 정보
+ *
+ * EQUITY, ETF, MUTUALFUND 등 다양한 자산 타입을 구분합니다.
+ */
+@Serializable
+data class QuoteType(
+    val exchange: String? = null,
+    val quoteType: String? = null,        // EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY 등
+    val symbol: String? = null,
+    val shortName: String? = null,
+    val longName: String? = null,
+    val market: String? = null,
+    val sector: String? = null,
+    val industry: String? = null
+)
+
+/**
+ * 기업의 상세 정보
+ *
+ * 기업 소개, 연락처, 주소 등 회사 정보를 포함합니다.
+ */
+@Serializable
+data class AssetProfile(
+    val sector: String? = null,
+    val industry: String? = null,
+    val website: String? = null,
+    val longBusinessSummary: String? = null,
+    val country: String? = null,
+    val city: String? = null,
+    val address1: String? = null,
+    val phone: String? = null,
+    val fullTimeEmployees: Int? = null
+)
+
+// =========================================
+// ufc.funds용 데이터 클래스
+// =========================================
+
+/**
+ * 펀드의 보유 종목 정보
+ *
+ * Top Holdings, 섹터 비중, 채권/주식 지표 등을 포함합니다.
+ */
+@Serializable
+data class TopHoldings(
+    val holdings: List<Holding>? = null,
+    val equityHoldings: EquityHoldings? = null,
+    val bondHoldings: BondHoldings? = null,
+    val sectorWeightings: List<SectorWeighting>? = null
+)
+
+/**
+ * 보유 종목
+ */
+@Serializable
+data class Holding(
+    val symbol: String? = null,
+    val name: String? = null,
+    val holdingPercent: Double? = null
+)
+
+/**
+ * 주식 보유 정보
+ */
+@Serializable
+data class EquityHoldings(
+    val priceToEarnings: Double? = null,
+    val priceToBook: Double? = null,
+    val priceToSales: Double? = null,
+    val priceToCashflow: Double? = null,
+    val medianMarketCap: Long? = null,
+    val threeYearEarningsGrowth: Double? = null
+)
+
+/**
+ * 채권 보유 정보
+ */
+@Serializable
+data class BondHoldings(
+    val duration: Double? = null,
+    val maturity: String? = null,
+    val creditQuality: String? = null
+)
+
+/**
+ * 섹터 비중
+ */
+@Serializable
+data class SectorWeighting(
+    val sector: String? = null,
+    val weight: Double? = null
+)
+
+/**
+ * 펀드 프로필
+ *
+ * 펀드의 카테고리, 가족, 법적 형태 등을 포함합니다.
+ */
+@Serializable
+data class FundProfile(
+    val categoryName: String? = null,
+    val family: String? = null,
+    val legalType: String? = null,
+    val feesExpensesInvestment: FeesExpenses? = null
+)
+
+/**
+ * 펀드 비용 및 수수료
+ */
+@Serializable
+data class FeesExpenses(
+    val annualReportExpenseRatio: Double? = null,
+    val annualHoldingsTurnover: Double? = null,
+    val totalNetAssets: Long? = null
 )
 
 /**
