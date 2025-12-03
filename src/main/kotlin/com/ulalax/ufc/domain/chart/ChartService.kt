@@ -1,7 +1,7 @@
 package com.ulalax.ufc.domain.chart
 
-import com.ulalax.ufc.model.common.Interval
-import com.ulalax.ufc.model.common.Period
+import com.ulalax.ufc.domain.common.Interval
+import com.ulalax.ufc.domain.common.Period
 
 /**
  * Yahoo Finance Chart API를 통한 차트 데이터 조회 서비스 인터페이스

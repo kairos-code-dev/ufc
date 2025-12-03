@@ -103,6 +103,12 @@ data class QuoteSummaryResult(
     @SerialName("assetProfile")
     val assetProfile: AssetProfile? = null,
 
+    @SerialName("summaryProfile")
+    val summaryProfile: SummaryProfile? = null,
+
+    @SerialName("defaultKeyStatistics")
+    val defaultKeyStatistics: DefaultKeyStatistics? = null,
+
     // ufc.funds용 필드
     @SerialName("topHoldings")
     val topHoldings: TopHoldings? = null,
@@ -130,6 +136,14 @@ data class Price(
     // 심볼
     @SerialName("symbol")
     val symbol: String? = null,
+
+    // 회사명 (긴 이름)
+    @SerialName("longName")
+    val longName: String? = null,
+
+    // 회사명 (짧은 이름)
+    @SerialName("shortName")
+    val shortName: String? = null,
 
     // 거래소
     @SerialName("exchange")
@@ -516,13 +530,21 @@ data class QuoteError(
  */
 @Serializable
 data class QuoteType(
+    @SerialName("exchange")
     val exchange: String? = null,
+    @SerialName("quoteType")
     val quoteType: String? = null,        // EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY 등
+    @SerialName("symbol")
     val symbol: String? = null,
+    @SerialName("shortName")
     val shortName: String? = null,
+    @SerialName("longName")
     val longName: String? = null,
+    @SerialName("market")
     val market: String? = null,
+    @SerialName("sector")
     val sector: String? = null,
+    @SerialName("industry")
     val industry: String? = null
 )
 
@@ -533,15 +555,72 @@ data class QuoteType(
  */
 @Serializable
 data class AssetProfile(
+    @SerialName("sector")
     val sector: String? = null,
+    @SerialName("industry")
     val industry: String? = null,
+    @SerialName("website")
     val website: String? = null,
+    @SerialName("longBusinessSummary")
     val longBusinessSummary: String? = null,
+    @SerialName("country")
     val country: String? = null,
+    @SerialName("city")
     val city: String? = null,
+    @SerialName("address1")
     val address1: String? = null,
+    @SerialName("phone")
     val phone: String? = null,
+    @SerialName("state")
+    val state: String? = null,
+    @SerialName("zip")
+    val zip: String? = null,
+    @SerialName("fullTimeEmployees")
     val fullTimeEmployees: Int? = null
+)
+
+/**
+ * 요약 프로필 정보
+ *
+ * assetProfile과 유사한 정보를 포함합니다.
+ */
+@Serializable
+data class SummaryProfile(
+    @SerialName("sector")
+    val sector: String? = null,
+    @SerialName("industry")
+    val industry: String? = null,
+    @SerialName("website")
+    val website: String? = null,
+    @SerialName("address1")
+    val address1: String? = null,
+    @SerialName("city")
+    val city: String? = null,
+    @SerialName("state")
+    val state: String? = null,
+    @SerialName("zip")
+    val zip: String? = null,
+    @SerialName("country")
+    val country: String? = null,
+    @SerialName("phone")
+    val phone: String? = null
+)
+
+/**
+ * 주요 통계 정보
+ *
+ * 발행주식수, ISIN 등을 포함합니다.
+ */
+@Serializable
+data class DefaultKeyStatistics(
+    @SerialName("sharesOutstanding")
+    val sharesOutstanding: RawFormatted? = null,
+    @SerialName("isin")
+    val isin: String? = null,
+    @SerialName("cusip")
+    val cusip: String? = null,
+    @SerialName("maxAge")
+    val maxAge: Int? = null
 )
 
 // =========================================
@@ -568,7 +647,7 @@ data class TopHoldings(
 data class Holding(
     val symbol: String? = null,
     val name: String? = null,
-    val holdingPercent: Double? = null
+    val holdingPercent: RawFormatted? = null
 )
 
 /**
@@ -576,12 +655,12 @@ data class Holding(
  */
 @Serializable
 data class EquityHoldings(
-    val priceToEarnings: Double? = null,
-    val priceToBook: Double? = null,
-    val priceToSales: Double? = null,
-    val priceToCashflow: Double? = null,
-    val medianMarketCap: Long? = null,
-    val threeYearEarningsGrowth: Double? = null
+    val priceToEarnings: RawFormatted? = null,
+    val priceToBook: RawFormatted? = null,
+    val priceToSales: RawFormatted? = null,
+    val priceToCashflow: RawFormatted? = null,
+    val medianMarketCap: RawFormatted? = null,
+    val threeYearEarningsGrowth: RawFormatted? = null
 )
 
 /**
@@ -589,9 +668,9 @@ data class EquityHoldings(
  */
 @Serializable
 data class BondHoldings(
-    val duration: Double? = null,
-    val maturity: String? = null,
-    val creditQuality: String? = null
+    val duration: RawFormatted? = null,
+    val maturity: RawFormatted? = null,
+    val creditQuality: RawFormatted? = null
 )
 
 /**
@@ -600,7 +679,7 @@ data class BondHoldings(
 @Serializable
 data class SectorWeighting(
     val sector: String? = null,
-    val weight: Double? = null
+    val weight: RawFormatted? = null
 )
 
 /**
@@ -621,9 +700,9 @@ data class FundProfile(
  */
 @Serializable
 data class FeesExpenses(
-    val annualReportExpenseRatio: Double? = null,
-    val annualHoldingsTurnover: Double? = null,
-    val totalNetAssets: Long? = null
+    val annualReportExpenseRatio: RawFormatted? = null,
+    val annualHoldingsTurnover: RawFormatted? = null,
+    val totalNetAssets: RawFormatted? = null
 )
 
 /**

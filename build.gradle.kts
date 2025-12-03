@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.Duration
 
 plugins {
     kotlin("jvm") version "2.1.0"
@@ -89,39 +90,28 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
 
-// 소스셋 설정
-sourceSets {
-    create("integrationTest") {
-        kotlin {
-            srcDir("src/integrationTest/kotlin")
-        }
-        resources {
-            srcDir("src/integrationTest/resources")
-        }
-        compileClasspath += sourceSets["main"].output + sourceSets["test"].output
-        runtimeClasspath += sourceSets["main"].output + sourceSets["test"].output
-    }
-}
-
-// IntegrationTest 테스트 작업 설정
-val integrationTestImplementation by configurations.getting {
-    extendsFrom(configurations["testImplementation"])
-}
-
-// integrationTest에 GSON 의존성 추가
-dependencies {
-    integrationTestImplementation("com.google.code.gson:gson:$gsonVersion")
-}
-
+// 통합 테스트 태스크 설정
 val integrationTest = tasks.register<Test>("integrationTest") {
-    useJUnitPlatform()
-    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
-    classpath = sourceSets["integrationTest"].runtimeClasspath
-    shouldRunAfter("test")
+    description = "Runs integration tests (tagged with @Tag(\"integration\"))"
+    group = "verification"
 
-    // 통합 테스트 필터 설정
-    filter {
-        setFailOnNoMatchingTests(false)
+    useJUnitPlatform {
+        includeTags("integration")
+    }
+
+    // 통합 테스트는 병렬 실행 금지 (Rate Limiting 때문)
+    maxParallelForks = 1
+
+    // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
+    timeout.set(Duration.ofMinutes(10))
+
+    shouldRunAfter(tasks.test)
+
+    // 테스트 출력 설정
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = true // 통합 테스트는 출력 표시
     }
 
     // 환경 변수 설정
@@ -130,15 +120,12 @@ val integrationTest = tasks.register<Test>("integrationTest") {
 
 // 빌드 작업 설정
 tasks {
-    // IntegrationTest 리소스 중복 처리 전략
-    named<Copy>("processIntegrationTestResources") {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-
     test {
+        description = "Runs unit tests (excludes integration tests)"
+
         useJUnitPlatform {
-            includeTags("unit", "integration")
-            excludeTags("liveTest")
+            // 기본 테스트 실행 시 통합 테스트 제외
+            excludeTags("integration", "liveTest")
         }
 
         // 테스트 출력 설정

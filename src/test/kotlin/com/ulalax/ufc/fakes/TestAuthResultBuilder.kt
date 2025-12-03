@@ -1,6 +1,6 @@
 package com.ulalax.ufc.fakes
 
-import com.ulalax.ufc.internal.yahoo.auth.AuthResult
+import com.ulalax.ufc.infrastructure.yahoo.auth.AuthResult
 
 /**
  * AuthResult 객체를 생성하기 위한 Builder 클래스입니다.

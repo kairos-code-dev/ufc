@@ -216,8 +216,8 @@ data class DividendEvent(
 @Serializable
 data class SplitEvent(
     val date: Long? = null,
-    val numerator: Int? = null,
-    val denominator: Int? = null,
+    val numerator: Double? = null,
+    val denominator: Double? = null,
     val splitRatio: String? = null
 )
 

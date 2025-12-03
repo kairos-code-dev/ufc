@@ -1,0 +1,386 @@
+package com.ulalax.ufc.domain.corp
+
+import com.ulalax.ufc.domain.chart.ChartDataResponse
+import com.ulalax.ufc.domain.chart.Chart
+import com.ulalax.ufc.domain.chart.ChartResult
+import com.ulalax.ufc.domain.chart.ChartMeta
+import com.ulalax.ufc.domain.chart.ChartEvents
+import com.ulalax.ufc.domain.chart.DividendEvent
+import com.ulalax.ufc.domain.chart.SplitEvent
+import com.ulalax.ufc.domain.chart.CapitalGainEvent
+import com.ulalax.ufc.domain.chart.ChartService
+import com.ulalax.ufc.model.common.Interval
+import com.ulalax.ufc.model.common.Period
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.DisplayName
+import kotlin.test.assertEquals
+import kotlin.test.assertEmpty
+import kotlin.test.assertTrue
+
+/**
+ * YahooCorpService 단위 테스트
+ *
+ * Classical TDD 원칙에 따라 작성되었습니다.
+ * 각 테스트는 Fake ChartService를 사용하여 외부 의존성을 제거합니다.
+ */
+@DisplayName("YahooCorpService 테스트")
+class YahooCorpServiceTest {
+
+    private lateinit var fakeChartService: FakeChartService
+    private lateinit var corpService: YahooCorpService
+
+    @BeforeEach
+    fun setUp() {
+        fakeChartService = FakeChartService()
+        corpService = YahooCorpService(fakeChartService)
+    }
+
+    @Test
+    @DisplayName("배당금 조회 - 성공")
+    fun getDividends_success() = runTest {
+        // Given: AAPL의 배당금 데이터
+        val dividendEvent = DividendEvent(amount = 0.22, date = 1617235200L)
+        fakeChartService.setupChartResponse(
+            symbol = "AAPL",
+            dividend = mapOf("1617235200" to dividendEvent),
+            currency = "USD"
+        )
+
+        // When: 배당금 조회
+        val result = corpService.getDividends("AAPL", Period.FiveYears)
+
+        // Then: 배당금이 올바르게 반환되어야 함
+        assertEquals("AAPL", result.symbol)
+        assertEquals(1, result.dividends.size)
+        assertEquals(0.22, result.dividends[0].amount)
+        assertEquals(1617235200L, result.dividends[0].date)
+        assertEquals("USD", result.dividends[0].currency)
+    }
+
+    @Test
+    @DisplayName("배당금 조회 - 여러 개")
+    fun getDividends_multiple() = runTest {
+        // Given: 여러 개의 배당금
+        val dividends = mapOf(
+            "1609459200" to DividendEvent(amount = 0.205, date = 1609459200L),
+            "1617235200" to DividendEvent(amount = 0.22, date = 1617235200L),
+            "1625011200" to DividendEvent(amount = 0.225, date = 1625011200L)
+        )
+        fakeChartService.setupChartResponse("AAPL", dividend = dividends, currency = "USD")
+
+        // When: 배당금 조회
+        val result = corpService.getDividends("AAPL", Period.FiveYears)
+
+        // Then: 모든 배당금이 날짜 오름차순으로 반환되어야 함
+        assertEquals(3, result.dividends.size)
+        assertEquals(1609459200L, result.dividends[0].date)
+        assertEquals(1617235200L, result.dividends[1].date)
+        assertEquals(1625011200L, result.dividends[2].date)
+    }
+
+    @Test
+    @DisplayName("배당금 조회 - 0값 필터링")
+    fun getDividends_filterZeroValues() = runTest {
+        // Given: 0값을 포함한 배당금
+        val dividends = mapOf(
+            "1609459200" to DividendEvent(amount = 0.22, date = 1609459200L),
+            "1617235200" to DividendEvent(amount = 0.0, date = 1617235200L),  // 0값
+            "1625011200" to DividendEvent(amount = 0.225, date = 1625011200L)
+        )
+        fakeChartService.setupChartResponse("AAPL", dividend = dividends)
+
+        // When: 배당금 조회
+        val result = corpService.getDividends("AAPL", Period.FiveYears)
+
+        // Then: 0값은 필터링되어야 함
+        assertEquals(2, result.dividends.size)
+        assertEquals(0.22, result.dividends[0].amount)
+        assertEquals(0.225, result.dividends[1].amount)
+    }
+
+    @Test
+    @DisplayName("배당금 조회 - 빈 데이터")
+    fun getDividends_empty() = runTest {
+        // Given: 배당금이 없는 경우
+        fakeChartService.setupChartResponse("GOOGL")
+
+        // When: 배당금 조회
+        val result = corpService.getDividends("GOOGL", Period.FiveYears)
+
+        // Then: 빈 리스트가 반환되어야 함
+        assertEquals("GOOGL", result.symbol)
+        assertEmpty(result.dividends)
+    }
+
+    @Test
+    @DisplayName("주식 분할 조회 - 성공 (4:1 분할)")
+    fun getSplits_success() = runTest {
+        // Given: AAPL의 4:1 분할 데이터
+        val splitEvent = SplitEvent(
+            date = 1598889600L,
+            numerator = 4,
+            denominator = 1,
+            splitRatio = "4:1"
+        )
+        fakeChartService.setupChartResponse("AAPL", split = mapOf("1598889600" to splitEvent))
+
+        // When: 분할 조회
+        val result = corpService.getSplits("AAPL", Period.Max)
+
+        // Then: 분할 정보가 올바르게 반환되어야 함
+        assertEquals("AAPL", result.symbol)
+        assertEquals(1, result.splits.size)
+        assertEquals(1598889600L, result.splits[0].date)
+        assertEquals(4, result.splits[0].numerator)
+        assertEquals(1, result.splits[0].denominator)
+        assertEquals(4.0, result.splits[0].ratio)
+    }
+
+    @Test
+    @DisplayName("주식 분할 조회 - 역분할 (1:2)")
+    fun getSplits_reverseSplit() = runTest {
+        // Given: 역분할 데이터 (1:2)
+        val splitEvent = SplitEvent(
+            date = 1625011200L,
+            numerator = 1,
+            denominator = 2,
+            splitRatio = "1:2"
+        )
+        fakeChartService.setupChartResponse("TSLA", split = mapOf("1625011200" to splitEvent))
+
+        // When: 분할 조회
+        val result = corpService.getSplits("TSLA", Period.Max)
+
+        // Then: 역분할이 올바르게 반환되어야 함
+        assertEquals(1, result.splits.size)
+        assertEquals(0.5, result.splits[0].ratio)
+    }
+
+    @Test
+    @DisplayName("주식 분할 조회 - ratio가 1.0인 경우 필터링")
+    fun getSplits_filterRatioOne() = runTest {
+        // Given: ratio가 1.0인 분할 (실제 분할 아님)
+        val splits = mapOf(
+            "1598889600" to SplitEvent(date = 1598889600L, numerator = 1, denominator = 1, splitRatio = "1:1"),
+            "1625011200" to SplitEvent(date = 1625011200L, numerator = 2, denominator = 1, splitRatio = "2:1")
+        )
+        fakeChartService.setupChartResponse("AAPL", split = splits)
+
+        // When: 분할 조회
+        val result = corpService.getSplits("AAPL", Period.Max)
+
+        // Then: 1:1 분할은 필터링되고, 2:1만 반환되어야 함
+        assertEquals(1, result.splits.size)
+        assertEquals(2.0, result.splits[0].ratio)
+    }
+
+    @Test
+    @DisplayName("주식 분할 조회 - 빈 데이터")
+    fun getSplits_empty() = runTest {
+        // Given: 분할이 없는 경우
+        fakeChartService.setupChartResponse("SPY")
+
+        // When: 분할 조회
+        val result = corpService.getSplits("SPY", Period.Max)
+
+        // Then: 빈 리스트가 반환되어야 함
+        assertEquals("SPY", result.symbol)
+        assertEmpty(result.splits)
+    }
+
+    @Test
+    @DisplayName("자본이득 조회 - 성공")
+    fun getCapitalGains_success() = runTest {
+        // Given: SPY의 자본이득 데이터
+        val capitalGainEvent = CapitalGainEvent(amount = 1.25, date = 1640995200L)
+        fakeChartService.setupChartResponse(
+            "SPY",
+            capitalGain = mapOf("1640995200" to capitalGainEvent),
+            currency = "USD"
+        )
+
+        // When: 자본이득 조회
+        val result = corpService.getCapitalGains("SPY", Period.FiveYears)
+
+        // Then: 자본이득이 올바르게 반환되어야 함
+        assertEquals("SPY", result.symbol)
+        assertEquals(1, result.capitalGains.size)
+        assertEquals(1.25, result.capitalGains[0].amount)
+        assertEquals(1640995200L, result.capitalGains[0].date)
+        assertEquals("USD", result.capitalGains[0].currency)
+    }
+
+    @Test
+    @DisplayName("자본이득 조회 - 0값 필터링")
+    fun getCapitalGains_filterZeroValues() = runTest {
+        // Given: 0값을 포함한 자본이득
+        val capitalGains = mapOf(
+            "1640995200" to CapitalGainEvent(amount = 1.25, date = 1640995200L),
+            "1672531200" to CapitalGainEvent(amount = 0.0, date = 1672531200L)  // 0값
+        )
+        fakeChartService.setupChartResponse("SPY", capitalGain = capitalGains)
+
+        // When: 자본이득 조회
+        val result = corpService.getCapitalGains("SPY", Period.FiveYears)
+
+        // Then: 0값은 필터링되어야 함
+        assertEquals(1, result.capitalGains.size)
+        assertEquals(1.25, result.capitalGains[0].amount)
+    }
+
+    @Test
+    @DisplayName("자본이득 조회 - 빈 데이터")
+    fun getCapitalGains_empty() = runTest {
+        // Given: 자본이득이 없는 경우
+        fakeChartService.setupChartResponse("AAPL")
+
+        // When: 자본이득 조회
+        val result = corpService.getCapitalGains("AAPL", Period.FiveYears)
+
+        // Then: 빈 리스트가 반환되어야 함
+        assertEquals("AAPL", result.symbol)
+        assertEmpty(result.capitalGains)
+    }
+
+    @Test
+    @DisplayName("배당금 - 날짜 정렬 검증")
+    fun getDividends_sortByDate() = runTest {
+        // Given: 역순으로 된 배당금 데이터
+        val dividends = mapOf(
+            "1625011200" to DividendEvent(amount = 0.225, date = 1625011200L),
+            "1609459200" to DividendEvent(amount = 0.205, date = 1609459200L),
+            "1617235200" to DividendEvent(amount = 0.22, date = 1617235200L)
+        )
+        fakeChartService.setupChartResponse("AAPL", dividend = dividends)
+
+        // When: 배당금 조회
+        val result = corpService.getDividends("AAPL", Period.FiveYears)
+
+        // Then: 날짜 오름차순으로 정렬되어야 함
+        assertEquals(3, result.dividends.size)
+        assertTrue(result.dividends[0].date < result.dividends[1].date)
+        assertTrue(result.dividends[1].date < result.dividends[2].date)
+    }
+
+    @Test
+    @DisplayName("캐싱 - 동일 요청에 대해 캐시 사용")
+    fun caching_usesCachedData() = runTest {
+        // Given: Chart API 응답 설정
+        val dividendEvent = DividendEvent(amount = 0.22, date = 1617235200L)
+        fakeChartService.setupChartResponse("AAPL", dividend = mapOf("1617235200" to dividendEvent))
+
+        // When: 첫 번째 요청
+        val result1 = corpService.getDividends("AAPL", Period.FiveYears)
+        val callCount1 = fakeChartService.getRawChartDataCallCount()
+
+        // When: 두 번째 요청 (동일 심볼, 동일 기간)
+        val result2 = corpService.getDividends("AAPL", Period.FiveYears)
+        val callCount2 = fakeChartService.getRawChartDataCallCount()
+
+        // Then: 캐시가 사용되어 API 호출이 증가하지 않아야 함
+        assertEquals(result1.dividends, result2.dividends)
+        assertEquals(callCount1, callCount2)  // API 호출 횟수가 동일 (캐시 사용)
+    }
+
+    @Test
+    @DisplayName("캐싱 - 다른 기간에 대해서는 별도 API 호출")
+    fun caching_differentPeriodRequiresNewCall() = runTest {
+        // Given: Chart API 응답 설정
+        val dividendEvent = DividendEvent(amount = 0.22, date = 1617235200L)
+        fakeChartService.setupChartResponse("AAPL", dividend = mapOf("1617235200" to dividendEvent))
+
+        // When: 첫 번째 요청 (Period.FiveYears)
+        corpService.getDividends("AAPL", Period.FiveYears)
+        val callCount1 = fakeChartService.getRawChartDataCallCount()
+
+        // When: 두 번째 요청 (Period.OneYear)
+        corpService.getDividends("AAPL", Period.OneYear)
+        val callCount2 = fakeChartService.getRawChartDataCallCount()
+
+        // Then: 다른 기간이므로 별도의 API 호출이 발생해야 함
+        assertEquals(2, callCount2)
+        assertTrue(callCount2 > callCount1)
+    }
+
+    @Test
+    @DisplayName("심볼이 대소문자 무관하게 작동")
+    fun getDividends_caseInsensitive() = runTest {
+        // Given: 배당금 설정
+        val dividendEvent = DividendEvent(amount = 0.22, date = 1617235200L)
+        fakeChartService.setupChartResponse("AAPL", dividend = mapOf("1617235200" to dividendEvent))
+
+        // When: 소문자로 조회
+        val result1 = corpService.getDividends("aapl", Period.FiveYears)
+
+        // When: 대문자로 조회
+        val result2 = corpService.getDividends("AAPL", Period.FiveYears)
+
+        // Then: 캐시 키가 정규화되어 같은 데이터를 반환해야 함
+        assertEquals(result1.dividends, result2.dividends)
+    }
+}
+
+/**
+ * 테스트용 ChartService Fake 구현체
+ */
+class FakeChartService : ChartService {
+
+    private var chartResponse: ChartDataResponse? = null
+    private var getRawChartDataCallCount = 0
+
+    fun setupChartResponse(
+        symbol: String,
+        dividend: Map<String, DividendEvent>? = null,
+        split: Map<String, SplitEvent>? = null,
+        capitalGain: Map<String, CapitalGainEvent>? = null,
+        currency: String = "USD"
+    ) {
+        val events = ChartEvents(
+            dividends = dividend,
+            splits = split,
+            capitalGains = capitalGain
+        )
+        val meta = ChartMeta(symbol = symbol, currency = currency)
+        val result = ChartResult(
+            meta = meta,
+            timestamp = emptyList(),
+            indicators = null,
+            events = events
+        )
+        chartResponse = ChartDataResponse(
+            chart = Chart(result = listOf(result), error = null)
+        )
+    }
+
+    fun getRawChartDataCallCount(): Int = getRawChartDataCallCount
+
+    override suspend fun getChartData(
+        symbol: String,
+        interval: Interval,
+        period: Period
+    ): List<com.ulalax.ufc.domain.chart.OHLCVData> {
+        return emptyList()
+    }
+
+    override suspend fun getChartData(
+        symbols: List<String>,
+        interval: Interval,
+        period: Period
+    ): Map<String, List<com.ulalax.ufc.domain.chart.OHLCVData>> {
+        return emptyMap()
+    }
+
+    override suspend fun getRawChartData(
+        symbol: String,
+        interval: Interval,
+        period: Period,
+        includeEvents: Boolean
+    ): ChartDataResponse {
+        getRawChartDataCallCount++
+        return chartResponse ?: ChartDataResponse(
+            chart = Chart(result = emptyList(), error = null)
+        )
+    }
+}

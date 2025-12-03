@@ -1,0 +1,429 @@
+package com.ulalax.ufc.domain.price
+
+import com.ulalax.ufc.domain.chart.ChartDataResponse
+import com.ulalax.ufc.domain.chart.ChartService
+import com.ulalax.ufc.domain.quote.QuoteSummaryService
+import com.ulalax.ufc.exception.UfcException
+import com.ulalax.ufc.exception.ErrorCode
+import com.ulalax.ufc.model.common.Interval
+import com.ulalax.ufc.model.common.Period
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import com.google.common.truth.Truth.assertThat
+
+/**
+ * YahooPriceService의 단위 테스트
+ */
+@DisplayName("YahooPriceService 테스트")
+class YahooPriceServiceTest {
+    private lateinit var quoteService: QuoteSummaryService
+    private lateinit var chartService: ChartService
+    private lateinit var priceService: PriceService
+
+    @BeforeEach
+    fun setUp() {
+        quoteService = mockk()
+        chartService = mockk()
+        priceService = YahooPriceService(quoteService, chartService)
+    }
+
+    @Nested
+    @DisplayName("getCurrentPrice 테스트")
+    inner class GetCurrentPriceTest {
+        @Test
+        @DisplayName("유효한 심볼로 현재 가격을 조회할 수 있다")
+        fun testGetCurrentPrice_Success() = runTest {
+            // Given
+            val symbol = "AAPL"
+            val mockResponse = createMockPriceResponse(symbol)
+            coEvery { quoteService.getQuoteSummary(symbol, any()) } returns mockResponse
+
+            // When
+            val result = priceService.getCurrentPrice(symbol)
+
+            // Then
+            assertThat(result.symbol).isEqualTo(symbol)
+            assertThat(result.regularMarketPrice).isNotNull()
+        }
+
+        @Test
+        @DisplayName("빈 심볼로 조회하면 예외 발생")
+        fun testGetCurrentPrice_EmptySymbol() = runTest {
+            // When & Then
+            assertThrows<UfcException> {
+                priceService.getCurrentPrice("")
+            }.apply {
+                assertThat(this.errorCode).isEqualTo(ErrorCode.INVALID_SYMBOL)
+            }
+        }
+
+        @Test
+        @DisplayName("너무 긴 심볼로 조회하면 예외 발생")
+        fun testGetCurrentPrice_TooLongSymbol() = runTest {
+            // When & Then
+            val longSymbol = "A".repeat(21)
+            assertThrows<UfcException> {
+                priceService.getCurrentPrice(longSymbol)
+            }.apply {
+                assertThat(this.errorCode).isEqualTo(ErrorCode.INVALID_SYMBOL)
+            }
+        }
+
+        @Test
+        @DisplayName("유효하지 않은 문자가 포함된 심볼로 조회하면 예외 발생")
+        fun testGetCurrentPrice_InvalidCharacter() = runTest {
+            // When & Then
+            assertThrows<UfcException> {
+                priceService.getCurrentPrice("AAPL@")
+            }.apply {
+                assertThat(this.errorCode).isEqualTo(ErrorCode.INVALID_SYMBOL)
+            }
+        }
+
+        @Test
+        @DisplayName("유효한 심볼(^로 시작)로 조회할 수 있다")
+        fun testGetCurrentPrice_IndexSymbol() = runTest {
+            // Given
+            val symbol = "^GSPC"
+            val mockResponse = createMockPriceResponse(symbol)
+            coEvery { quoteService.getQuoteSummary(symbol, any()) } returns mockResponse
+
+            // When
+            val result = priceService.getCurrentPrice(symbol)
+
+            // Then
+            assertThat(result.symbol).isEqualTo(symbol)
+        }
+    }
+
+    @Nested
+    @DisplayName("getPriceHistory 테스트")
+    inner class GetPriceHistoryTest {
+        @Test
+        @DisplayName("유효한 Period와 Interval로 히스토리를 조회할 수 있다")
+        fun testGetPriceHistory_Success() = runTest {
+            // Given
+            val symbol = "AAPL"
+            val period = Period.OneMonth
+            val interval = Interval.OneDay
+            val mockChartData = listOf(
+                createMockOHLCVData(1000, 100.0, 102.0, 99.0, 101.0, 1_000_000L),
+                createMockOHLCVData(2000, 101.0, 103.0, 100.0, 102.0, 1_100_000L)
+            )
+            coEvery { chartService.getChartData(symbol, interval, period) } returns mockChartData
+
+            // When
+            val result = priceService.getPriceHistory(symbol, period, interval)
+
+            // Then
+            assertThat(result).hasSize(2)
+            assertThat(result.first().open).isEqualTo(100.0)
+        }
+
+        @Test
+        @DisplayName("Intraday 간격으로 7일 이상 조회하면 예외 발생")
+        fun testGetPriceHistory_IntradayTooLong() = runTest {
+            // When & Then
+            assertThrows<UfcException> {
+                priceService.getPriceHistory("AAPL", Period.OneMonth, Interval.OneMinute)
+            }.apply {
+                assertThat(this.errorCode).isEqualTo(ErrorCode.INVALID_PERIOD_INTERVAL)
+            }
+        }
+
+        @Test
+        @DisplayName("시간 간격으로 60일 이상 조회하면 예외 발생")
+        fun testGetPriceHistory_HourlyTooLong() = runTest {
+            // When & Then
+            assertThrows<UfcException> {
+                priceService.getPriceHistory("AAPL", Period.ThreeMonths, Interval.OneHour)
+            }.apply {
+                assertThat(this.errorCode).isEqualTo(ErrorCode.INVALID_PERIOD_INTERVAL)
+            }
+        }
+
+        @Test
+        @DisplayName("Intraday 간격으로 7일 이하 조회하면 성공")
+        fun testGetPriceHistory_IntradayValid() = runTest {
+            // Given
+            val symbol = "AAPL"
+            val period = Period.FiveDays
+            val interval = Interval.FifteenMinutes
+            val mockChartData = listOf(
+                createMockOHLCVData(1000, 100.0, 102.0, 99.0, 101.0, 1_000_000L)
+            )
+            coEvery { chartService.getChartData(symbol, interval, period) } returns mockChartData
+
+            // When
+            val result = priceService.getPriceHistory(symbol, period, interval)
+
+            // Then
+            assertThat(result).isNotEmpty()
+        }
+    }
+
+    @Nested
+    @DisplayName("PriceData 유틸리티 메서드 테스트")
+    inner class PriceDataUtilityTest {
+        @Test
+        @DisplayName("fiftyTwoWeekPosition을 계산할 수 있다")
+        fun testFiftyTwoWeekPosition() {
+            // Given
+            val priceData = PriceData(
+                symbol = "AAPL",
+                currency = "USD",
+                exchange = "NMS",
+                lastPrice = 150.0,
+                regularMarketPrice = 150.0,
+                regularMarketTime = null,
+                open = null,
+                dayHigh = null,
+                dayLow = null,
+                previousClose = null,
+                volume = null,
+                regularMarketVolume = null,
+                averageVolume = null,
+                averageVolume10days = null,
+                fiftyTwoWeekHigh = 200.0,
+                fiftyTwoWeekLow = 100.0,
+                fiftyTwoWeekChange = null,
+                fiftyTwoWeekChangePercent = null,
+                fiftyDayAverage = null,
+                twoHundredDayAverage = null,
+                marketCap = null,
+                dividendYield = null,
+                dividendRate = null,
+                exDividendDate = null,
+                beta = null,
+                trailingPE = null,
+                forwardPE = null
+            )
+
+            // When
+            val position = priceData.fiftyTwoWeekPosition()
+
+            // Then
+            assertThat(position).isEqualTo(0.5)
+        }
+
+        @Test
+        @DisplayName("dailyChangePercent를 계산할 수 있다")
+        fun testDailyChangePercent() {
+            // Given
+            val priceData = PriceData(
+                symbol = "AAPL",
+                currency = "USD",
+                exchange = "NMS",
+                lastPrice = 110.0,
+                regularMarketPrice = 110.0,
+                regularMarketTime = null,
+                open = null,
+                dayHigh = null,
+                dayLow = null,
+                previousClose = 100.0,
+                volume = null,
+                regularMarketVolume = null,
+                averageVolume = null,
+                averageVolume10days = null,
+                fiftyTwoWeekHigh = null,
+                fiftyTwoWeekLow = null,
+                fiftyTwoWeekChange = null,
+                fiftyTwoWeekChangePercent = null,
+                fiftyDayAverage = null,
+                twoHundredDayAverage = null,
+                marketCap = null,
+                dividendYield = null,
+                dividendRate = null,
+                exDividendDate = null,
+                beta = null,
+                trailingPE = null,
+                forwardPE = null
+            )
+
+            // When
+            val changePercent = priceData.dailyChangePercent()
+
+            // Then
+            assertThat(changePercent).isEqualTo(10.0)
+        }
+
+        @Test
+        @DisplayName("isAbove50DayMA를 확인할 수 있다")
+        fun testIsAbove50DayMA() {
+            // Given
+            val priceData = PriceData(
+                symbol = "AAPL",
+                currency = "USD",
+                exchange = "NMS",
+                lastPrice = 150.0,
+                regularMarketPrice = 150.0,
+                regularMarketTime = null,
+                open = null,
+                dayHigh = null,
+                dayLow = null,
+                previousClose = null,
+                volume = null,
+                regularMarketVolume = null,
+                averageVolume = null,
+                averageVolume10days = null,
+                fiftyTwoWeekHigh = null,
+                fiftyTwoWeekLow = null,
+                fiftyTwoWeekChange = null,
+                fiftyTwoWeekChangePercent = null,
+                fiftyDayAverage = 140.0,
+                twoHundredDayAverage = null,
+                marketCap = null,
+                dividendYield = null,
+                dividendRate = null,
+                exDividendDate = null,
+                beta = null,
+                trailingPE = null,
+                forwardPE = null
+            )
+
+            // When
+            val result = priceData.isAbove50DayMA()
+
+            // Then
+            assertThat(result).isTrue()
+        }
+    }
+
+    @Nested
+    @DisplayName("OHLCV 유틸리티 메서드 테스트")
+    inner class OHLCVUtilityTest {
+        @Test
+        @DisplayName("range를 계산할 수 있다")
+        fun testRange() {
+            // Given
+            val ohlcv = OHLCV(
+                timestamp = 1000,
+                open = 100.0,
+                high = 105.0,
+                low = 95.0,
+                close = 102.0,
+                adjClose = null,
+                volume = 1_000_000L
+            )
+
+            // When
+            val range = ohlcv.range()
+
+            // Then
+            assertThat(range).isEqualTo(10.0)
+        }
+
+        @Test
+        @DisplayName("rangePercent를 계산할 수 있다")
+        fun testRangePercent() {
+            // Given
+            val ohlcv = OHLCV(
+                timestamp = 1000,
+                open = 100.0,
+                high = 105.0,
+                low = 100.0,
+                close = 102.0,
+                adjClose = null,
+                volume = 1_000_000L
+            )
+
+            // When
+            val rangePercent = ohlcv.rangePercent()
+
+            // Then
+            assertThat(rangePercent).isEqualTo(5.0)
+        }
+
+        @Test
+        @DisplayName("isBullish를 확인할 수 있다")
+        fun testIsBullish() {
+            // Given
+            val ohlcv = OHLCV(
+                timestamp = 1000,
+                open = 100.0,
+                high = 105.0,
+                low = 99.0,
+                close = 102.0,
+                adjClose = null,
+                volume = 1_000_000L
+            )
+
+            // When
+            val result = ohlcv.isBullish()
+
+            // Then
+            assertThat(result).isTrue()
+        }
+
+        @Test
+        @DisplayName("isBearish를 확인할 수 있다")
+        fun testIsBearish() {
+            // Given
+            val ohlcv = OHLCV(
+                timestamp = 1000,
+                open = 100.0,
+                high = 101.0,
+                low = 98.0,
+                close = 98.5,
+                adjClose = null,
+                volume = 1_000_000L
+            )
+
+            // When
+            val result = ohlcv.isBearish()
+
+            // Then
+            assertThat(result).isTrue()
+        }
+    }
+
+    // ============================================================================
+    // Helper Functions
+    // ============================================================================
+
+    private fun createMockPriceResponse(symbol: String): com.ulalax.ufc.domain.quote.QuoteSummaryResponse {
+        return com.ulalax.ufc.domain.quote.QuoteSummaryResponse(
+            quoteSummary = com.ulalax.ufc.domain.quote.QuoteSummary(
+                result = listOf(
+                    com.ulalax.ufc.domain.quote.QuoteSummaryResult(
+                        price = com.ulalax.ufc.domain.quote.Price(
+                            symbol = symbol,
+                            currency = "USD",
+                            exchange = "NMS",
+                            regularMarketPrice = com.ulalax.ufc.domain.quote.RawFormatted(
+                                raw = com.ulalax.ufc.model.common.JsonElement("150.0"),
+                                fmt = "150.00"
+                            )
+                        ),
+                        summaryDetail = com.ulalax.ufc.domain.quote.SummaryDetail()
+                    )
+                )
+            )
+        )
+    }
+
+    private fun createMockOHLCVData(
+        timestamp: Long,
+        open: Double,
+        high: Double,
+        low: Double,
+        close: Double,
+        volume: Long
+    ): com.ulalax.ufc.domain.chart.OHLCVData {
+        return com.ulalax.ufc.domain.chart.OHLCVData(
+            timestamp = timestamp,
+            open = open,
+            high = high,
+            low = low,
+            close = close,
+            adjClose = null,
+            volume = volume
+        )
+    }
+}

@@ -1,9 +1,9 @@
 package com.ulalax.ufc.fakes
 
-import com.ulalax.ufc.exception.ErrorCode
-import com.ulalax.ufc.exception.UfcException
-import com.ulalax.ufc.internal.yahoo.auth.AuthResult
-import com.ulalax.ufc.internal.yahoo.auth.AuthStrategy
+import com.ulalax.ufc.api.exception.ErrorCode
+import com.ulalax.ufc.api.exception.UfcException
+import com.ulalax.ufc.infrastructure.yahoo.auth.AuthResult
+import com.ulalax.ufc.infrastructure.yahoo.auth.AuthStrategy
 
 /**
  * AuthStrategy의 테스트용 Fake 구현입니다.
