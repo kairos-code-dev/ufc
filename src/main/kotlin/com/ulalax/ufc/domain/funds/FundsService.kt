@@ -1,7 +1,5 @@
 package com.ulalax.ufc.domain.funds
 
-import com.ulalax.ufc.infrastructure.yahoo.response.FundDataResponse
-
 /**
  * ETF 및 뮤추얼펀드 정보 조회 서비스 인터페이스.
  *
@@ -59,16 +57,6 @@ interface FundsService {
      * @throws com.ulalax.ufc.exception.UfcException 모든 조회가 실패한 경우
      */
     suspend fun getFundData(symbols: List<String>): Map<String, FundData>
-
-    /**
-     * 원본 API 응답을 반환합니다.
-     *
-     * 디버깅이나 커스텀 파싱이 필요한 경우 사용합니다.
-     *
-     * @param symbol 펀드 심볼
-     * @return FundDataResponse 원본 API 응답
-     */
-    suspend fun getRawFundData(symbol: String): FundDataResponse
 
     /**
      * 주어진 심볼이 펀드(ETF 또는 MUTUALFUND)인지 확인합니다.

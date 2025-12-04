@@ -2,16 +2,15 @@ package com.ulalax.ufc.domain.price
 
 import com.ulalax.ufc.api.exception.ErrorCode
 import com.ulalax.ufc.api.exception.UfcException
-import com.ulalax.ufc.infrastructure.yahoo.response.ChartResponse
-import com.ulalax.ufc.infrastructure.yahoo.response.PriceResponse
 import com.ulalax.ufc.domain.common.Interval
 import com.ulalax.ufc.domain.common.Period
 import com.ulalax.ufc.infrastructure.util.CacheHelper
+import com.ulalax.ufc.infrastructure.yahoo.response.ChartResponse
+import com.ulalax.ufc.infrastructure.yahoo.response.PriceResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
-import java.time.ZoneOffset
 import kotlin.math.min
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -157,30 +156,6 @@ class PriceServiceImpl(
         // 최소 기간으로 조회하여 메타데이터만 추출
         val response = httpClient.fetchChart(symbol, Interval.OneDay, Period.OneDay)
         return parseChartMetadata(response)
-    }
-
-    override suspend fun getRawPrice(symbol: String): PriceResponse {
-        validateSymbol(symbol)
-
-        logger.debug("Fetching raw price: symbol={}", symbol)
-
-        return httpClient.fetchQuoteSummary(symbol, listOf("price", "summaryDetail"))
-    }
-
-    override suspend fun getRawPriceHistory(
-        symbol: String,
-        period: Period,
-        interval: Interval
-    ): ChartResponse {
-        validateSymbol(symbol)
-        validatePeriodInterval(period, interval)
-
-        logger.debug(
-            "Fetching raw price history: symbol={}, period={}, interval={}",
-            symbol, period.value, interval.value
-        )
-
-        return httpClient.fetchChart(symbol, interval, period)
     }
 
     // ============================================================================

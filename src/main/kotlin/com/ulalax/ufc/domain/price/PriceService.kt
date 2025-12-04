@@ -1,7 +1,5 @@
 package com.ulalax.ufc.domain.price
 
-import com.ulalax.ufc.infrastructure.yahoo.response.ChartResponse
-import com.ulalax.ufc.infrastructure.yahoo.response.PriceResponse
 import com.ulalax.ufc.domain.common.Interval
 import com.ulalax.ufc.domain.common.Period
 import java.time.LocalDate
@@ -88,28 +86,4 @@ interface PriceService {
      * @throws UfcException
      */
     suspend fun getHistoryMetadata(symbol: String): ChartMetadata
-
-    /**
-     * 원본 가격 응답 조회 (quoteSummary API)
-     *
-     * @param symbol 심볼
-     * @return quoteSummary API의 원본 응답
-     * @throws UfcException
-     */
-    suspend fun getRawPrice(symbol: String): PriceResponse
-
-    /**
-     * 원본 차트 응답 조회 (chart API)
-     *
-     * @param symbol 심볼
-     * @param period 조회 기간
-     * @param interval 데이터 간격
-     * @return chart API의 원본 응답
-     * @throws UfcException
-     */
-    suspend fun getRawPriceHistory(
-        symbol: String,
-        period: Period,
-        interval: Interval = Interval.OneDay
-    ): ChartResponse
 }

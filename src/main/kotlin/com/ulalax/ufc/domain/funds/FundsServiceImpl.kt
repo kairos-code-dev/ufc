@@ -4,7 +4,6 @@ import com.ulalax.ufc.domain.quote.QuoteSummaryResponse
 import com.ulalax.ufc.domain.quote.QuoteSummaryResult
 import com.ulalax.ufc.api.exception.ErrorCode
 import com.ulalax.ufc.api.exception.UfcException
-import com.ulalax.ufc.infrastructure.yahoo.response.FundDataResponse
 import com.ulalax.ufc.infrastructure.util.CacheHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -113,13 +112,6 @@ class FundsServiceImpl(
         }
 
         return results
-    }
-
-    override suspend fun getRawFundData(symbol: String): FundDataResponse {
-        validateSymbol(symbol)
-
-        logger.debug("Fetching raw fund data: symbol={}", symbol)
-        return httpClient.fetchQuoteSummary(symbol, FUND_MODULES)
     }
 
     override suspend fun isFund(symbol: String): Boolean {

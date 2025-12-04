@@ -5,8 +5,6 @@ import com.ulalax.ufc.domain.price.PriceData
 import com.ulalax.ufc.domain.price.OHLCV
 import com.ulalax.ufc.domain.price.ChartMetadata
 import com.ulalax.ufc.domain.price.PriceService
-import com.ulalax.ufc.infrastructure.yahoo.response.ChartResponse
-import com.ulalax.ufc.infrastructure.yahoo.response.PriceResponse
 import com.ulalax.ufc.domain.common.Interval
 import com.ulalax.ufc.domain.common.Period
 import java.time.LocalDate
@@ -55,17 +53,5 @@ internal class PriceApiImpl(
 
     override suspend fun getHistoryMetadata(symbol: String): ChartMetadata {
         return priceService.getHistoryMetadata(symbol)
-    }
-
-    override suspend fun getRawPrice(symbol: String): PriceResponse {
-        return priceService.getRawPrice(symbol)
-    }
-
-    override suspend fun getRawPriceHistory(
-        symbol: String,
-        period: Period,
-        interval: Interval
-    ): ChartResponse {
-        return priceService.getRawPriceHistory(symbol, period, interval)
     }
 }

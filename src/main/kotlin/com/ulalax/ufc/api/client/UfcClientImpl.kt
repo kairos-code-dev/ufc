@@ -42,6 +42,11 @@ import com.ulalax.ufc.infrastructure.ratelimit.TokenBucketRateLimiter
 import com.ulalax.ufc.infrastructure.yahoo.auth.BasicAuthStrategy
 import com.ulalax.ufc.domain.common.Interval
 import com.ulalax.ufc.domain.common.Period
+import com.ulalax.ufc.domain.chart.ChartData
+import com.ulalax.ufc.domain.chart.ChartEventType
+import com.ulalax.ufc.domain.quote.QuoteSummaryModule
+import com.ulalax.ufc.domain.quote.QuoteSummaryModuleResult
+import com.ulalax.ufc.domain.quote.toModuleResult
 import io.ktor.client.HttpClient
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -118,7 +123,8 @@ class UfcClientImpl(
     internal val fundsService: FundsService,
     internal val priceService: PriceService,
     internal val corpService: CorpService,
-    internal val macroService: MacroService?
+    internal val macroService: MacroService?,
+    private val priceHttpClient: PriceHttpClient
 ) : AutoCloseable {
 
     companion object {
@@ -201,7 +207,8 @@ class UfcClientImpl(
                     fundsService = fundsService,
                     priceService = priceService,
                     corpService = corpService,
-                    macroService = macroService
+                    macroService = macroService,
+                    priceHttpClient = priceHttpClient
                 )
 
                 logger.info("UFC client created successfully")
@@ -766,5 +773,165 @@ class UfcClientImpl(
                 ErrorCode.CONFIGURATION_ERROR,
                 "FRED API key is not configured"
             )
+    }
+
+    // ========================================
+    // QuoteSummary API Methods (통합 API)
+    // ========================================
+
+    /**
+     * QuoteSummary API - 지정한 모듈들의 데이터를 한 번의 API 호출로 가져옵니다.
+     *
+     * Yahoo Finance QuoteSummary API를 통해 주식, ETF, 뮤추얼펀드 등의 상세 정보를 조회합니다.
+     * 여러 모듈을 지정하여 필요한 정보만 선택적으로 가져올 수 있습니다.
+     *
+     * 모듈을 지정하지 않으면 기본 모듈 세트(PRICE, SUMMARY_DETAIL, QUOTE_TYPE)를 사용합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL", "SPY")
+     * @param modules 조회할 모듈 목록 (미지정시 기본 모듈 사용)
+     * @return 요청한 모듈별 데이터를 포함한 QuoteSummaryModuleResult
+     * @throws UfcException 데이터 조회 실패 시
+     */
+    suspend fun quoteSummary(
+        symbol: String,
+        vararg modules: QuoteSummaryModule
+    ): QuoteSummaryModuleResult {
+        logger.debug("Fetching quote summary: symbol={}, modules={}", symbol, modules.contentToString())
+
+        // 모듈이 지정되지 않은 경우 기본 모듈 사용
+        val requestedModules = if (modules.isEmpty()) {
+            setOf(
+                QuoteSummaryModule.PRICE,
+                QuoteSummaryModule.SUMMARY_DETAIL,
+                QuoteSummaryModule.QUOTE_TYPE
+            )
+        } else {
+            modules.toSet()
+        }
+
+        // API 호출
+        val moduleStrings = requestedModules.map { it.apiValue }
+        val response = priceHttpClient.fetchQuoteSummary(symbol, moduleStrings)
+
+        // 응답 변환
+        val quoteSummaryResult = response.quoteSummary.result?.firstOrNull()
+            ?: throw UfcException(
+                ErrorCode.DATA_NOT_FOUND,
+                "QuoteSummary 데이터를 찾을 수 없습니다: $symbol"
+            )
+
+        return quoteSummaryResult.toModuleResult(requestedModules)
+    }
+
+    // ========================================
+    // Chart API Methods (통합 API)
+    // ========================================
+
+    /**
+     * Chart API - OHLCV 데이터와 이벤트를 한 번의 API 호출로 가져옵니다.
+     *
+     * Yahoo Finance Chart API를 통해 가격 히스토리(OHLCV)와
+     * 이벤트 데이터(배당금, 주식분할, 자본이득)를 조회합니다.
+     *
+     * 이벤트를 지정하지 않으면 OHLCV 데이터만 조회합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL", "^GSPC")
+     * @param interval 데이터 간격 (기본값: OneDay)
+     * @param period 조회 기간 (기본값: OneYear)
+     * @param events 조회할 이벤트 타입 목록 (미지정시 이벤트 미포함)
+     * @return OHLCV 데이터와 요청한 이벤트를 포함한 ChartData
+     * @throws UfcException 데이터 조회 실패 시
+     */
+    suspend fun chart(
+        symbol: String,
+        interval: Interval = Interval.OneDay,
+        period: Period = Period.OneYear,
+        vararg events: ChartEventType
+    ): ChartData {
+        logger.debug(
+            "Fetching chart data: symbol={}, interval={}, period={}, events={}",
+            symbol, interval.value, period.value, events.contentToString()
+        )
+
+        val requestedEvents = events.toSet()
+
+        // API 호출 (이벤트 포함 여부에 따라 다른 메서드 사용)
+        val response = if (requestedEvents.isNotEmpty()) {
+            // 이벤트 파라미터 구성
+            val eventParams = requestedEvents.joinToString(",") { it.apiValue }
+            priceHttpClient.fetchChartWithEvents(symbol, interval, period, includeEvents = true)
+        } else {
+            priceHttpClient.fetchChart(symbol, interval, period)
+        }
+
+        // 응답 변환
+        val chartResult = response.chart.result?.firstOrNull()
+            ?: throw UfcException(
+                ErrorCode.DATA_NOT_FOUND,
+                "차트 데이터를 찾을 수 없습니다: $symbol"
+            )
+
+        // ChartMeta 구성
+        val meta = chartResult.meta?.let { m ->
+            com.ulalax.ufc.domain.chart.ChartMeta(
+                symbol = m.symbol,
+                currency = m.currency,
+                currencySymbol = m.currencySymbol,
+                regularMarketPrice = m.regularMarketPrice,
+                exchange = m.exchange,
+                regularMarketDayHigh = m.regularMarketDayHigh,
+                regularMarketDayLow = m.regularMarketDayLow,
+                dataGranularity = m.dataGranularity,
+                range = m.range,
+                fiftyTwoWeekHigh = m.fiftyTwoWeekHigh,
+                fiftyTwoWeekLow = m.fiftyTwoWeekLow,
+                sharesOutstanding = m.sharesOutstanding,
+                marketCap = m.marketCap,
+                regularMarketVolume = m.regularMarketVolume,
+                validRanges = m.validRanges
+            )
+        } ?: throw UfcException(
+            ErrorCode.DATA_PARSING_ERROR,
+            "차트 메타데이터를 찾을 수 없습니다"
+        )
+
+        // OHLCV 데이터 파싱
+        val timestamps = chartResult.timestamp ?: emptyList()
+        val quote = chartResult.indicators?.quote?.firstOrNull()
+        val adjClose = chartResult.indicators?.adjclose?.firstOrNull()
+
+        val prices = timestamps.mapIndexedNotNull { index, timestamp ->
+            val open = quote?.open?.getOrNull(index)
+            val high = quote?.high?.getOrNull(index)
+            val low = quote?.low?.getOrNull(index)
+            val close = quote?.close?.getOrNull(index)
+            val volume = quote?.volume?.getOrNull(index)
+            val adj = adjClose?.adjclose?.getOrNull(index)
+
+            // null 값이 있으면 해당 데이터 포인트 제외
+            if (open != null && high != null && low != null && close != null && volume != null) {
+                com.ulalax.ufc.domain.price.OHLCV(
+                    timestamp = timestamp,
+                    open = open,
+                    high = high,
+                    low = low,
+                    close = close,
+                    adjClose = adj,
+                    volume = volume
+                )
+            } else {
+                null
+            }
+        }
+
+        // 이벤트 데이터 (요청한 경우에만 포함)
+        val chartEvents = chartResult.events
+
+        return ChartData(
+            requestedEvents = requestedEvents,
+            meta = meta,
+            prices = prices,
+            events = chartEvents
+        )
     }
 }

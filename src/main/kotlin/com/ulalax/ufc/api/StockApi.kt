@@ -1,6 +1,5 @@
 package com.ulalax.ufc.api
 
-import com.ulalax.ufc.domain.quote.QuoteSummaryResponse
 import com.ulalax.ufc.domain.stock.CompanyInfo
 import com.ulalax.ufc.domain.stock.FastInfo
 import com.ulalax.ufc.domain.stock.SharesData
@@ -126,18 +125,4 @@ interface StockApi {
         start: LocalDate? = null,
         end: LocalDate? = null
     ): List<SharesData>
-
-    /**
-     * Raw Quote Summary API 응답을 반환합니다.
-     *
-     * 디버깅이나 커스텀 파싱이 필요한 경우 사용합니다.
-     *
-     * @param symbol 심볼
-     * @param modules Quote Summary 모듈 목록
-     * @return 원본 API 응답
-     */
-    suspend fun getRawQuoteSummary(
-        symbol: String,
-        modules: List<String>
-    ): QuoteSummaryResponse
 }

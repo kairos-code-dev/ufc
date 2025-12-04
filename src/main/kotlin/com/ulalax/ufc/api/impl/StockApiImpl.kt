@@ -1,7 +1,6 @@
 package com.ulalax.ufc.api.impl
 
 import com.ulalax.ufc.api.StockApi
-import com.ulalax.ufc.domain.quote.QuoteSummaryResponse
 import com.ulalax.ufc.domain.stock.CompanyInfo
 import com.ulalax.ufc.domain.stock.FastInfo
 import com.ulalax.ufc.domain.stock.SharesData
@@ -55,12 +54,5 @@ internal class StockApiImpl(
         end: LocalDate?
     ): List<SharesData> {
         return stockService.getSharesFull(symbol, start, end)
-    }
-
-    override suspend fun getRawQuoteSummary(
-        symbol: String,
-        modules: List<String>
-    ): QuoteSummaryResponse {
-        return stockService.getRawQuoteSummary(symbol, modules)
     }
 }

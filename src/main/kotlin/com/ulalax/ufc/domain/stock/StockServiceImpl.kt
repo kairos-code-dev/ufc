@@ -1,15 +1,14 @@
 package com.ulalax.ufc.domain.stock
 
-import com.ulalax.ufc.domain.quote.QuoteSummaryResponse
 import com.ulalax.ufc.api.exception.ErrorCode
 import com.ulalax.ufc.api.exception.UfcException
+import com.ulalax.ufc.domain.quote.QuoteSummaryResponse
 import com.ulalax.ufc.infrastructure.util.CacheHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.minutes
 
 /**
  * Stock 도메인 서비스 구현체
@@ -268,14 +267,6 @@ class StockServiceImpl(
         // Fundamentals Timeseries API 호출
         val response = httpClient.fetchFundamentalsTimeseries(symbol, period1, period2)
         return parseSharesFull(response, start, end)
-    }
-
-    override suspend fun getRawQuoteSummary(
-        symbol: String,
-        modules: List<String>
-    ): QuoteSummaryResponse {
-        validateSymbol(symbol)
-        return httpClient.fetchQuoteSummary(symbol, modules)
     }
 
     // ============================================================================

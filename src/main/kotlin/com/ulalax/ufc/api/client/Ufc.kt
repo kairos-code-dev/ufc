@@ -4,6 +4,12 @@ import com.ulalax.ufc.api.*
 import com.ulalax.ufc.api.impl.*
 import com.ulalax.ufc.api.exception.ErrorCode
 import com.ulalax.ufc.api.exception.UfcException
+import com.ulalax.ufc.domain.chart.ChartData
+import com.ulalax.ufc.domain.chart.ChartEventType
+import com.ulalax.ufc.domain.common.Interval
+import com.ulalax.ufc.domain.common.Period
+import com.ulalax.ufc.domain.quote.QuoteSummaryModule
+import com.ulalax.ufc.domain.quote.QuoteSummaryModuleResult
 import org.slf4j.LoggerFactory
 
 /**
@@ -138,6 +144,102 @@ class Ufc private constructor(
         macro = impl.macroService?.let { MacroApiImpl(it) }
 
         logger.info("UFC client initialized with namespaces: price, stock, funds, corp${if (macro != null) ", macro" else ""}")
+    }
+
+    /**
+     * QuoteSummary API - 지정한 모듈들의 데이터를 한 번의 API 호출로 가져옵니다.
+     *
+     * Yahoo Finance QuoteSummary API를 통해 주식, ETF, 뮤추얼펀드 등의 상세 정보를 조회합니다.
+     * 여러 모듈을 지정하여 필요한 정보만 선택적으로 가져올 수 있습니다.
+     *
+     * 지원하는 주요 모듈:
+     * - PRICE: 기본 가격 정보
+     * - SUMMARY_DETAIL: 배당금, PER, 베타 등 주요 통계
+     * - FINANCIAL_DATA: 재무 정보 (EPS, PEG, ROE 등)
+     * - ASSET_PROFILE: 기업 프로필 (섹터, 산업, 웹사이트 등)
+     * - TOP_HOLDINGS: 펀드의 상위 보유 종목
+     * - FUND_PROFILE: 펀드 프로필
+     *
+     * 모듈을 지정하지 않으면 기본 모듈 세트(PRICE, SUMMARY_DETAIL, QUOTE_TYPE)를 사용합니다.
+     *
+     * 사용 예시:
+     * ```kotlin
+     * // 가격과 재무 데이터만 조회
+     * val result = ufc.quoteSummary(
+     *     symbol = "AAPL",
+     *     QuoteSummaryModule.PRICE,
+     *     QuoteSummaryModule.FINANCIAL_DATA
+     * )
+     *
+     * // 특정 모듈의 데이터 가져오기
+     * val price: Price? = result.getModule(QuoteSummaryModule.PRICE)
+     * println("Current price: ${price?.regularMarketPrice?.doubleValue}")
+     * ```
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL", "SPY")
+     * @param modules 조회할 모듈 목록 (미지정시 기본 모듈 사용)
+     * @return 요청한 모듈별 데이터를 포함한 QuoteSummaryModuleResult
+     * @throws UfcException 데이터 조회 실패 시
+     */
+    suspend fun quoteSummary(
+        symbol: String,
+        vararg modules: QuoteSummaryModule
+    ): QuoteSummaryModuleResult {
+        return impl.quoteSummary(symbol, *modules)
+    }
+
+    /**
+     * Chart API - OHLCV 데이터와 이벤트를 한 번의 API 호출로 가져옵니다.
+     *
+     * Yahoo Finance Chart API를 통해 가격 히스토리(OHLCV)와
+     * 이벤트 데이터(배당금, 주식분할, 자본이득)를 조회합니다.
+     *
+     * 지원하는 이벤트:
+     * - DIVIDEND: 배당금 지급 내역
+     * - SPLIT: 주식 분할 내역
+     * - CAPITAL_GAIN: 자본 이득 내역 (ETF 등)
+     *
+     * 이벤트를 지정하지 않으면 OHLCV 데이터만 조회합니다.
+     *
+     * 사용 예시:
+     * ```kotlin
+     * // OHLCV 데이터와 배당 이벤트 조회
+     * val result = ufc.chart(
+     *     symbol = "AAPL",
+     *     interval = Interval.OneDay,
+     *     period = Period.OneYear,
+     *     ChartEventType.DIVIDEND,
+     *     ChartEventType.SPLIT
+     * )
+     *
+     * // 가격 데이터 확인
+     * result.prices.forEach { ohlcv ->
+     *     println("${ohlcv.timestamp}: ${ohlcv.close}")
+     * }
+     *
+     * // 배당 이벤트 확인
+     * if (result.hasEvent(ChartEventType.DIVIDEND)) {
+     *     val dividends = result.getDividends()
+     *     dividends?.forEach { (timestamp, event) ->
+     *         println("Dividend: ${event.amount} at $timestamp")
+     *     }
+     * }
+     * ```
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL", "^GSPC")
+     * @param interval 데이터 간격 (기본값: OneDay)
+     * @param period 조회 기간 (기본값: OneYear)
+     * @param events 조회할 이벤트 타입 목록 (미지정시 이벤트 미포함)
+     * @return OHLCV 데이터와 요청한 이벤트를 포함한 ChartData
+     * @throws UfcException 데이터 조회 실패 시
+     */
+    suspend fun chart(
+        symbol: String,
+        interval: Interval = Interval.OneDay,
+        period: Period = Period.OneYear,
+        vararg events: ChartEventType
+    ): ChartData {
+        return impl.chart(symbol, interval, period, *events)
     }
 
     /**

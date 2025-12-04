@@ -3,7 +3,6 @@ package com.ulalax.ufc.api.impl
 import com.ulalax.ufc.api.FundsApi
 import com.ulalax.ufc.domain.funds.FundData
 import com.ulalax.ufc.domain.funds.FundsService
-import com.ulalax.ufc.infrastructure.yahoo.response.FundDataResponse
 
 /**
  * FundsApi의 내부 구현체
@@ -20,10 +19,6 @@ internal class FundsApiImpl(
 
     override suspend fun getFundData(symbols: List<String>): Map<String, FundData> {
         return fundsService.getFundData(symbols)
-    }
-
-    override suspend fun getRawFundData(symbol: String): FundDataResponse {
-        return fundsService.getRawFundData(symbol)
     }
 
     override suspend fun isFund(symbol: String): Boolean {
