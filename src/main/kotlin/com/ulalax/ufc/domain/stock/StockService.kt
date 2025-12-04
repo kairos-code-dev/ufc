@@ -78,8 +78,12 @@ interface StockService {
     /**
      * ISIN 코드를 조회합니다.
      *
-     * ISIN (International Securities Identification Number)은 각 증권을 고유하게 식별합니다.
-     * yfinance의 isin 속성에 대응됩니다.
+     * ISIN (International Securities Identification Number)은 각 증권을 고유하게 식별하는
+     * 12자리 코드입니다. yfinance의 isin 속성에 대응됩니다.
+     *
+     * **구현 방식**:
+     * - Yahoo Finance API는 ISIN 데이터를 제공하지 않으므로,
+     * - yfinance와 동일하게 Business Insider Search API를 사용합니다.
      *
      * @param symbol 심볼
      * @return ISIN 코드 (예: "US0378331005")
@@ -89,6 +93,8 @@ interface StockService {
 
     /**
      * 다중 심볼의 ISIN 코드를 조회합니다.
+     *
+     * Business Insider Search API를 사용하여 ISIN을 조회합니다.
      *
      * @param symbols 심볼 목록 (최대 50개 권장)
      * @return 심볼별 ISIN 코드 맵. 실패한 심볼은 제외됨
@@ -120,10 +126,14 @@ interface StockService {
      *
      * yfinance의 get_shares_full(start, end)에 대응됩니다.
      *
+     * **구현 방식**:
+     * - Yahoo Finance Fundamentals Timeseries API를 사용합니다.
+     * - 날짜 범위 필터링을 지원합니다.
+     *
      * @param symbol 심볼
-     * @param start 시작일 (null이면 최초 데이터부터)
-     * @param end 종료일 (null이면 최신 데이터까지)
-     * @return 기간별 발행주식수 리스트
+     * @param start 시작일 (null이면 18개월 전부터)
+     * @param end 종료일 (null이면 현재까지)
+     * @return 기간별 발행주식수 리스트 (날짜 오름차순 정렬)
      * @throws com.ulalax.ufc.exception.UfcException 데이터 없음
      */
     suspend fun getSharesFull(

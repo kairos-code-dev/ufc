@@ -21,7 +21,7 @@ import com.ulalax.ufc.infrastructure.ratelimit.RateLimitingSettings
  * ```
  */
 @Serializable
-data class UFCClientConfig(
+data class UfcClientConfig(
     val fredApiKey: String? = null,
     val rateLimitingSettings: RateLimitingSettings = RateLimitingSettings()
 )
@@ -125,10 +125,10 @@ object UFCClient {
         ),
         level = DeprecationLevel.WARNING
     )
-    suspend fun create(config: UFCClientConfig): UFCClientImpl {
+    suspend fun create(config: UfcClientConfig): UfcClientImpl {
         logger.warn("UFCClient is deprecated. Please migrate to UFC class for namespace-based API access.")
         logger.info("Creating UFC client with config")
-        return UFCClientImpl.create(config).also {
+        return UfcClientImpl.create(config).also {
             logger.info("UFC client created successfully")
         }
     }

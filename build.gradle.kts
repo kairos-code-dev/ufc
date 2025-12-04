@@ -90,22 +90,41 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
 
+// 유닛 테스트 태스크 설정
+val unitTest = tasks.register<Test>("unitTest") {
+    description = "Runs unit tests only (pure domain logic, excludes integration tests)"
+    group = "verification"
+
+    useJUnitPlatform {
+        excludeTags("integration", "liveTest")
+    }
+
+    // 유닛 테스트는 순차 실행
+    maxParallelForks = 1
+
+    // 테스트 출력 설정
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = false
+    }
+}
+
 // 통합 테스트 태스크 설정
 val integrationTest = tasks.register<Test>("integrationTest") {
-    description = "Runs integration tests (tagged with @Tag(\"integration\"))"
+    description = "Runs integration tests only (tagged with @Tag(\"integration\"))"
     group = "verification"
 
     useJUnitPlatform {
         includeTags("integration")
+        excludeTags("liveTest")
     }
 
-    // 통합 테스트는 병렬 실행 금지 (Rate Limiting 때문)
+    // 통합 테스트 순차 실행 (Rate Limiting 방지)
     maxParallelForks = 1
 
     // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
-    timeout.set(Duration.ofMinutes(10))
-
-    shouldRunAfter(tasks.test)
+    timeout.set(Duration.ofMinutes(5))
 
     // 테스트 출력 설정
     testLogging {
@@ -121,18 +140,24 @@ val integrationTest = tasks.register<Test>("integrationTest") {
 // 빌드 작업 설정
 tasks {
     test {
-        description = "Runs unit tests (excludes integration tests)"
+        description = "Runs all tests (unit + integration) in parallel"
 
         useJUnitPlatform {
-            // 기본 테스트 실행 시 통합 테스트 제외
-            excludeTags("integration", "liveTest")
+            // liveTest만 제외하고 모든 테스트 실행 (unit + integration)
+            excludeTags("liveTest")
         }
+
+        // 모든 테스트 순차 실행 (Rate Limiting 방지)
+        maxParallelForks = 1
+
+        // 타임아웃 증가 (통합 테스트 포함)
+        timeout.set(Duration.ofMinutes(15))
 
         // 테스트 출력 설정
         testLogging {
             events("passed", "skipped", "failed")
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-            showStandardStreams = false
+            showStandardStreams = true // 모든 테스트 출력 표시
         }
     }
 

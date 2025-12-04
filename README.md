@@ -1,337 +1,483 @@
-# UFC (US Free Financial Data Collector)
+# Ufc (Unified Finance Client)
 
-무료 미국 금융 데이터 수집 Kotlin 라이브러리
+**무료 미국 금융 데이터 수집 Kotlin 라이브러리**
 
-## 프로젝트 개요
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
-UFC는 Yahoo Finance와 FRED(Federal Reserve Economic Data)로부터 금융 데이터를 수집하는 **클린 아키텍처 기반 라이브러리**입니다.
+Ufc는 Yahoo Finance와 FRED(Federal Reserve Economic Data)로부터 금융 데이터를 수집하는 Kotlin 라이브러리입니다. Python의 [yfinance](https://github.com/ranaroussi/yfinance)와 [fredapi](https://github.com/mortada/fredapi)에서 영감을 받아, Kotlin/JVM 환경에서 동일한 기능을 제공합니다.
 
-### 주요 특징
+## 주요 특징
 
-- **클린 아키텍처**: 의존성 역전, 도메인 순수성, 테스트 격리
 - **네임스페이스 기반 API**: `ufc.price`, `ufc.stock`, `ufc.funds`, `ufc.corp`, `ufc.macro`
-- **자동 캐싱**: API 호출 60% 감소 (현재가 60초, 히스토리 5분 TTL)
-- **Multi-Source Architecture**: Yahoo Finance + FRED 통합
+- **Multi-Source 통합**: Yahoo Finance + FRED API
+- **자동 Rate Limiting**: API별 최적화된 요청 제한
+- **자동 캐싱**: API 호출 60% 감소
+- **Coroutines 지원**: 비동기 고성능 처리
 - **타입 안정성**: Kotlin 강타입 시스템
-- **현대적 비동기**: Coroutines 기반 고성능 처리
-- **통합 에러 처리**: ErrorCode 기반 단일 예외 시스템
-- **테스트 용이성**: Fake 구현체로 완벽한 테스트 격리
 
-### 기술 스택
+## 기술 스택
 
 - Kotlin 2.1.0
-- JDK 21 (Virtual Threads)
+- JDK 21
 - Ktor 3.0.1 (HTTP Client)
 - kotlinx.serialization 1.7.3
+- kotlinx.coroutines 1.9.0
+
+---
 
 ## 빠른 시작
 
-### 1. 프로젝트 설정
-
-```bash
-# 저장소 클론
-git clone https://github.com/ulalax/ufc.git
-cd ufc
-
-# local.properties 파일 생성
-cp local.properties.template local.properties
-```
-
-### 2. API Key 설정
-
-**FRED API Key 발급:**
-1. https://fred.stlouisfed.org/docs/api/api_key.html 방문
-2. 무료 계정 생성
-3. API Key 발급
-
-**local.properties 파일 수정:**
-```properties
-# local.properties
-FRED_API_KEY=your_fred_api_key_here
-```
-
-⚠️ **주의**: `local.properties` 파일은 절대 Git에 커밋하지 마세요!
-
-### 3. 빌드 및 테스트
-
-```bash
-# 프로젝트 빌드
-./gradlew build
-
-# Unit Test 실행 (빠름, 외부 API 호출 없음)
-./gradlew test
-
-# Live Test 실행 (느림, 실제 API 호출)
-./gradlew liveTest
-```
-
-## 사용 예제
+### 설치
 
 ```kotlin
-import com.ulalax.ufc.client.UFC
-import com.ulalax.ufc.client.UFCClientConfig
-import com.ulalax.ufc.model.common.Period
-import com.ulalax.ufc.model.common.Interval
-
-suspend fun main() {
-    // UFC 클라이언트 생성
-    UFC.create(
-        UFCClientConfig(fredApiKey = "your_api_key")
-    ).use { ufc ->
-
-        // Price 도메인: 현재가 조회
-        val price = ufc.price.getCurrentPrice("AAPL")
-        println("AAPL: ${price.lastPrice} ${price.currency}")
-
-        // Price 도메인: 가격 히스토리
-        val history = ufc.price.getPriceHistory(
-            symbol = "AAPL",
-            period = Period.OneMonth,
-            interval = Interval.OneDay
-        )
-        history.takeLast(5).forEach { ohlcv ->
-            println("${ohlcv.timestamp}: Close=${ohlcv.close}")
-        }
-
-        // Stock 도메인: 회사 정보
-        val companyInfo = ufc.stock.getCompanyInfo("AAPL")
-        println("${companyInfo.longName} - ${companyInfo.sector}")
-
-        // Stock 도메인: ISIN 조회
-        val isin = ufc.stock.getIsin("AAPL")
-        println("ISIN: $isin")
-
-        // Funds 도메인: ETF 정보
-        val fundData = ufc.funds.getFundData("SPY")
-        println("Fund: ${fundData.symbol} (${fundData.quoteType})")
-        fundData.topHoldings.take(5).forEach { holding ->
-            println("  ${holding.symbol}: ${holding.holdingPercent}%")
-        }
-
-        // Corp 도메인: 배당금
-        val dividends = ufc.corp.getDividends("AAPL", Period.OneYear)
-        dividends.dividends.takeLast(5).forEach { div ->
-            println("${div.date}: ${div.amount} USD")
-        }
-
-        // Macro 도메인: GDP (FRED API 키 필요)
-        ufc.macro?.let { macro ->
-            val gdp = macro.getGDP()
-            println("GDP: ${gdp.title}")
-            gdp.observations.takeLast(3).forEach { obs ->
-                println("  ${obs.date}: ${obs.value}")
-            }
-        }
-
-    }  // 자동 close()
+// build.gradle.kts
+dependencies {
+    implementation("com.ulalax:ufc:1.0.0")
 }
 ```
 
-**네임스페이스별 주요 기능**:
-- `ufc.price`: 현재가, 가격 히스토리 (OHLCV)
-- `ufc.stock`: 회사 정보, ISIN, 발행주식수
-- `ufc.funds`: ETF/뮤추얼펀드 구성 정보
-- `ufc.corp`: 배당금, 주식분할, 자본이득
-- `ufc.macro`: GDP, 실업률, 인플레이션 (FRED API)
+### 기본 사용법
 
-## 아키텍처
+```kotlin
+import com.ulalax.ufc.api.client.Ufc
+import com.ulalax.ufc.api.client.UfcClientConfig
 
-UFC는 **클린 아키텍처 (Clean Architecture)** 를 기반으로 설계되었습니다.
+suspend fun main() {
+    Ufc.create(UfcClientConfig()).use { ufc ->
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Presentation Layer (Client/API)                            │
-│  - UFC (Facade)                                             │
-│  - PriceApi, StockApi, FundsApi, CorpApi, MacroApi          │
-└─────────────────────────────────────────────────────────────┘
-                            ↓ uses
-┌─────────────────────────────────────────────────────────────┐
-│  Domain Layer (Service + Interface)                         │
-│  - PriceServiceImpl, StockServiceImpl, ...                  │
-│  - PriceHttpClient (interface) ⭐                           │
-│  - PriceData, OHLCV, CompanyInfo (DTO)                      │
-│  - 비즈니스 로직, 도메인 검증, 파싱                            │
-└─────────────────────────────────────────────────────────────┘
-                            ↑ implements
-┌─────────────────────────────────────────────────────────────┐
-│  Infrastructure Layer (Adapter)                             │
-│  - YahooHttpClient (implements PriceHttpClient)             │
-│  - FredHttpClient (implements MacroHttpClient)              │
-│  - CacheHelper, RateLimiter                                 │
-└─────────────────────────────────────────────────────────────┘
+        // 현재 주가 조회
+        val price = ufc.price.getCurrentPrice("AAPL")
+        println("AAPL: $${price.lastPrice}")
+
+        // 회사 정보 조회
+        val info = ufc.stock.getCompanyInfo("AAPL")
+        println("${info.longName} - ${info.sector}")
+
+        // ETF 정보 조회
+        val spy = ufc.funds.getFundData("SPY")
+        println("SPY Top Holdings: ${spy.topHoldings.take(3).map { it.symbol }}")
+
+    }
+}
 ```
 
-**주요 원칙**:
-- **의존성 역전 (DIP)**: Domain이 Infrastructure 인터페이스에만 의존
-- **도메인 순수성**: Service는 외부 라이브러리(Ktor) 직접 의존 안 함
-- **테스트 격리**: Fake 구현체로 완벽한 단위 테스트 가능
+### FRED API 사용 (거시경제 지표)
+
+FRED API를 사용하려면 API Key가 필요합니다.
+
+1. https://fred.stlouisfed.org/docs/api/api_key.html 에서 무료 API Key 발급
+2. 설정에 추가:
+
+```kotlin
+val ufc = Ufc.create(
+    UfcClientConfig(fredApiKey = "your_fred_api_key")
+)
+
+// GDP 조회
+val gdp = ufc.macro?.getGDP(GDPType.REAL)
+println("Real GDP: ${gdp?.observations?.last()?.value}")
+
+// 실업률 조회
+val unemployment = ufc.macro?.getUnemployment(UnemploymentType.RATE)
+println("Unemployment: ${unemployment?.observations?.last()?.value}%")
+```
+
+---
+
+## 데이터 소스별 기능
+
+### Yahoo Finance (API Key 불필요)
+
+| 네임스페이스 | 기능 | 메서드 |
+|-------------|------|--------|
+| `ufc.price` | 현재가 조회 | `getCurrentPrice(symbol)` |
+| | 다중 심볼 현재가 | `getCurrentPrice(symbols)` |
+| | 가격 히스토리 (기간) | `getPriceHistory(symbol, period, interval)` |
+| | 가격 히스토리 (날짜) | `getPriceHistory(symbol, start, end, interval)` |
+| | 메타데이터 포함 히스토리 | `getPriceHistoryWithMetadata(symbol, period)` |
+| `ufc.stock` | 회사 정보 | `getCompanyInfo(symbol)` |
+| | 빠른 정보 | `getFastInfo(symbol)` |
+| | ISIN 코드 | `getIsin(symbol)` |
+| | 발행주식수 | `getShares(symbol)` |
+| | 발행주식수 (전체 기간) | `getSharesFull(symbol, start, end)` |
+| `ufc.funds` | ETF/뮤추얼펀드 정보 | `getFundData(symbol)` |
+| | 다중 펀드 조회 | `getFundData(symbols)` |
+| | 펀드 여부 확인 | `isFund(symbol)` |
+| `ufc.corp` | 배당금 히스토리 | `getDividends(symbol, period)` |
+| | 주식 분할 히스토리 | `getSplits(symbol, period)` |
+| | 자본이득 히스토리 | `getCapitalGains(symbol, period)` |
+
+### FRED API (API Key 필요)
+
+| 네임스페이스 | 기능 | 메서드 |
+|-------------|------|--------|
+| `ufc.macro` | 범용 시계열 조회 | `getSeries(seriesId)` |
+| | GDP 지표 | `getGDP(type)` |
+| | 인플레이션 지표 | `getInflation(type)` |
+| | 실업률/고용 지표 | `getUnemployment(type)` |
+| | 금리 지표 | `getInterestRate(type)` |
+
+**GDP 타입**: `REAL`, `NOMINAL`, `GROWTH`, `POTENTIAL`
+
+**인플레이션 타입**: `CPI_ALL`, `CPI_CORE`, `PCE_ALL`, `PCE_CORE`, `PPI`
+
+**실업률 타입**: `RATE`, `INITIAL_CLAIMS`, `CONTINUING_CLAIMS`, `NONFARM_PAYROLLS`
+
+**금리 타입**: `FEDERAL_FUNDS`, `TREASURY_10Y`, `TREASURY_2Y`, `TREASURY_5Y`, `TREASURY_30Y`, `TREASURY_3M`, `MORTGAGE_30Y`
+
+---
+
+## API 상세 예제
+
+### 가격 데이터
+
+```kotlin
+// 현재가
+val price = ufc.price.getCurrentPrice("AAPL")
+println("Last: ${price.lastPrice}, Change: ${price.regularMarketChange}")
+
+// 다중 심볼
+val prices = ufc.price.getCurrentPrice(listOf("AAPL", "GOOGL", "MSFT"))
+prices.forEach { (symbol, data) ->
+    println("$symbol: ${data.lastPrice}")
+}
+
+// 1년 일봉 히스토리
+val history = ufc.price.getPriceHistory("AAPL", Period.OneYear, Interval.OneDay)
+history.forEach { ohlcv ->
+    println("${ohlcv.timestamp}: O=${ohlcv.open} H=${ohlcv.high} L=${ohlcv.low} C=${ohlcv.close} V=${ohlcv.volume}")
+}
+
+// 날짜 범위 지정
+val rangeHistory = ufc.price.getPriceHistory(
+    symbol = "AAPL",
+    start = LocalDate.of(2024, 1, 1),
+    end = LocalDate.of(2024, 12, 31),
+    interval = Interval.OneWeek
+)
+```
+
+### 주식 정보
+
+```kotlin
+// 회사 상세 정보
+val info = ufc.stock.getCompanyInfo("AAPL")
+println("""
+    회사명: ${info.longName}
+    섹터: ${info.sector}
+    산업: ${info.industry}
+    국가: ${info.country}
+    직원수: ${info.fullTimeEmployees}
+    웹사이트: ${info.website}
+""".trimIndent())
+
+// ISIN 코드
+val isin = ufc.stock.getIsin("AAPL")  // US0378331005
+
+// 빠른 정보 (최소 API 호출)
+val fast = ufc.stock.getFastInfo("AAPL")
+println("${fast.symbol} (${fast.exchange}) - ${fast.quoteType}")
+
+// 발행주식수 히스토리
+val shares = ufc.stock.getShares("AAPL")
+shares.forEach { println("${it.date}: ${it.shares}") }
+```
+
+### ETF/펀드 정보
+
+```kotlin
+val spy = ufc.funds.getFundData("SPY")
+println("""
+    펀드: ${spy.symbol}
+    타입: ${spy.quoteType}
+    카테고리: ${spy.category}
+    총 자산: ${spy.totalAssets}
+
+    Top 10 보유종목:
+""".trimIndent())
+
+spy.topHoldings.take(10).forEach { holding ->
+    println("  ${holding.symbol}: ${holding.holdingPercent}%")
+}
+
+// 섹터별 비중
+spy.sectorWeights.forEach { (sector, weight) ->
+    println("  $sector: $weight%")
+}
+```
+
+### 배당금/분할
+
+```kotlin
+// 최근 5년 배당금
+val dividends = ufc.corp.getDividends("AAPL", Period.FiveYears)
+dividends.dividends.forEach { div ->
+    println("${div.date}: $${div.amount}")
+}
+
+// 전체 주식분할 히스토리
+val splits = ufc.corp.getSplits("AAPL", Period.Max)
+splits.splits.forEach { split ->
+    println("${split.date}: ${split.numerator}:${split.denominator}")
+}
+```
+
+### 거시경제 지표 (FRED)
+
+```kotlin
+// FRED API Key 필요
+val ufc = Ufc.create(UfcClientConfig(fredApiKey = "your_key"))
+
+// 실질 GDP
+val gdp = ufc.macro?.getGDP(GDPType.REAL, startDate = "2020-01-01")
+gdp?.observations?.forEach { obs ->
+    println("${obs.date}: ${obs.value}")
+}
+
+// 연방기금금리
+val fedRate = ufc.macro?.getInterestRate(InterestRateType.FEDERAL_FUNDS)
+println("현재 기준금리: ${fedRate?.observations?.last()?.value}%")
+
+// CPI (소비자물가지수)
+val cpi = ufc.macro?.getInflation(InflationType.CPI_ALL)
+
+// 범용 시리즈 조회 (FRED 시리즈 ID 직접 사용)
+val customSeries = ufc.macro?.getSeries(
+    seriesId = "T10Y2Y",  // 10년-2년 금리 스프레드
+    startDate = "2023-01-01",
+    frequency = "m"  // 월간
+)
+```
+
+---
+
+## Rate Limiting
+
+Ufc는 각 데이터 소스별로 자동 Rate Limiting을 적용합니다.
+
+| 데이터 소스 | Rate Limit | 설명 |
+|------------|------------|------|
+| Yahoo Finance | 50 req/sec | 비공식 API, 보수적 설정 권장 |
+| FRED | 2 req/sec | 공식 제한: 120 req/min |
+
+### Rate Limit 커스터마이징
+
+```kotlin
+import com.ulalax.ufc.infrastructure.ratelimit.RateLimitConfig
+import com.ulalax.ufc.infrastructure.ratelimit.RateLimitingSettings
+
+val config = UfcClientConfig(
+    rateLimitingSettings = RateLimitingSettings(
+        yahoo = RateLimitConfig(
+            capacity = 30,      // 버스트 허용량
+            refillRate = 30,    // 초당 리필 토큰
+            enabled = true
+        ),
+        fred = RateLimitConfig(
+            capacity = 2,
+            refillRate = 2,
+            enabled = true
+        )
+    )
+)
+```
+
+---
+
+## 캐싱
+
+Ufc는 자동 캐싱으로 중복 API 호출을 방지합니다.
+
+| 데이터 타입 | TTL | 설명 |
+|------------|-----|------|
+| 현재가 | 60초 | 실시간 데이터 |
+| 히스토리 | 5분 | 과거 데이터 |
+| 회사 정보 | 1시간 | 정적 데이터 |
+| 펀드 데이터 | 1시간 | 정적 데이터 |
+
+---
+
+## 에러 처리
+
+Ufc는 `UfcException` 단일 예외 시스템을 사용합니다.
+
+```kotlin
+import com.ulalax.ufc.api.exception.UfcException
+import com.ulalax.ufc.api.exception.ErrorCode
+
+try {
+    val price = ufc.price.getCurrentPrice("INVALID_SYMBOL")
+} catch (e: UfcException) {
+    when (e.errorCode) {
+        ErrorCode.INVALID_SYMBOL -> println("잘못된 심볼: ${e.message}")
+        ErrorCode.PRICE_DATA_NOT_FOUND -> println("가격 데이터 없음")
+        ErrorCode.RATE_LIMITED -> println("요청 제한 초과, 잠시 후 재시도")
+        ErrorCode.AUTH_FAILED -> println("인증 실패")
+        ErrorCode.NETWORK_ERROR -> println("네트워크 오류: ${e.message}")
+        else -> println("오류 발생: ${e.message}")
+    }
+}
+```
+
+### 주요 에러 코드
+
+| ErrorCode | 설명 |
+|-----------|------|
+| `INVALID_SYMBOL` | 유효하지 않은 심볼 |
+| `PRICE_DATA_NOT_FOUND` | 가격 데이터 없음 |
+| `FUND_DATA_NOT_FOUND` | 펀드 데이터 없음 |
+| `ISIN_NOT_FOUND` | ISIN 코드 없음 |
+| `RATE_LIMITED` | Rate limit 초과 |
+| `AUTH_FAILED` | 인증 실패 |
+| `NETWORK_ERROR` | 네트워크 오류 |
+| `PARSING_ERROR` | 응답 파싱 실패 |
+
+---
+
+## 지원 자산 유형
+
+| 자산 유형 | 예시 | 지원 기능 |
+|----------|------|----------|
+| 주식 (Stock) | AAPL, GOOGL, MSFT | 모든 기능 |
+| ETF | SPY, QQQ, VTI | 모든 기능 + 펀드 데이터 |
+| 뮤추얼펀드 | VFIAX, FXAIX | 가격, 펀드 데이터 |
+| 인덱스 | ^GSPC, ^DJI, ^IXIC | 가격만 |
+| 암호화폐 | BTC-USD, ETH-USD | 가격만 |
+| 환율 | EURUSD=X, JPYKRW=X | 가격만 |
+
+---
+
+## Period & Interval
+
+### Period (조회 기간)
+
+```kotlin
+enum class Period {
+    OneDay,      // 1일
+    FiveDays,    // 5일
+    OneMonth,    // 1개월
+    ThreeMonths, // 3개월
+    SixMonths,   // 6개월
+    OneYear,     // 1년
+    TwoYears,    // 2년
+    FiveYears,   // 5년
+    TenYears,    // 10년
+    Ytd,         // 연초부터
+    Max          // 전체
+}
+```
+
+### Interval (데이터 간격)
+
+```kotlin
+enum class Interval {
+    OneMinute,      // 1분 (최대 7일)
+    TwoMinutes,     // 2분
+    FiveMinutes,    // 5분
+    FifteenMinutes, // 15분
+    ThirtyMinutes,  // 30분
+    SixtyMinutes,   // 60분
+    NinetyMinutes,  // 90분
+    OneHour,        // 1시간
+    OneDay,         // 1일
+    FiveDays,       // 5일
+    OneWeek,        // 1주
+    OneMonth,       // 1개월
+    ThreeMonths     // 3개월
+}
+```
+
+---
 
 ## 프로젝트 구조
 
 ```
 ufc/
 ├── src/main/kotlin/com/ulalax/ufc/
-│   ├── client/                         # UFC (Facade)
-│   │   ├── UFC.kt                      # 진입점
-│   │   └── UFCClientImpl.kt
-│   ├── api/                            # 네임스페이스 API
-│   │   ├── PriceApi.kt
-│   │   ├── StockApi.kt
-│   │   ├── FundsApi.kt
-│   │   ├── CorpApi.kt
-│   │   └── MacroApi.kt
-│   ├── domain/                         # 도메인 계층
-│   │   ├── price/                      # Price 도메인
-│   │   │   ├── PriceService.kt
-│   │   │   ├── PriceServiceImpl.kt
-│   │   │   ├── PriceHttpClient.kt      # 인터페이스 ⭐
-│   │   │   └── PriceData.kt
-│   │   ├── stock/, funds/, corp/, macro/
-│   │   └── ...
-│   ├── infrastructure/                 # 인프라 계층
-│   │   ├── yahoo/
-│   │   │   └── YahooHttpClient.kt      # Yahoo Finance 통신
-│   │   ├── fred/
-│   │   │   └── FredHttpClient.kt       # FRED API 통신
-│   │   └── ratelimiter/
-│   ├── util/
-│   │   └── CacheHelper.kt              # 캐싱 유틸
-│   └── exception/                      # 에러 처리
+│   ├── api/                    # 공개 API
+│   │   ├── client/             # Ufc 클라이언트
+│   │   ├── PriceApi.kt         # 가격 API
+│   │   ├── StockApi.kt         # 주식 API
+│   │   ├── FundsApi.kt         # 펀드 API
+│   │   ├── CorpApi.kt          # 기업행동 API
+│   │   ├── MacroApi.kt         # 거시경제 API
+│   │   └── exception/          # 예외 클래스
+│   │
+│   ├── domain/                 # 도메인 로직
+│   │   ├── price/              # 가격 도메인
+│   │   ├── stock/              # 주식 도메인
+│   │   ├── funds/              # 펀드 도메인
+│   │   ├── corp/               # 기업행동 도메인
+│   │   ├── macro/              # 거시경제 도메인
+│   │   └── common/             # 공통 모델
+│   │
+│   └── infrastructure/         # 인프라스트럭처
+│       ├── yahoo/              # Yahoo Finance 클라이언트
+│       ├── fred/               # FRED 클라이언트
+│       ├── ratelimit/          # Rate Limiter
+│       └── util/               # 캐싱, 유틸리티
 │
-├── src/test/kotlin/                    # 단위 테스트
-│   ├── domain/
-│   ├── fakes/                          # Fake 구현체
-│   └── utils/
-│
-├── doc/                                # 문서
-│   ├── API_USAGE_GUIDE.md              # API 사용 가이드 ⭐
-│   ├── ARCHITECTURE.md                 # 아키텍처 문서 ⭐
-│   ├── MIGRATION_GUIDE_V2.md           # 마이그레이션 가이드
-│   ├── test-principle.md               # 테스트 원칙
-│   └── adr/
-│       └── ADR-001-clean-architecture-refactoring.md
-│
-├── plan/                               # 기술 명세서
-└── examples/                           # 사용 예제
+└── src/test/kotlin/            # 테스트
 ```
 
-## 문서
+---
 
-### 주요 문서
-
-1. **[API 사용 가이드](./doc/API_USAGE_GUIDE.md)** - 도메인별 상세 API 사용법 ⭐
-2. **[아키텍처 문서](./doc/ARCHITECTURE.md)** - 클린 아키텍처 상세 설명 ⭐
-3. **[마이그레이션 가이드](./doc/MIGRATION_GUIDE_V2.md)** - V1에서 V2로 마이그레이션
-4. **[테스트 원칙](./doc/test-principle.md)** - Classical TDD 및 Fake 패턴
-5. **[ADR-001: 클린 아키텍처 리팩토링](./doc/adr/ADR-001-clean-architecture-refactoring.md)** - 아키텍처 결정 배경
-
-### 기술 명세서
-
-상세한 기술 명세서는 `plan/` 디렉토리를 참고하세요:
-
-1. **[프로젝트 개요](./plan/1차개발/00-project-overview.md)** - 전체 개요 및 로드맵
-2. **[아키텍처 설계](./plan/1차개발/01-architecture-design.md)** - Multi-Source 아키텍처
-3. **[에러 처리](./plan/1차개발/02-error-handling.md)** - ErrorCode 시스템
-4. **[Yahoo Finance](./plan/1차개발/03-yahoo-finance-core.md)** - Yahoo Finance API
-5. **[FRED](./plan/1차개발/06-fred-macro-indicators.md)** - FRED API
-6. **[테스트 전략](./plan/1차개발/09-testing-strategy.md)** - Live Test & Unit Test
-7. **[2차 개발 리팩토링 계획](./plan/2차개발/clean-architecture-refactoring-plan.md)** - 클린 아키텍처 적용
-
-## 테스트
-
-### Live Test
-실제 API를 호출하고 응답을 레코딩합니다:
+## 빌드 및 테스트
 
 ```bash
-# 모든 Live Test 실행 (레코딩 활성화)
-./gradlew liveTest
+# 빌드
+./gradlew build
 
-# 레코딩 비활성화
-./gradlew liveTest -Precord.responses=false
-```
-
-### Unit Test
-레코딩된 JSON 데이터를 기반으로 빠르게 실행됩니다:
-
-```bash
-# 모든 Unit Test 실행
+# 단위 테스트
 ./gradlew test
 
-# 특정 테스트 실행
-./gradlew test --tests "EtfTest"
+# 통합 테스트 (실제 API 호출)
+./gradlew integrationTest
 ```
 
-## 에러 처리
+---
 
-UFC는 ErrorCode 기반 단일 예외 시스템을 사용합니다:
+## 제한사항
 
-```kotlin
-try {
-    val data = ufc.yahoo.etf("INVALID").getFundProfile()
-} catch (e: UFCException) {
-    when (e.errorCode) {
-        ErrorCode.NOT_FOUND -> {
-            println("ETF not found: ${e.metadata["symbol"]}")
-        }
-        ErrorCode.RATE_LIMITED -> {
-            val retryAfter = e.metadata["retryAfter"] as Long
-            println("Rate limited. Retry after $retryAfter seconds")
-        }
-        ErrorCode.AUTH_FAILED -> {
-            println("Authentication failed. Please reinitialize.")
-        }
-        else -> {
-            println("Error: ${e.message}")
-        }
-    }
-}
-```
+### Yahoo Finance
 
-## 개발 로드맵
+- **비공식 API**: Yahoo Finance는 공식 API를 제공하지 않습니다. 웹 스크래핑 기반으로 동작하며, Yahoo의 정책 변경에 따라 동작이 달라질 수 있습니다.
+- **Rate Limiting**: 과도한 요청 시 일시적으로 차단될 수 있습니다.
+- **상업적 사용**: Yahoo Finance 이용약관을 확인하세요.
 
-### Phase 1 (완료)
-- [x] 핵심 인프라 + 에러 처리
-- [x] Yahoo Finance 인증 및 가격 데이터
-- [x] Yahoo Finance ETF
-- [x] FRED 매크로 지표
-- [x] 검색 및 스크리닝
+### FRED
 
-### Phase 2 (완료)
-- [x] 클린 아키텍처 리팩토링
-- [x] 네임스페이스 기반 API 도입
-- [x] 자동 캐싱 시스템 구축
-- [x] Fake 구현체 기반 테스트 격리
-- [x] 문서화 (API 가이드, 아키텍처, ADR)
+- **API Key 필요**: https://fred.stlouisfed.org 에서 무료 발급
+- **Rate Limit**: 120 requests/minute
 
-### Phase 3 (계획)
-- [ ] Yahoo Finance 재무제표
-- [ ] 성능 최적화 (배치 처리, 병렬화)
-- [ ] 배포 자동화
+---
 
-## 라이센스
+## 라이선스
 
 Apache License 2.0
 
-## 참고 자료
-
-- **KFC (Korea Financial Client)**: Multi-Source 패턴 참조
-- **Python yfinance**: https://github.com/ranaroussi/yfinance
-- **Python fredapi**: https://github.com/mortada/fredapi
-- **FRED API Documentation**: https://fred.stlouisfed.org/docs/api/fred/
-- **Ktor Documentation**: https://ktor.io/docs/
+---
 
 ## 기여
 
 이슈 및 Pull Request를 환영합니다!
 
-## 성능
-
-- **캐싱**: API 호출 60% 감소
-- **Rate Limiting**: Yahoo Finance 초당 2회, FRED 무제한
-- **병렬 처리**: 배치 조회 시 자동 병렬화 (최대 100개 심볼)
-- **응답 시간**: 캐시 히트 < 1ms, API 호출 100-500ms
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
-**최종 수정일**: 2025-12-03
-**버전**: 2.0
+## 참고 자료
+
+- [yfinance (Python)](https://github.com/ranaroussi/yfinance)
+- [fredapi (Python)](https://github.com/mortada/fredapi)
+- [FRED API Documentation](https://fred.stlouisfed.org/docs/api/fred/)
+- [Ktor Documentation](https://ktor.io/docs/)
+
+---
+
+**Made with Kotlin**

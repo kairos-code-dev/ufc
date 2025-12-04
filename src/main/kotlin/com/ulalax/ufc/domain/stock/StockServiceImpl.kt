@@ -149,14 +149,22 @@ class StockServiceImpl(
         return results
     }
 
+    /**
+     * ISIN 코드 조회
+     *
+     * yfinance와 동일한 방식으로 Business Insider Search API를 사용하여 ISIN을 조회합니다.
+     *
+     * @param symbol 주식 심볼
+     * @return ISIN 코드 (12자리)
+     * @throws UfcException ISIN 데이터를 찾을 수 없음
+     */
     override suspend fun getIsin(symbol: String): String {
         validateSymbol(symbol)
 
         logger.debug("Fetching ISIN: symbol={}", symbol)
 
         return cache.getOrPut("stock:isin:$symbol", ttl = ISIN_TTL) {
-            val response = httpClient.fetchQuoteSummary(symbol, listOf("defaultKeyStatistics"))
-            parseIsin(response, symbol)
+            parseIsinFromBusinessInsider(symbol)
         }
     }
 
@@ -249,9 +257,17 @@ class StockServiceImpl(
         start: LocalDate?,
         end: LocalDate?
     ): List<SharesData> {
-        // 현재는 getShares와 동일하게 동작 (Yahoo API의 제약)
-        // 향후 별도의 엔드포인트가 필요하면 확장 가능
-        return getShares(symbol)
+        validateSymbol(symbol)
+
+        logger.debug("Fetching shares full history: symbol={}, start={}, end={}", symbol, start, end)
+
+        // LocalDate를 Unix timestamp로 변환
+        val period1 = start?.atStartOfDay(java.time.ZoneId.of("America/New_York"))?.toEpochSecond()
+        val period2 = end?.atTime(23, 59, 59)?.atZone(java.time.ZoneId.of("America/New_York"))?.toEpochSecond()
+
+        // Fundamentals Timeseries API 호출
+        val response = httpClient.fetchFundamentalsTimeseries(symbol, period1, period2)
+        return parseSharesFull(response, start, end)
     }
 
     override suspend fun getRawQuoteSummary(
@@ -390,22 +406,97 @@ class StockServiceImpl(
     }
 
     /**
-     * ISIN 파싱
+     * Business Insider Search API를 사용하여 ISIN 파싱
+     *
+     * yfinance의 get_isin() 메서드와 동일한 구현입니다.
+     *
+     * 알고리즘:
+     * 1. 심볼에 "-" 또는 "^"가 포함되어 있으면 ISIN을 찾을 수 없음
+     * 2. 회사의 shortName을 조회하여 검색 쿼리로 사용 (없으면 심볼 사용)
+     * 3. Business Insider Search API 호출
+     * 4. 응답에서 "{SYMBOL}|" 패턴 검색하여 ISIN 추출
+     *
+     * 참고: https://github.com/ranaroussi/yfinance/blob/main/yfinance/base.py#L1062
      */
-    private fun parseIsin(response: QuoteSummaryResponse, symbol: String): String {
-        val result = response.quoteSummary.result?.firstOrNull()
-            ?: throw UfcException(
-                errorCode = ErrorCode.ISIN_NOT_FOUND,
-                message = "ISIN 정보를 찾을 수 없습니다: $symbol"
-            )
+    private suspend fun parseIsinFromBusinessInsider(symbol: String): String {
+        val ticker = symbol.uppercase()
 
-        val isin = result.defaultKeyStatistics?.isin
-            ?: throw UfcException(
+        // 1. 특수 문자가 포함된 심볼은 ISIN을 찾을 수 없음
+        if (ticker.contains("-") || ticker.contains("^")) {
+            throw UfcException(
                 errorCode = ErrorCode.ISIN_NOT_FOUND,
-                message = "ISIN 데이터가 없습니다: $symbol"
+                message = "ISIN을 찾을 수 없습니다: $symbol (특수 문자가 포함된 심볼)"
             )
+        }
 
-        return isin
+        // 2. 검색 쿼리 결정 (shortName 또는 심볼)
+        var query = ticker
+        try {
+            // QuoteSummary에서 shortName 조회 시도
+            val quoteSummary = httpClient.fetchQuoteSummary(ticker, listOf("price", "quoteType"))
+            val shortName = quoteSummary.quoteSummary.result?.firstOrNull()?.price?.shortName
+                ?: quoteSummary.quoteSummary.result?.firstOrNull()?.quoteType?.shortName
+
+            if (shortName != null) {
+                query = shortName
+            }
+        } catch (e: Exception) {
+            logger.debug("Failed to fetch shortName for ISIN search, using ticker: {}", e.message)
+            // shortName 조회 실패 시 ticker 사용
+        }
+
+        // 3. Business Insider Search API 호출 및 ISIN 추출
+        // 먼저 query(shortName)로 시도, 실패하면 ticker로 재시도
+        val searchResponse = httpClient.fetchBusinessInsiderSearch(query)
+        var searchStr = "\"$ticker|"
+
+        val finalSearchResponse = if (searchResponse.contains(searchStr)) {
+            searchResponse
+        } else if (query != ticker) {
+            // shortName으로 검색 실패 시 ticker로 재검색
+            logger.debug("ISIN search with shortName failed, retrying with ticker: {}", ticker)
+            val tickerResponse = httpClient.fetchBusinessInsiderSearch(ticker)
+            if (tickerResponse.contains(searchStr)) {
+                tickerResponse
+            } else {
+                searchResponse // 원래 응답 유지
+            }
+        } else {
+            searchResponse
+        }
+
+        // 4. ISIN 추출
+        if (!finalSearchResponse.contains(searchStr)) {
+            // ticker로 찾지 못한 경우, 일반 패턴으로 재검색
+            if (query.lowercase() in finalSearchResponse.lowercase()) {
+                searchStr = "\"|"
+                if (!finalSearchResponse.contains(searchStr)) {
+                    throw UfcException(
+                        errorCode = ErrorCode.ISIN_NOT_FOUND,
+                        message = "ISIN을 찾을 수 없습니다: $symbol (Business Insider 응답에서 ISIN 추출 실패)"
+                    )
+                }
+            } else {
+                throw UfcException(
+                    errorCode = ErrorCode.ISIN_NOT_FOUND,
+                    message = "ISIN을 찾을 수 없습니다: $symbol (Business Insider 검색 결과 없음)"
+                )
+            }
+        }
+
+        // 문자열 파싱: "TICKER|ISIN|..." 형태에서 ISIN 추출
+        return try {
+            finalSearchResponse.split(searchStr)[1]
+                .split("\"")[0]
+                .split("|")[0]
+        } catch (e: Exception) {
+            logger.error("Failed to parse ISIN from Business Insider response: {}", e.message)
+            throw UfcException(
+                errorCode = ErrorCode.ISIN_NOT_FOUND,
+                message = "ISIN 파싱 실패: $symbol (Business Insider 응답 형식 오류)",
+                cause = e
+            )
+        }
     }
 
     /**
@@ -429,6 +520,62 @@ class StockServiceImpl(
                 shares = shares
             )
         )
+    }
+
+    /**
+     * Shares Full 파싱 (Fundamentals Timeseries API 응답)
+     *
+     * yfinance의 get_shares_full(start, end) 메서드와 동일한 방식으로 파싱합니다.
+     */
+    private fun parseSharesFull(
+        response: com.ulalax.ufc.domain.fundamentals.FundamentalsTimeseriesResponse,
+        start: LocalDate?,
+        end: LocalDate?
+    ): List<SharesData> {
+        val result = response.timeseries.result?.firstOrNull()
+            ?: return emptyList()
+
+        val timestamps = result.timestamp ?: return emptyList()
+        val sharesOut = result.sharesOut ?: return emptyList()
+
+        // 두 배열의 길이가 다르면 에러
+        if (timestamps.size != sharesOut.size) {
+            logger.warn(
+                "Timestamp and shares_out array length mismatch: timestamps={}, shares={}",
+                timestamps.size, sharesOut.size
+            )
+            return emptyList()
+        }
+
+        // timestamp와 shares_out을 pair로 결합하여 파싱
+        val sharesList = timestamps.zip(sharesOut).mapNotNull { (timestamp, shares) ->
+            try {
+                // Unix timestamp를 LocalDate로 변환 (America/New_York 기준)
+                val instant = java.time.Instant.ofEpochSecond(timestamp)
+                val date = instant.atZone(java.time.ZoneId.of("America/New_York")).toLocalDate()
+                SharesData(date = date, shares = shares)
+            } catch (e: Exception) {
+                logger.warn("Failed to parse share data: timestamp={}, error={}", timestamp, e.message)
+                null
+            }
+        }
+
+        // 날짜 필터링 (클라이언트 측)
+        val filtered = sharesList.filter { shareData ->
+            val afterStart = start == null || !shareData.date.isBefore(start)
+            val beforeEnd = end == null || !shareData.date.isAfter(end)
+            afterStart && beforeEnd
+        }
+
+        // 중복 날짜 제거 (같은 날짜는 가장 최근 값 유지)
+        val deduplicated = filtered
+            .groupBy { it.date }
+            .mapValues { (_, values) -> values.last() }
+            .values
+            .toList()
+
+        // 날짜 오름차순 정렬
+        return deduplicated.sortedBy { it.date }
     }
 
     /**

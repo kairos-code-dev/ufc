@@ -32,13 +32,13 @@ data class FredSeries(
     @SerialName("units_short")
     val unitsShort: String,
     @SerialName("seasonal_adjustment")
-    val seasonalAdjustment: String?,
+    val seasonalAdjustment: String? = null,
     @SerialName("seasonal_adjustment_short")
-    val seasonalAdjustmentShort: String?,
+    val seasonalAdjustmentShort: String? = null,
     @SerialName("last_updated")
     val lastUpdated: String,
     val popularity: Int,
-    val notes: String?
+    val notes: String? = null
 )
 
 /**

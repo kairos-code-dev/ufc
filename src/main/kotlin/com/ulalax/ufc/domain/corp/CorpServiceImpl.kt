@@ -1,5 +1,7 @@
 package com.ulalax.ufc.domain.corp
 
+import com.ulalax.ufc.api.exception.ErrorCode
+import com.ulalax.ufc.api.exception.UfcException
 import com.ulalax.ufc.domain.common.Interval
 import com.ulalax.ufc.domain.common.Period
 import com.ulalax.ufc.infrastructure.util.CacheHelper
@@ -49,6 +51,7 @@ class CorpServiceImpl(
         symbol: String,
         period: Period
     ): DividendHistory {
+        validateSymbol(symbol)
         val corporateAction = getCorporateAction(symbol, period)
         return DividendHistory(
             symbol = symbol,
@@ -60,6 +63,7 @@ class CorpServiceImpl(
         symbol: String,
         period: Period
     ): SplitHistory {
+        validateSymbol(symbol)
         val corporateAction = getCorporateAction(symbol, period)
         return SplitHistory(
             symbol = symbol,
@@ -71,6 +75,7 @@ class CorpServiceImpl(
         symbol: String,
         period: Period
     ): CapitalGainHistory {
+        validateSymbol(symbol)
         val corporateAction = getCorporateAction(symbol, period)
         return CapitalGainHistory(
             symbol = symbol,
@@ -234,5 +239,28 @@ class CorpServiceImpl(
             capitalGains = emptyList(),
             metadata = metadata
         )
+    }
+
+    // ============================================================================
+    // Private: 검증
+    // ============================================================================
+
+    /**
+     * 심볼 검증
+     */
+    private fun validateSymbol(symbol: String) {
+        if (symbol.isBlank()) {
+            throw UfcException(ErrorCode.INVALID_SYMBOL, "심볼이 비어있습니다")
+        }
+
+        if (symbol.length > 20) {
+            throw UfcException(ErrorCode.INVALID_SYMBOL, "심볼이 너무 깁니다: $symbol (최대 20자)")
+        }
+
+        // 유효한 문자: 영문, 숫자, ^, ., -, _
+        val validPattern = Regex("^[A-Za-z0-9^.\\-_]+$")
+        if (!validPattern.matches(symbol)) {
+            throw UfcException(ErrorCode.INVALID_SYMBOL, "유효하지 않은 심볼: $symbol")
+        }
     }
 }

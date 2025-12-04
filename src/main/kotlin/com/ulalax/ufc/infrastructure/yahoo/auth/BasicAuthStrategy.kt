@@ -99,15 +99,18 @@ class BasicAuthStrategy(
      */
     private suspend fun visitFcYahoo() {
         try {
-            logger.debug("Yahoo Finance 메인 페이지 방문 중...")
-            val response = httpClient.get(YahooApiUrls.ROOT)
+            // fc.yahoo.com 사용: finance.yahoo.com은 매우 긴 CSP/link 헤더를 반환하여
+            // Ktor CIO의 헤더 라인 길이 제한을 초과함 (Header line length limit exceeded)
+            // fc.yahoo.com은 짧은 헤더를 반환하면서도 필요한 쿠키를 설정함
+            logger.debug("Yahoo Finance 쿠키 획득을 위해 fc.yahoo.com 방문 중...")
+            val response = httpClient.get(YahooApiUrls.FC)
 
-            if (response.status.value !in 200..299) {
-                logger.warn("Yahoo Finance 메인 페이지 방문 실패: status=${response.status}")
-                // 쿠키 획득에 실패했으나 계속 진행해본다.
-                // 일부 경우 방문 없이도 CRUMB을 획득할 수 있음
+            // fc.yahoo.com은 404를 반환하지만 Set-Cookie 헤더는 정상적으로 설정됨
+            // 따라서 404도 성공으로 처리 (쿠키 획득이 목적)
+            if (response.status.value !in 200..499) {
+                logger.warn("fc.yahoo.com 방문 실패: status=${response.status}")
             }
-            logger.debug("Yahoo Finance 메인 페이지 방문 완료")
+            logger.debug("fc.yahoo.com 방문 완료 (status=${response.status.value})")
         } catch (e: Exception) {
             logger.warn("Yahoo Finance 메인 페이지 방문 중 예외 발생 (계속 진행): ${e.message}")
             // 초기 방문이 실패해도 계속 진행한다.

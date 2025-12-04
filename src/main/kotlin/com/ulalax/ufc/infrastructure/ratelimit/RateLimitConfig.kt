@@ -24,10 +24,10 @@ import kotlinx.serialization.Serializable
  *     waitTimeoutMillis = 60000L
  * )
  *
- * // FRED API 설정 (더 엄격함)
+ * // FRED API 설정 (120 requests/minute = 2 requests/second)
  * val fredConfig = RateLimitConfig(
- *     capacity = 10,
- *     refillRate = 10,
+ *     capacity = 2,
+ *     refillRate = 2,
  *     enabled = true,
  *     waitTimeoutMillis = 120000L
  * )
@@ -70,5 +70,5 @@ data class RateLimitConfig(
 @Serializable
 data class RateLimitingSettings(
     val yahoo: RateLimitConfig = RateLimitConfig(capacity = 50, refillRate = 50),
-    val fred: RateLimitConfig = RateLimitConfig(capacity = 10, refillRate = 10)
+    val fred: RateLimitConfig = RateLimitConfig(capacity = 2, refillRate = 2)
 )

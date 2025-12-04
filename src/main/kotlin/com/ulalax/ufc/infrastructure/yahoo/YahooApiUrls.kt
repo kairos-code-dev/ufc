@@ -60,4 +60,11 @@ object YahooApiUrls {
      * 특정 조건에 맞는 주식 목록을 반환
      */
     const val SCREENER = "$QUERY1/v1/finance/screener"
+
+    /**
+     * Fundamentals Timeseries 엔드포인트
+     * 발행주식수 히스토리 등의 시계열 데이터를 반환
+     * 예: $FUNDAMENTALS_TIMESERIES/AAPL?period1=1609459200&period2=1640995200
+     */
+    const val FUNDAMENTALS_TIMESERIES = "$QUERY2/ws/fundamentals-timeseries/v1/finance/timeseries"
 }
