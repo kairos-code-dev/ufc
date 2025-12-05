@@ -8,6 +8,8 @@ import com.ulalax.ufc.domain.model.fundamentals.FundamentalsTimeseriesResult
 import com.ulalax.ufc.domain.model.fundamentals.FundamentalsType
 import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
 import com.ulalax.ufc.domain.model.quote.QuoteSummaryModuleResult
+import com.ulalax.ufc.domain.model.lookup.LookupType
+import com.ulalax.ufc.domain.model.lookup.LookupResult
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -40,6 +42,9 @@ class Ufc private constructor(
         endDate: LocalDate? = null
     ): FundamentalsTimeseriesResult =
         yahoo.fundamentalsTimeseries(symbol, types, startDate, endDate)
+
+    suspend fun lookup(query: String, type: LookupType = LookupType.ALL, count: Int = 25): LookupResult =
+        yahoo.lookup(query, type, count)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,

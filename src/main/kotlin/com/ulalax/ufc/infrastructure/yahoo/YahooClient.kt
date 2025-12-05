@@ -14,6 +14,8 @@ import com.ulalax.ufc.domain.model.chart.*
 import com.ulalax.ufc.domain.model.fundamentals.*
 import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.earnings.*
+import com.ulalax.ufc.domain.model.lookup.*
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTableRow
 import java.time.Instant
@@ -1105,6 +1107,154 @@ class YahooClient internal constructor(
         return FundamentalsTimeseriesResult(
             symbol = symbol,
             data = dataMap
+        )
+    }
+
+    /**
+     * Lookup API를 호출하여 금융상품을 검색합니다.
+     *
+     * @param query 검색 키워드 (빈 문자열 불가)
+     * @param type 검색할 금융상품 타입 (기본값: ALL)
+     * @param count 최대 결과 개수 (기본값: 25, 범위: 1-100)
+     * @return LookupResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun lookup(
+        query: String,
+        type: LookupType = LookupType.ALL,
+        count: Int = 25
+    ): LookupResult {
+        // 파라미터 검증
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.INVALID_PARAMETER,
+                message = "검색어는 빈 문자열일 수 없습니다",
+                metadata = mapOf("query" to query)
+            )
+        }
+
+        if (count !in 1..100) {
+            throw ApiException(
+                errorCode = ErrorCode.INVALID_PARAMETER,
+                message = "count는 1-100 범위여야 합니다",
+                metadata = mapOf("count" to count)
+            )
+        }
+
+        logger.debug(
+            "Calling Yahoo Finance Lookup API: query={}, type={}, count={}",
+            trimmedQuery, type.apiValue, count
+        )
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get(YahooApiUrls.LOOKUP) {
+            parameter("query", trimmedQuery)
+            parameter("type", type.apiValue)
+            parameter("count", count)
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Lookup API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf(
+                    "query" to trimmedQuery,
+                    "type" to type.apiValue,
+                    "count" to count
+                )
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val lookupResponse = json.decodeFromString<LookupResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (lookupResponse.finance.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Lookup API 에러: ${lookupResponse.finance.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "query" to trimmedQuery,
+                    "errorCode" to (lookupResponse.finance.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인 및 변환
+        if (lookupResponse.finance.result.isNullOrEmpty()) {
+            // 빈 결과는 에러가 아니라 빈 LookupResult 반환
+            return LookupResult(
+                query = trimmedQuery,
+                type = type,
+                count = 0,
+                start = 0,
+                total = 0,
+                documents = emptyList()
+            )
+        }
+
+        // LookupResultResponse를 LookupResult로 변환
+        return convertToLookupResult(lookupResponse.finance.result.first(), trimmedQuery, type)
+    }
+
+    /**
+     * Internal LookupResultResponse를 public LookupResult로 변환합니다.
+     *
+     * @param resultResponse 내부 API 응답 결과
+     * @param query 검색 키워드
+     * @param type 검색 타입
+     * @return LookupResult
+     */
+    private fun convertToLookupResult(
+        resultResponse: com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResultResponse,
+        query: String,
+        type: LookupType
+    ): LookupResult {
+        val documents = resultResponse.documents?.mapNotNull { doc ->
+            // symbol은 필수 필드
+            val symbol = doc.symbol
+            // name은 shortName 또는 name 필드에서 가져옴
+            val name = doc.shortName ?: doc.name
+
+            if (symbol.isNullOrBlank() || name.isNullOrBlank()) {
+                logger.warn("Skipping document with missing symbol or name: {}", doc)
+                return@mapNotNull null
+            }
+
+            LookupDocument(
+                symbol = symbol,
+                name = name,
+                exchange = doc.exchange ?: doc.exch,
+                exchangeDisplay = doc.exchDisp,
+                typeCode = doc.quoteType ?: doc.type,
+                typeDisplay = doc.typeDisp,
+                industry = doc.industry,
+                industryDisplay = doc.industryName ?: doc.industryDisp,
+                sector = doc.sector,
+                sectorDisplay = doc.sectorDisp,
+                score = doc.rank?.toDouble() ?: doc.score,
+                isYahooFinance = doc.isYahooFinance
+            )
+        } ?: emptyList()
+
+        return LookupResult(
+            query = query,
+            type = type,
+            count = documents.size, // 실제 반환된 documents 개수
+            start = resultResponse.start ?: 0,
+            total = resultResponse.total ?: documents.size,
+            documents = documents
         )
     }
 

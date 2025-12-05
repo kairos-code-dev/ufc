@@ -56,6 +56,12 @@ object YahooApiUrls {
     const val SEARCH = "$QUERY1/v1/finance/search"
 
     /**
+     * 주식 Lookup 엔드포인트 (타입별 필터링 지원)
+     * 예: $LOOKUP?query=apple&type=equity&count=25
+     */
+    const val LOOKUP = "$QUERY1/v1/finance/lookup"
+
+    /**
      * 주식 스크리너 엔드포인트
      * 특정 조건에 맞는 주식 목록을 반환
      */
