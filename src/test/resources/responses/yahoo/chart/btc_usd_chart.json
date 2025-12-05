@@ -3,14 +3,14 @@
   "meta": {
     "symbol": "BTC-USD",
     "currency": "USD",
-    "regularMarketPrice": 92665.234,
-    "regularMarketDayHigh": 92665.234,
+    "regularMarketPrice": 92351.97,
+    "regularMarketDayHigh": 92679.164,
     "regularMarketDayLow": 92103.945,
     "dataGranularity": "1d",
     "range": "3mo",
     "fiftyTwoWeekHigh": 126198.07,
     "fiftyTwoWeekLow": 74436.68,
-    "regularMarketVolume": 61017337856,
+    "regularMarketVolume": 60704161792,
     "validRanges": [
       "1d",
       "5d",
@@ -837,13 +837,13 @@
       "volume": 77650204986
     },
     {
-      "timestamp": 1764902520,
+      "timestamp": 1764908160,
       "open": 92139.3359375,
-      "high": 92665.234375,
+      "high": 92679.1640625,
       "low": 92103.9453125,
-      "close": 92665.234375,
-      "adjClose": 92665.234375,
-      "volume": 61017337856
+      "close": 92351.96875,
+      "adjClose": 92351.96875,
+      "volume": 60704161792
     }
   ]
 }
