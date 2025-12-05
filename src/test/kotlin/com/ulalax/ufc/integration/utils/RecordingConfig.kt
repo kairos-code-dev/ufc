@@ -78,6 +78,9 @@ object RecordingConfig {
 
             /** Chart API 응답 (차트 데이터) */
             const val CHART = "$BASE/chart"
+
+            /** Market API 응답 (시장 정보) */
+            const val MARKET = "$BASE/market"
         }
 
         // ========================================

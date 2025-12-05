@@ -15,7 +15,10 @@ import com.ulalax.ufc.domain.model.fundamentals.*
 import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.earnings.*
 import com.ulalax.ufc.domain.model.lookup.*
+import com.ulalax.ufc.domain.model.market.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketTimeResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTableRow
 import java.time.Instant
@@ -1255,6 +1258,255 @@ class YahooClient internal constructor(
             start = resultResponse.start ?: 0,
             total = resultResponse.total ?: documents.size,
             documents = documents
+        )
+    }
+
+    /**
+     * Market Summary API를 호출하여 시장 요약 정보를 조회합니다.
+     *
+     * @param market 조회할 시장 코드
+     * @return MarketSummaryResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun marketSummary(market: MarketCode): MarketSummaryResult {
+        logger.debug("Calling Yahoo Finance Market Summary API: market={}", market.code)
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get(YahooApiUrls.MARKET_SUMMARY) {
+            parameter("market", market.code)
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Market Summary API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val marketSummaryResponse = try {
+            json.decodeFromString<MarketSummaryResponse>(responseBody)
+        } catch (e: Exception) {
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "Market Summary 응답 파싱 실패: ${e.message}",
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        // 에러 응답 확인
+        if (marketSummaryResponse.marketSummaryResponse.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Market Summary API 에러: ${marketSummaryResponse.marketSummaryResponse.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "market" to market.code,
+                    "errorCode" to (marketSummaryResponse.marketSummaryResponse.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인
+        val result = marketSummaryResponse.marketSummaryResponse.result
+        if (result.isNullOrEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.DATA_NOT_FOUND,
+                message = "Market Summary 데이터를 찾을 수 없습니다: ${market.code}",
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        // Domain 모델로 변환
+        val items = result.map { item ->
+            MarketSummaryItem(
+                exchange = item.exchange,
+                symbol = item.symbol,
+                shortName = item.shortName,
+                regularMarketPrice = item.regularMarketPriceValue,
+                regularMarketChange = item.regularMarketChangeValue,
+                regularMarketChangePercent = item.regularMarketChangePercentValue,
+                regularMarketTime = item.regularMarketTimeLong?.let {
+                    if (it > 0) Instant.ofEpochSecond(it) else null
+                },
+                regularMarketDayHigh = item.regularMarketDayHighValue,
+                regularMarketDayLow = item.regularMarketDayLowValue,
+                regularMarketVolume = item.regularMarketVolumeValue,
+                regularMarketPreviousClose = item.regularMarketPreviousCloseValue,
+                currency = item.currency,
+                marketState = MarketState.fromValue(item.marketState),
+                quoteType = item.quoteType,
+                timezoneName = item.exchangeTimezoneName,
+                timezoneShortName = item.exchangeTimezoneShortName,
+                gmtOffsetMillis = item.gmtOffSetMillisecondsValue
+            )
+        }
+
+        return MarketSummaryResult(
+            market = market,
+            items = items
+        )
+    }
+
+    /**
+     * Market Time API를 호출하여 시장 시간 정보를 조회합니다.
+     *
+     * @param market 조회할 시장 코드
+     * @return MarketTimeResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun marketTime(market: MarketCode): MarketTimeResult {
+        logger.debug("Calling Yahoo Finance Market Time API: market={}", market.code)
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get(YahooApiUrls.MARKET_TIME) {
+            parameter("market", market.code)
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Market Time API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val marketTimeResponse = try {
+            json.decodeFromString<MarketTimeResponse>(responseBody)
+        } catch (e: Exception) {
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "Market Time 응답 파싱 실패: ${e.message}",
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        // 에러 응답 확인
+        if (marketTimeResponse.finance.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Market Time API 에러: ${marketTimeResponse.finance.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "market" to market.code,
+                    "errorCode" to (marketTimeResponse.finance.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인
+        val marketTimes = marketTimeResponse.finance.marketTimes
+        if (marketTimes.isNullOrEmpty() || marketTimes.first().marketTime.isEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.DATA_NOT_FOUND,
+                message = "Market Time 데이터를 찾을 수 없습니다: ${market.code}",
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        val item = marketTimes.first().marketTime.first()
+
+        // 필수 필드 확인
+        if (item.exchange == null || item.market == null || item.marketState == null ||
+            item.open == null || item.close == null) {
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "Market Time 필수 정보가 누락되었습니다",
+                metadata = mapOf(
+                    "market" to market.code,
+                    "hasExchange" to (item.exchange != null).toString(),
+                    "hasMarket" to (item.market != null).toString(),
+                    "hasMarketState" to (item.marketState != null).toString(),
+                    "hasOpen" to (item.open != null).toString(),
+                    "hasClose" to (item.close != null).toString()
+                )
+            )
+        }
+
+        // Timezone 정보 확인
+        if (item.timezone.isNullOrEmpty()) {
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "타임존 정보가 없습니다",
+                metadata = mapOf("market" to market.code)
+            )
+        }
+
+        val timezoneInfo = item.timezone.first()
+
+        // 타임존 필수 필드 확인
+        if (timezoneInfo.short == null || timezoneInfo.name == null || timezoneInfo.gmtoffset == null) {
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "타임존 필수 정보가 누락되었습니다",
+                metadata = mapOf(
+                    "market" to market.code,
+                    "hasShort" to (timezoneInfo.short != null).toString(),
+                    "hasName" to (timezoneInfo.name != null).toString(),
+                    "hasGmtOffset" to (timezoneInfo.gmtoffset != null).toString()
+                )
+            )
+        }
+
+        // ISO 8601 문자열을 Instant로 변환
+        fun parseInstant(isoString: String, fieldName: String): Instant {
+            return try {
+                Instant.parse(isoString)
+            } catch (e: Exception) {
+                throw DataParsingException(
+                    errorCode = ErrorCode.DATA_PARSING_ERROR,
+                    message = "시간 정보 파싱 실패: $fieldName",
+                    metadata = mapOf("market" to market.code, "value" to isoString)
+                )
+            }
+        }
+
+        // Domain 모델로 변환
+        return MarketTimeResult(
+            market = market,
+            exchange = item.exchange,
+            marketIdentifier = item.market,
+            marketState = MarketState.fromValue(item.marketState),
+            open = parseInstant(item.open, "open"),
+            close = parseInstant(item.close, "close"),
+            preMarket = item.preMarket?.let {
+                TradingHours(
+                    start = parseInstant(it.start, "preMarket.start"),
+                    end = parseInstant(it.end, "preMarket.end")
+                )
+            },
+            postMarket = item.postMarket?.let {
+                TradingHours(
+                    start = parseInstant(it.start, "postMarket.start"),
+                    end = parseInstant(it.end, "postMarket.end")
+                )
+            },
+            timezone = MarketTimezone(
+                shortName = timezoneInfo.short,
+                ianaName = timezoneInfo.name,
+                gmtOffsetMillis = timezoneInfo.gmtoffset
+            ),
+            currentTime = item.time?.let { parseInstant(it, "time") }
         )
     }
 
