@@ -5,9 +5,11 @@ plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.0"
     id("java-library")
+    id("maven-publish")
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
-group = "com.ulalax"
+group = "com.github.kairos-code-dev"
 version = "1.0.0"
 
 // Java 호환성 설정
@@ -27,6 +29,62 @@ kotlin {
             "-opt-in=kotlin.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
         )
+    }
+}
+
+// Maven 퍼블리싱 설정 (JitPack)
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.kairos-code-dev"
+            artifactId = "ufc"
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
+}
+
+// Dokka 설정 (API 문서 생성)
+tasks.dokkaHtml {
+    outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+
+    dokkaSourceSets {
+        configureEach {
+            moduleName.set("UFC - Unified Finance Client")
+
+            // 소스 링크 설정 (GitHub)
+            sourceLink {
+                localDirectory.set(projectDir.resolve("src"))
+                remoteUrl.set(uri("https://github.com/kairos-code-dev/ufc/tree/main/src").toURL())
+                remoteLineSuffix.set("#L")
+            }
+
+            // 외부 문서 링크
+            externalDocumentationLink {
+                url.set(uri("https://kotlinlang.org/api/kotlinx.coroutines/").toURL())
+            }
+            externalDocumentationLink {
+                url.set(uri("https://kotlinlang.org/api/kotlinx.serialization/").toURL())
+            }
+            externalDocumentationLink {
+                url.set(uri("https://api.ktor.io/").toURL())
+            }
+
+            // 문서화 설정
+            includeNonPublic.set(false)
+            skipEmptyPackages.set(true)
+            skipDeprecated.set(false)
+            reportUndocumented.set(false)
+            suppressInheritedMembers.set(false)
+
+            // JDK 문서 링크
+            jdkVersion.set(21)
+        }
     }
 }
 

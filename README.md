@@ -1,6 +1,7 @@
 # UFC (US Free Financial Data Collector)
 
 [![CI](https://github.com/kairos-code-dev/ufc/actions/workflows/ci.yml/badge.svg)](https://github.com/kairos-code-dev/ufc/actions/workflows/ci.yml)
+[![](https://jitpack.io/v/kairos-code-dev/ufc.svg)](https://jitpack.io/#kairos-code-dev/ufc)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -34,16 +35,24 @@ A Kotlin library for collecting financial data from Yahoo Finance and FRED (Fede
 ### Gradle (Kotlin DSL)
 
 ```kotlin
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
 dependencies {
-    implementation("com.ulalax:ufc:1.0.0")
+    implementation("com.github.kairos-code-dev:ufc:1.0.0")
 }
 ```
 
 ### Gradle (Groovy)
 
 ```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation 'com.ulalax:ufc:1.0.0'
+    implementation 'com.github.kairos-code-dev:ufc:1.0.0'
 }
 ```
 

@@ -1,0 +1,6 @@
+# UFC Examples Configuration
+# Copy this file to 'local.properties' and fill in your API keys
+
+# FRED API Key (required for FredExample)
+# Get your free API key at: https://fred.stlouisfed.org/docs/api/api_key.html
+fred.api.key=YOUR_FRED_API_KEY_HERE

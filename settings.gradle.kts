@@ -11,7 +11,10 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
+        mavenLocal() // For local development and JitPack testing
     }
 }
 
 rootProject.name = "ufc"
+
+include("examples")
