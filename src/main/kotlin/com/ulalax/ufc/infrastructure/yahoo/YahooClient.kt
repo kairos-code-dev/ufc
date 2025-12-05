@@ -19,7 +19,9 @@ import com.ulalax.ufc.domain.model.market.*
 import com.ulalax.ufc.domain.model.options.*
 import com.ulalax.ufc.domain.model.realtime.*
 import com.ulalax.ufc.domain.model.screener.*
+import com.ulalax.ufc.domain.model.search.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.SearchApiResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.request.ScreenerRequest
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteApiResponse
@@ -2362,6 +2364,151 @@ class YahooClient internal constructor(
             regularMarketVolume = regularMarketVolume,
             additionalFields = additionalFields
         )
+    }
+
+    /**
+     * Search API를 호출하여 심볼 및 뉴스를 검색합니다.
+     *
+     * @param query 검색어
+     * @param quotesCount 반환할 종목 수 (기본값: 8)
+     * @param newsCount 반환할 뉴스 수 (기본값: 8)
+     * @param enableFuzzyQuery 퍼지 검색 활성화 여부 (기본값: false)
+     * @return SearchResponse
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun search(
+        query: String,
+        quotesCount: Int = 8,
+        newsCount: Int = 8,
+        enableFuzzyQuery: Boolean = false
+    ): SearchResponse {
+        // 파라미터 검증
+        require(query.isNotBlank()) { "검색어는 비어있을 수 없습니다" }
+        require(query.length <= 500) { "검색어는 500자를 초과할 수 없습니다" }
+        require(quotesCount >= 0) { "quotesCount는 0 이상이어야 합니다" }
+        require(newsCount >= 0) { "newsCount는 0 이상이어야 합니다" }
+
+        logger.debug(
+            "Calling Yahoo Finance Search API: query={}, quotesCount={}, newsCount={}, enableFuzzyQuery={}",
+            query, quotesCount, newsCount, enableFuzzyQuery
+        )
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get(YahooApiUrls.SEARCH) {
+            parameter("q", query)
+            parameter("quotesCount", quotesCount)
+            parameter("newsCount", newsCount)
+            parameter("enableFuzzyQuery", enableFuzzyQuery)
+            parameter("quotesQueryId", "tss_match_phrase_query")
+            parameter("newsQueryId", "news_cie_vespa")
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Search API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("query" to query)
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val searchApiResponse = json.decodeFromString<SearchApiResponse>(responseBody)
+
+        // SearchApiResponse를 SearchResponse로 변환
+        return convertToSearchResponse(query, searchApiResponse)
+    }
+
+    /**
+     * Internal SearchApiResponse를 public SearchResponse로 변환합니다.
+     *
+     * @param query 검색어
+     * @param response 내부 API 응답 결과
+     * @return SearchResponse
+     */
+    private fun convertToSearchResponse(
+        query: String,
+        response: SearchApiResponse
+    ): SearchResponse {
+        // quotes 변환 (필수 필드 누락 시 제외)
+        val quotes = response.quotes?.mapNotNull { quoteResult ->
+            // 필수 필드 확인
+            val symbol = quoteResult.symbol?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val quoteType = quoteResult.quoteType?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+
+            SearchQuote(
+                symbol = symbol,
+                shortName = quoteResult.shortname?.takeIf { it.isNotBlank() },
+                longName = quoteResult.longname?.takeIf { it.isNotBlank() },
+                quoteType = quoteType,
+                exchange = quoteResult.exchange?.takeIf { it.isNotBlank() },
+                exchangeDisplay = quoteResult.exchDisp?.takeIf { it.isNotBlank() },
+                sector = quoteResult.sector?.takeIf { it.isNotBlank() },
+                industry = quoteResult.industry?.takeIf { it.isNotBlank() },
+                score = quoteResult.score ?: 0.0
+            )
+        } ?: emptyList()
+
+        // news 변환 (필수 필드 누락 시 제외)
+        val news = response.news?.mapNotNull { newsResult ->
+            // 필수 필드 확인
+            val uuid = newsResult.uuid?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val title = newsResult.title?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val link = newsResult.link?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+
+            SearchNews(
+                uuid = uuid,
+                title = title,
+                publisher = newsResult.publisher?.takeIf { it.isNotBlank() },
+                link = link,
+                publishTime = newsResult.providerPublishTime ?: 0L,
+                type = newsResult.type?.takeIf { it.isNotBlank() },
+                thumbnail = newsResult.thumbnail?.let { convertNewsThumbnail(it) },
+                relatedTickers = newsResult.relatedTickers ?: emptyList()
+            )
+        } ?: emptyList()
+
+        return SearchResponse(
+            query = query,
+            count = response.count ?: 0,
+            quotes = quotes,
+            news = news
+        )
+    }
+
+    /**
+     * Internal NewsThumbnailResult를 public NewsThumbnail로 변환합니다.
+     *
+     * @param thumbnail 내부 썸네일 응답
+     * @return NewsThumbnail
+     */
+    private fun convertNewsThumbnail(
+        thumbnail: com.ulalax.ufc.infrastructure.yahoo.internal.response.NewsThumbnailResult
+    ): NewsThumbnail {
+        val resolutions = thumbnail.resolutions?.mapNotNull { resResult ->
+            val url = resResult.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val width = resResult.width ?: return@mapNotNull null
+            val height = resResult.height ?: return@mapNotNull null
+            val tag = resResult.tag?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+
+            ThumbnailResolution(
+                url = url,
+                width = width,
+                height = height,
+                tag = tag
+            )
+        } ?: emptyList()
+
+        return NewsThumbnail(resolutions = resolutions)
     }
 
     /**

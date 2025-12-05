@@ -1,0 +1,248 @@
+{
+  "query": "AAPL",
+  "count": 15,
+  "quotes": [
+    {
+      "symbol": "AAPL",
+      "shortName": "Apple Inc.",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 1.66335E7
+    },
+    {
+      "symbol": "AAPU",
+      "shortName": "Direxion Daily AAPL Bull 2X Sha",
+      "longName": "Direxion Daily AAPL Bull 2X Shares",
+      "quoteType": "ETF",
+      "exchange": "NGM",
+      "exchangeDisplay": "NASDAQ",
+      "score": 20010.0
+    },
+    {
+      "symbol": "AAPL.BA",
+      "shortName": "APPLE INC CEDEAR(REPR 1/20 SHR)",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "BUE",
+      "exchangeDisplay": "Buenos Aires",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20009.0
+    },
+    {
+      "symbol": "AAPL260220C00285000",
+      "shortName": "AAPL Feb 2026 285.000 call",
+      "longName": "AAPL Feb 2026 285.000 call",
+      "quoteType": "OPTION",
+      "exchange": "OPR",
+      "exchangeDisplay": "OPR",
+      "score": 20008.0
+    },
+    {
+      "symbol": "AAPL251205C00282500",
+      "shortName": "AAPL Dec 2025 282.500 call",
+      "longName": "AAPL Dec 2025 282.500 call",
+      "quoteType": "OPTION",
+      "exchange": "OPR",
+      "exchangeDisplay": "OPR",
+      "score": 20004.0
+    },
+    {
+      "symbol": "AAPB",
+      "shortName": "GraniteShares 2x Long AAPL Dail",
+      "longName": "GraniteShares 2x Long AAPL Daily ETF",
+      "quoteType": "ETF",
+      "exchange": "NGM",
+      "exchangeDisplay": "NASDAQ",
+      "score": 20003.0
+    },
+    {
+      "symbol": "AAPL.MX",
+      "shortName": "APPLE INC",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "MEX",
+      "exchangeDisplay": "Mexico",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20003.0
+    }
+  ],
+  "news": [
+    {
+      "uuid": "9a0abc7f-b47c-340e-b762-9da627e4cefe",
+      "title": "Apple Names Meta Alum Jennifer Newstead as General Counsel, Senior VP",
+      "publisher": "MT Newswires",
+      "link": "https://finance.yahoo.com/news/apple-names-meta-alum-jennifer-225555740.html",
+      "publishTime": 1764888955,
+      "type": "STORY",
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "2d08fb49-11ce-3eac-bcf4-eb6a79b3f7dc",
+      "title": "Apple (AAPL) Price Target Raised as Loop Capital Sees Stronger iPhone 17 Demand",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/apple-aapl-price-target-raised-091551372.html",
+      "publishTime": 1764839751,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/PhXULKxmWGnryFp_bIrDDg--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/33c90aa2f52f95ec19a5ca71fdfbcf4b",
+            "width": 1456,
+            "height": 816,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/2HgYcMmdLV0r9Rjp3aYY7Q--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/33c90aa2f52f95ec19a5ca71fdfbcf4b",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "517d5ed4-6b18-3fa8-badf-ab2606a70926",
+      "title": "Top Apple Executives to Leave, Adding to Recent Departures",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/517d5ed4-6b18-3fa8-badf-ab2606a70926/top-apple-executives-to.html",
+      "publishTime": 1764893820,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/4XWcUrnVl4yb302BUsqN.A--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/fb0961ae4c90bf9351d3ccdde10ca5a1",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/OHBJLV3NgBIivdHWNoYDUw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/fb0961ae4c90bf9351d3ccdde10ca5a1",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "e74e1d7d-9e42-30e6-8c1e-d6bfea713957",
+      "title": "Is This The End of Private DM? ChatGPT Group Chat Debuts With Revolutionary Upgrades – Here\u0027s How It Works",
+      "publisher": "Benzinga",
+      "link": "https://finance.yahoo.com/m/e74e1d7d-9e42-30e6-8c1e-d6bfea713957/is-this-the-end-of-private.html",
+      "publishTime": 1764900033,
+      "type": "STORY",
+      "relatedTickers": []
+    },
+    {
+      "uuid": "2c01bfe5-a845-3e66-aba1-61834ae53f90",
+      "title": "BTIG thinks Apple stock is poised to drop, PepsiCo nears settlement",
+      "publisher": "Yahoo Finance Video",
+      "link": "https://finance.yahoo.com/video/btig-thinks-apple-stock-poised-204301445.html",
+      "publishTime": 1764880981,
+      "type": "VIDEO",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/nqfHd_FIdniDAiIiQtshFA--~B/aD0yOTU7dz01MjQ7YXBwaWQ9eXRhY2h5b24-/https://s.yimg.com/os/creatr-uploaded-images/2025-12/cd7c7fd0-d151-11f0-bfff-4e21dd37e860",
+            "width": 524,
+            "height": 295,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/gddjSDRLQK_sbcH5BSVdMw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://s.yimg.com/os/creatr-uploaded-images/2025-12/cd7c7fd0-d151-11f0-bfff-4e21dd37e860",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "PEP",
+        "AAPL",
+        "BF-A",
+        "BF-B"
+      ]
+    },
+    {
+      "uuid": "3364dee4-683a-3a93-b0dc-edbfa4bbe3f1",
+      "title": "Meta Plans to Shift Spending Away From the Metaverse",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/3364dee4-683a-3a93-b0dc-edbfa4bbe3f1/meta-plans-to-shift-spending.html",
+      "publishTime": 1764895920,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/CiXPNZwWYuqhwnuHZ7dE3g--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/b05e9719c94e0dee408ea56c15fd3173",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/nPU0dyD.EFa62Pl3H9163g--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/b05e9719c94e0dee408ea56c15fd3173",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "META",
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "84ff9893-1d6c-3204-a9c4-e5a4d445ced0",
+      "title": "She\u0027s Making $280,000 As A Surgeon. Her Actor Boyfriend Worked Only Two Days Last Year, And Dave Ramsey Calls Him \u0027An Unmotivated Slug\u0027",
+      "publisher": "Benzinga",
+      "link": "https://finance.yahoo.com/m/84ff9893-1d6c-3204-a9c4-e5a4d445ced0/she%27s-making-%24280%2C000-as-a.html",
+      "publishTime": 1764892913,
+      "type": "STORY",
+      "relatedTickers": []
+    },
+    {
+      "uuid": "639bbc6f-849f-3f96-8f6b-ff41e13a7e20",
+      "title": "Globalstar, Inc. (GSAT): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/globalstar-inc-gsat-bull-case-025047009.html",
+      "publishTime": 1764903047,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/g_34llVXzHSDtr3r6yMFmA--~B/aD01MTk7dz05MjM7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
+            "width": 923,
+            "height": 519,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/8OlkYrcoOUDqg2SZfiB1Yw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "GSAT",
+        "AAPL"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+{
+  "query": "Apple",
+  "count": 15,
+  "quotes": [
+    {
+      "symbol": "AAPL",
+      "shortName": "Apple Inc.",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 33267.0
+    },
+    {
+      "symbol": "APLE",
+      "shortName": "Apple Hospitality REIT, Inc.",
+      "longName": "Apple Hospitality REIT, Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NYQ",
+      "exchangeDisplay": "NYSE",
+      "sector": "Real Estate",
+      "industry": "REIT—Hotel \u0026 Motel",
+      "score": 20027.0
+    },
+    {
+      "symbol": "APC.F",
+      "shortName": "Apple Inc.                    R",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "FRA",
+      "exchangeDisplay": "Frankfurt",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20014.0
+    },
+    {
+      "symbol": "AAPL.BA",
+      "shortName": "APPLE INC CEDEAR(REPR 1/20 SHR)",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "BUE",
+      "exchangeDisplay": "Buenos Aires",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20009.0
+    },
+    {
+      "symbol": "APC.DE",
+      "shortName": "Apple Inc.                    R",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "GER",
+      "exchangeDisplay": "XETRA",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20008.0
+    },
+    {
+      "symbol": "D90.F",
+      "shortName": "Apple International Co. Ltd.  R",
+      "longName": "Apple International Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "FRA",
+      "exchangeDisplay": "Frankfurt",
+      "sector": "Consumer Cyclical",
+      "industry": "Auto \u0026 Truck Dealerships",
+      "score": 20005.0
+    },
+    {
+      "symbol": "APLE.TO",
+      "shortName": "HARVEST APPLE ENHNCD HIGH INCM ",
+      "longName": "Harvest Apple Enhanced High Income Shares ETF Class A Units",
+      "quoteType": "ETF",
+      "exchange": "TOR",
+      "exchangeDisplay": "Toronto",
+      "score": 20003.0
+    }
+  ],
+  "news": [
+    {
+      "uuid": "9a0abc7f-b47c-340e-b762-9da627e4cefe",
+      "title": "Apple Names Meta Alum Jennifer Newstead as General Counsel, Senior VP",
+      "publisher": "MT Newswires",
+      "link": "https://finance.yahoo.com/news/apple-names-meta-alum-jennifer-225555740.html",
+      "publishTime": 1764888955,
+      "type": "STORY",
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "868a5896-585f-3f51-b5ba-ad21f06aa642",
+      "title": "Apple’s executive shake-up continues with departures of general counsel and policy head",
+      "publisher": "TechCrunch",
+      "link": "https://finance.yahoo.com/news/apple-executive-shake-continues-departures-222801659.html",
+      "publishTime": 1764887281,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/pvcHWysNZQd34ev3PT4HLg--~B/aD0yNjY3O3c9NDAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
+            "width": 4000,
+            "height": 2667,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Heg3vMLeuns8y0dRM.jHmQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "3846d033-405a-32d1-9e16-02fb6caa2e2e",
+      "title": "Apple appoints Meta\u0027s Newstead as general counsel amid executive changes",
+      "publisher": "Reuters",
+      "link": "https://finance.yahoo.com/news/apple-appoints-metas-newstead-general-223512163.html",
+      "publishTime": 1764887712,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/OY_gngM2jX32WddSKz2log--~B/aD01MzQ7dz04MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/reuters-finance.com/1c03ea55b8e84b32fb2555a2e983514d",
+            "width": 800,
+            "height": 534,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/01_al7CilAeY27P2g0lSjA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/reuters-finance.com/1c03ea55b8e84b32fb2555a2e983514d",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
+      "uuid": "a5391882-2e58-320b-982a-ab45c97c9319",
+      "title": "Apple announces executive transitions",
+      "publisher": "Business Wire",
+      "link": "https://finance.yahoo.com/news/apple-announces-executive-transitions-213000731.html",
+      "publishTime": 1764883800,
+      "type": "STORY",
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "ec3ec566-39c5-3d91-b51a-862c31533ebb",
+      "title": "Apple unveils the winners of the 2025 App Store Awards",
+      "publisher": "Business Wire Videos",
+      "link": "https://finance.yahoo.com/video/apple-unveils-winners-2025-app-140000681.html",
+      "publishTime": 1764856800,
+      "type": "VIDEO",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/OpzWSVC7LNYcxbCtPUBa_g--~B/aD00MTt3PTcyO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/test_business_wire_videos_817/56857b54d342bb8e4950c05d235c9ebe",
+            "width": 72,
+            "height": 41,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/eDUNabIBSFIeLjp9WzmarA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/test_business_wire_videos_817/56857b54d342bb8e4950c05d235c9ebe",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
+      "uuid": "2d08fb49-11ce-3eac-bcf4-eb6a79b3f7dc",
+      "title": "Apple (AAPL) Price Target Raised as Loop Capital Sees Stronger iPhone 17 Demand",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/apple-aapl-price-target-raised-091551372.html",
+      "publishTime": 1764839751,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/PhXULKxmWGnryFp_bIrDDg--~B/aD04MTY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/33c90aa2f52f95ec19a5ca71fdfbcf4b",
+            "width": 1456,
+            "height": 816,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/2HgYcMmdLV0r9Rjp3aYY7Q--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/33c90aa2f52f95ec19a5ca71fdfbcf4b",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "d64e7f66-d8bf-3372-b1d0-99b298300389",
+      "title": "Apple Loses Longtime Design Leader Alan Dye to Meta",
+      "publisher": "GuruFocus.com",
+      "link": "https://finance.yahoo.com/news/apple-loses-longtime-design-leader-113710722.html",
+      "publishTime": 1764848230,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/IcEDHtzDwTA4hQbvBfYYrg--~B/aD00MDA7dz00MDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/us.finance.gurufocus/40a12a1b7769c635ead36fab47a12566",
+            "width": 400,
+            "height": 400,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/vEdfVlwAwFQwSkiElMztoQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/us.finance.gurufocus/40a12a1b7769c635ead36fab47a12566",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "8a784dbd-7b35-30cf-9951-8ffb1c7161da",
+      "title": "AI finds its way into Apple’s top apps of the year",
+      "publisher": "TechCrunch",
+      "link": "https://finance.yahoo.com/m/8a784dbd-7b35-30cf-9951-8ffb1c7161da/ai-finds-its-way-into-apple%E2%80%99s.html",
+      "publishTime": 1764856800,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/HFxfHqQjGmedzyxzAvckQQ--~B/aD04NzY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/e68b2035f82a789a4bc80006f688c9cb",
+            "width": 1456,
+            "height": 876,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Zvr_mugy6FZ3LOFI1JUtkQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/e68b2035f82a789a4bc80006f688c9cb",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    }
+  ]
+}

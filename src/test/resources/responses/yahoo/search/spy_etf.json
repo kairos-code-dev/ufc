@@ -1,0 +1,281 @@
+{
+  "query": "SPY",
+  "count": 15,
+  "quotes": [
+    {
+      "symbol": "SPY",
+      "shortName": "SPDR S\u0026P 500",
+      "longName": "SPDR S\u0026P 500 ETF",
+      "quoteType": "ETF",
+      "exchange": "PCX",
+      "exchangeDisplay": "NYSEArca",
+      "score": 1.24465E7
+    },
+    {
+      "symbol": "SYRE",
+      "shortName": "Spyre Therapeutics, Inc.",
+      "longName": "Spyre Therapeutics, Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "score": 20029.0
+    },
+    {
+      "symbol": "SPYD",
+      "shortName": "State Street SPDR Portfolio S\u0026P",
+      "longName": "SPDR Portfolio S\u0026P 500 High Dividend ETF",
+      "quoteType": "ETF",
+      "exchange": "PCX",
+      "exchangeDisplay": "NYSEArca",
+      "score": 20023.0
+    },
+    {
+      "symbol": "SPYI",
+      "shortName": "NEOS S\u0026P 500 High Income ETF",
+      "longName": "Neos S\u0026P 500(R) High Income ETF",
+      "quoteType": "ETF",
+      "exchange": "BTS",
+      "exchangeDisplay": "BATS Trading",
+      "score": 20018.0
+    },
+    {
+      "symbol": "SPYD.DE",
+      "shortName": "SPDR S\u0026P US Divid.Aristocr.ETFR",
+      "longName": "SPDR S\u0026P US Dividend Aristocrats UCITS ETF Dis",
+      "quoteType": "ETF",
+      "exchange": "GER",
+      "exchangeDisplay": "XETRA",
+      "score": 20018.0
+    },
+    {
+      "symbol": "SPYW.DE",
+      "shortName": "SPDR S\u0026P EO Divid.Aristocr.ETFR",
+      "longName": "SPDR S\u0026P Euro Dividend Aristocrats UCITS ETF",
+      "quoteType": "ETF",
+      "exchange": "GER",
+      "exchangeDisplay": "XETRA",
+      "score": 20009.0
+    },
+    {
+      "symbol": "SPYV",
+      "shortName": "State Street SPDR Portfolio S\u0026P",
+      "longName": "SPDR Portfolio S\u0026P 500 Value ETF",
+      "quoteType": "ETF",
+      "exchange": "PCX",
+      "exchangeDisplay": "NYSEArca",
+      "score": 20009.0
+    }
+  ],
+  "news": [
+    {
+      "uuid": "6e2247e5-e5e4-35ce-848f-41fc69c42272",
+      "title": "Stocks Settle Mixed on Higher Bond Yields",
+      "publisher": "Barchart",
+      "link": "https://finance.yahoo.com/m/6e2247e5-e5e4-35ce-848f-41fc69c42272/stocks-settle-mixed-on-higher.html",
+      "publishTime": 1764884091,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/.XXNec5xRNavPBnZnJrwMQ--~B/aD0xMDY3O3c9MTYwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/barchart_com_477/4325b337bc9a3e4bc79fd8b591af63df",
+            "width": 1600,
+            "height": 1067,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/7rNgi8nmfwLCA.4uT0dDpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/barchart_com_477/4325b337bc9a3e4bc79fd8b591af63df",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "^GSPC",
+        "^DJI",
+        "^NDX",
+        "^IXIC"
+      ]
+    },
+    {
+      "uuid": "fdaf898c-063f-3b9b-a5de-40e84e2d12d9",
+      "title": "‘Family of Spies’ Review: Dark Secrets in Her Family",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/fdaf898c-063f-3b9b-a5de-40e84e2d12d9/%E2%80%98family-of-spies%E2%80%99-review%3A.html",
+      "publishTime": 1764881220,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/6lrUCbb4rR7eRM32A65HTg--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/a8299be46f6dd73c64722286f43a4857",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/1qua1f9Y1X4EYmfUOqRTfQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/a8299be46f6dd73c64722286f43a4857",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
+      "uuid": "ba713ca3-4d63-38e1-b052-02441f04a85d",
+      "title": "Stocks Pressured as Bond Yields Rise and Chip Stocks Fall",
+      "publisher": "Barchart",
+      "link": "https://finance.yahoo.com/m/ba713ca3-4d63-38e1-b052-02441f04a85d/stocks-pressured-as-bond.html",
+      "publishTime": 1764865054,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/xnARvPyCtFpir84.2QdDNg--~B/aD04NjI7dz0xNjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/barchart_com_477/9702f20631207874aa69ec4c7402dbba",
+            "width": 1600,
+            "height": 862,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/C8B2.tsridxMbC8e7SwGsw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/barchart_com_477/9702f20631207874aa69ec4c7402dbba",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "^GSPC",
+        "^IXIC",
+        "^DJI",
+        "^NDX"
+      ]
+    },
+    {
+      "uuid": "ac854aa5-345b-36ba-8908-da86e7836cbb",
+      "title": "Stocks Pressured by Higher Bond Yields and Chip Stock Weakness",
+      "publisher": "Barchart",
+      "link": "https://finance.yahoo.com/m/ac854aa5-345b-36ba-8908-da86e7836cbb/stocks-pressured-by-higher.html",
+      "publishTime": 1764861322,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/HyH1NVj9A4C4TtePIfDyvA--~B/aD0xMDY3O3c9MTYwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/barchart_com_477/ade340745436cfca783ca1d9dfcbf5bb",
+            "width": 1600,
+            "height": 1067,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/h9dEQnWPNGBgeNi4rmow1g--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/barchart_com_477/ade340745436cfca783ca1d9dfcbf5bb",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "^IXIC",
+        "^GSPC",
+        "^DJI",
+        "^NDX"
+      ]
+    },
+    {
+      "uuid": "495a1518-e505-3faf-81ea-6ab0293a619b",
+      "title": "Exchange-Traded Funds, Equity Futures Higher Pre-Bell Thursday Amid Hopes for Interest Rate Cut",
+      "publisher": "MT Newswires",
+      "link": "https://finance.yahoo.com/news/exchange-traded-funds-equity-futures-135550562.html",
+      "publishTime": 1764856550,
+      "type": "STORY",
+      "relatedTickers": [
+        "QQQ",
+        "SPY",
+        "^GSPC",
+        "^DJI",
+        "^IXIC",
+        "NG\u003dF"
+      ]
+    },
+    {
+      "uuid": "b936f008-1eb6-3ffd-b62f-7ef115a3bd16",
+      "title": "‘Reflection in a Dead Diamond’ Review: Shudder’s Outré French Adventure",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/b936f008-1eb6-3ffd-b62f-7ef115a3bd16/%E2%80%98reflection-in-a-dead.html",
+      "publishTime": 1764884460,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/PcjojLQDlPc.EZUWuWmDCw--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/051762c050e08c23cf51fc314c20d373",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/aDdq2b3dpivktQtJOXHueQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/051762c050e08c23cf51fc314c20d373",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
+      "uuid": "a57e6542-7a5a-3989-9e20-67ddeca29873",
+      "title": "US senators seek to block Nvidia sales of advanced chips to China",
+      "publisher": "Financial Times",
+      "link": "https://finance.yahoo.com/news/us-senators-seek-block-nvidia-194955313.html",
+      "publishTime": 1764877795,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/gNTOJPKdUchYoDe4sKYT5Q--~B/aD01NzYwO3c9ODY0MDthcHBpZD15dGFjaHlvbg--/https://s.yimg.com/os/creatr-uploaded-images/2025-10/fea8f980-b649-11f0-aff9-a094a9576a01",
+            "width": 8640,
+            "height": 5760,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/zSoQ7MqvgzwwJ5eBNfglTA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://s.yimg.com/os/creatr-uploaded-images/2025-10/fea8f980-b649-11f0-aff9-a094a9576a01",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "NVDA"
+      ]
+    },
+    {
+      "uuid": "086e0cab-5676-300b-aa3b-e0be3f42a3af",
+      "title": "How a Man Convicted of Running a Latin American Narco State Landed a Pardon",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/086e0cab-5676-300b-aa3b-e0be3f42a3af/how-a-man-convicted-of.html",
+      "publishTime": 1764875040,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/eHjSa.Lviw2.3nsIkQNipg--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/1a8924cb724232b035e78928ab50403e",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/7hmoRWyP2TqhlHsbqkHHZw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/1a8924cb724232b035e78928ab50403e",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    }
+  ]
+}
