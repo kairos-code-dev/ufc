@@ -120,7 +120,7 @@ val integrationTest = tasks.register<Test>("integrationTest") {
     }
 
     // 통합 테스트 순차 실행 (Rate Limiting 방지)
-    maxParallelForks = 1
+    maxParallelForks = 10
 
     // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
     timeout.set(Duration.ofMinutes(5))
@@ -142,12 +142,10 @@ tasks {
         description = "Runs all tests (unit + integration) in parallel"
 
         useJUnitPlatform {
-            // liveTest만 제외하고 모든 테스트 실행 (unit + integration)
-            excludeTags("liveTest")
         }
 
         // 모든 테스트 순차 실행 (Rate Limiting 방지)
-        maxParallelForks = 1
+        maxParallelForks = 10
 
         // 타임아웃 증가 (통합 테스트 포함)
         timeout.set(Duration.ofMinutes(15))

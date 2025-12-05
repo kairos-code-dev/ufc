@@ -82,6 +82,33 @@
   ],
   "news": [
     {
+      "uuid": "c314539d-a418-33ad-b9c0-22a15338821e",
+      "title": "Apple Departures Point to Challenges for iPhone’s Dominance",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/c314539d-a418-33ad-b9c0-22a15338821e/apple-departures-point-to.html",
+      "publishTime": 1764907560,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/5PedKaLTMkEw4_ErWoBdeA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/fgTkN2glwmVinWLnlyMhpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
       "uuid": "639bbc6f-849f-3f96-8f6b-ff41e13a7e20",
       "title": "Globalstar, Inc. (GSAT): A Bull Case Theory",
       "publisher": "Insider Monkey",
@@ -263,34 +290,6 @@
       "link": "https://finance.yahoo.com/news/apple-names-meta-alum-jennifer-225555740.html",
       "publishTime": 1764888955,
       "type": "STORY",
-      "relatedTickers": [
-        "AAPL",
-        "META"
-      ]
-    },
-    {
-      "uuid": "868a5896-585f-3f51-b5ba-ad21f06aa642",
-      "title": "Apple’s executive shake-up continues with departures of general counsel and policy head",
-      "publisher": "TechCrunch",
-      "link": "https://finance.yahoo.com/news/apple-executive-shake-continues-departures-222801659.html",
-      "publishTime": 1764887281,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/pvcHWysNZQd34ev3PT4HLg--~B/aD0yNjY3O3c9NDAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
-            "width": 4000,
-            "height": 2667,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/Heg3vMLeuns8y0dRM.jHmQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
       "relatedTickers": [
         "AAPL",
         "META"

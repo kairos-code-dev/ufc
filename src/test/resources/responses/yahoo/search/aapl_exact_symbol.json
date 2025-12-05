@@ -113,6 +113,33 @@
       ]
     },
     {
+      "uuid": "c314539d-a418-33ad-b9c0-22a15338821e",
+      "title": "Apple Departures Point to Challenges for iPhone’s Dominance",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/c314539d-a418-33ad-b9c0-22a15338821e/apple-departures-point-to.html",
+      "publishTime": 1764907560,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/5PedKaLTMkEw4_ErWoBdeA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/fgTkN2glwmVinWLnlyMhpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
       "uuid": "517d5ed4-6b18-3fa8-badf-ab2606a70926",
       "title": "Top Apple Executives to Leave, Adding to Recent Departures",
       "publisher": "The Wall Street Journal",
@@ -139,15 +166,6 @@
         "AAPL",
         "META"
       ]
-    },
-    {
-      "uuid": "e74e1d7d-9e42-30e6-8c1e-d6bfea713957",
-      "title": "Is This The End of Private DM? ChatGPT Group Chat Debuts With Revolutionary Upgrades – Here\u0027s How It Works",
-      "publisher": "Benzinga",
-      "link": "https://finance.yahoo.com/m/e74e1d7d-9e42-30e6-8c1e-d6bfea713957/is-this-the-end-of-private.html",
-      "publishTime": 1764900033,
-      "type": "STORY",
-      "relatedTickers": []
     },
     {
       "uuid": "2c01bfe5-a845-3e66-aba1-61834ae53f90",
@@ -178,6 +196,15 @@
         "BF-A",
         "BF-B"
       ]
+    },
+    {
+      "uuid": "e74e1d7d-9e42-30e6-8c1e-d6bfea713957",
+      "title": "Is This The End of Private DM? ChatGPT Group Chat Debuts With Revolutionary Upgrades – Here\u0027s How It Works",
+      "publisher": "Benzinga",
+      "link": "https://finance.yahoo.com/m/e74e1d7d-9e42-30e6-8c1e-d6bfea713957/is-this-the-end-of-private.html",
+      "publishTime": 1764900033,
+      "type": "STORY",
+      "relatedTickers": []
     },
     {
       "uuid": "3364dee4-683a-3a93-b0dc-edbfa4bbe3f1",
@@ -215,34 +242,6 @@
       "publishTime": 1764892913,
       "type": "STORY",
       "relatedTickers": []
-    },
-    {
-      "uuid": "639bbc6f-849f-3f96-8f6b-ff41e13a7e20",
-      "title": "Globalstar, Inc. (GSAT): A Bull Case Theory",
-      "publisher": "Insider Monkey",
-      "link": "https://finance.yahoo.com/news/globalstar-inc-gsat-bull-case-025047009.html",
-      "publishTime": 1764903047,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/g_34llVXzHSDtr3r6yMFmA--~B/aD01MTk7dz05MjM7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
-            "width": 923,
-            "height": 519,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/8OlkYrcoOUDqg2SZfiB1Yw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
-      "relatedTickers": [
-        "GSAT",
-        "AAPL"
-      ]
     }
   ]
 }

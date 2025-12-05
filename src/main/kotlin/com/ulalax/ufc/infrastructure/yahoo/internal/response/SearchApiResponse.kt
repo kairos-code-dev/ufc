@@ -21,7 +21,7 @@ internal data class SearchApiResponse(
      * 종목 검색 결과 리스트
      */
     @SerialName("quotes")
-    val quotes: List<QuoteResult>? = null,
+    val quotes: List<SearchQuoteResult>? = null,
 
     /**
      * 뉴스 검색 결과 리스트
@@ -34,7 +34,7 @@ internal data class SearchApiResponse(
  * 검색된 종목 정보 (Internal)
  */
 @Serializable
-internal data class QuoteResult(
+internal data class SearchQuoteResult(
     /**
      * 티커 심볼
      */

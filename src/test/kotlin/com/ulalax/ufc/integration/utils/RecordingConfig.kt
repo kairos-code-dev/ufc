@@ -84,6 +84,9 @@ object RecordingConfig {
 
             /** Search API 응답 (종목 및 뉴스 검색) */
             const val SEARCH = "$BASE/search"
+
+            /** Options API 응답 (옵션 체인 데이터) */
+            const val OPTIONS = "$BASE/options"
         }
 
         // ========================================

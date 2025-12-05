@@ -80,6 +80,33 @@
   ],
   "news": [
     {
+      "uuid": "65d5cb95-509a-3e79-92a1-a61388bffb97",
+      "title": "T-Mobile quietly makes bold move to hold onto customers longer",
+      "publisher": "TheStreet",
+      "link": "https://finance.yahoo.com/m/65d5cb95-509a-3e79-92a1-a61388bffb97/t-mobile-quietly-makes-bold.html",
+      "publishTime": 1764909180,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/kvRlRdLbYhihKrj3gAgd7w--~B/aD02NzU7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thestreet_881/9fc8f8d20f341908f185e350531d0e2a",
+            "width": 1200,
+            "height": 675,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/cxmsWQhFCYk7__sRuzWCIQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thestreet_881/9fc8f8d20f341908f185e350531d0e2a",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "TMUS"
+      ]
+    },
+    {
       "uuid": "1f775a8b-fb2a-397a-9faf-8f3915eb0735",
       "title": "Samsung Electronics (KOSE:A005930): Revisiting Valuation After a Strong 90-Day Share Price Rally",
       "publisher": "Simply Wall St.",
@@ -275,33 +302,6 @@
         "INTC",
         "SSNLF",
         "GFS"
-      ]
-    },
-    {
-      "uuid": "f1630432-5f61-3a1d-b97a-0942a58e4635",
-      "title": "Sandisk Corporation (SNDK): A Bull Case Theory",
-      "publisher": "Insider Monkey",
-      "link": "https://finance.yahoo.com/news/sandisk-corporation-sndk-bull-case-191346194.html",
-      "publishTime": 1764875626,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/6pLsWYJpA6.PjT8vkawfMQ--~B/aD01NjU7dz04NDc7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/2601bc206d25d13ef03fba318e5250eb",
-            "width": 847,
-            "height": 565,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/IPI.2g_cx3X7Gupy39iWZw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/2601bc206d25d13ef03fba318e5250eb",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
-      "relatedTickers": [
-        "SNDK"
       ]
     }
   ]

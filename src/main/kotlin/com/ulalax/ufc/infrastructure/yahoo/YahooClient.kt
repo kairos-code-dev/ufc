@@ -2521,14 +2521,14 @@ class YahooClient internal constructor(
      *
      * @param symbol 조회할 심볼 (예: "AAPL")
      * @param limit 반환할 결과 수 (1-100, 기본값: 12)
-     * @return EarningsCalendar
+     * @return VisualizationEarningsCalendar
      * @throws ValidationException 파라미터 검증 실패 시
      * @throws ApiException API 호출 실패 시
      */
     suspend fun visualization(
         symbol: String,
         limit: Int = 12
-    ): EarningsCalendar {
+    ): VisualizationEarningsCalendar {
         logger.debug("Calling Yahoo Finance Visualization API: symbol={}, limit={}", symbol, limit)
 
         // 파라미터 검증
@@ -2604,7 +2604,7 @@ class YahooClient internal constructor(
         val documents = visualizationResponse.finance.result?.firstOrNull()?.documents
         if (documents.isNullOrEmpty()) {
             // 빈 결과는 에러가 아니라 빈 목록 반환
-            return EarningsCalendar(
+            return VisualizationEarningsCalendar(
                 symbol = symbol,
                 earningsDates = emptyList()
             )
@@ -2648,7 +2648,7 @@ class YahooClient internal constructor(
             }
         }
 
-        return EarningsCalendar(
+        return VisualizationEarningsCalendar(
             symbol = symbol,
             earningsDates = earningsDates
         )

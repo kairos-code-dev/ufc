@@ -32,21 +32,21 @@
       "score": 20023.0
     },
     {
-      "symbol": "SPYI",
-      "shortName": "NEOS S\u0026P 500 High Income ETF",
-      "longName": "Neos S\u0026P 500(R) High Income ETF",
-      "quoteType": "ETF",
-      "exchange": "BTS",
-      "exchangeDisplay": "BATS Trading",
-      "score": 20018.0
-    },
-    {
       "symbol": "SPYD.DE",
       "shortName": "SPDR S\u0026P US Divid.Aristocr.ETFR",
       "longName": "SPDR S\u0026P US Dividend Aristocrats UCITS ETF Dis",
       "quoteType": "ETF",
       "exchange": "GER",
       "exchangeDisplay": "XETRA",
+      "score": 20018.0
+    },
+    {
+      "symbol": "SPYI",
+      "shortName": "NEOS S\u0026P 500 High Income ETF",
+      "longName": "Neos S\u0026P 500(R) High Income ETF",
+      "quoteType": "ETF",
+      "exchange": "BTS",
+      "exchangeDisplay": "BATS Trading",
       "score": 20018.0
     },
     {

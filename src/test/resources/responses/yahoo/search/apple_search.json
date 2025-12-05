@@ -120,6 +120,33 @@
       ]
     },
     {
+      "uuid": "c314539d-a418-33ad-b9c0-22a15338821e",
+      "title": "Apple Departures Point to Challenges for iPhone’s Dominance",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/c314539d-a418-33ad-b9c0-22a15338821e/apple-departures-point-to.html",
+      "publishTime": 1764907560,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/5PedKaLTMkEw4_ErWoBdeA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/fgTkN2glwmVinWLnlyMhpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
       "uuid": "3846d033-405a-32d1-9e16-02fb6caa2e2e",
       "title": "Apple appoints Meta\u0027s Newstead as general counsel amid executive changes",
       "publisher": "Reuters",
@@ -234,31 +261,6 @@
         "AAPL",
         "META"
       ]
-    },
-    {
-      "uuid": "8a784dbd-7b35-30cf-9951-8ffb1c7161da",
-      "title": "AI finds its way into Apple’s top apps of the year",
-      "publisher": "TechCrunch",
-      "link": "https://finance.yahoo.com/m/8a784dbd-7b35-30cf-9951-8ffb1c7161da/ai-finds-its-way-into-apple%E2%80%99s.html",
-      "publishTime": 1764856800,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/HFxfHqQjGmedzyxzAvckQQ--~B/aD04NzY7dz0xNDU2O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/e68b2035f82a789a4bc80006f688c9cb",
-            "width": 1456,
-            "height": 876,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/Zvr_mugy6FZ3LOFI1JUtkQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/e68b2035f82a789a4bc80006f688c9cb",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
-      "relatedTickers": []
     }
   ]
 }
