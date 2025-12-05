@@ -18,7 +18,10 @@ import com.ulalax.ufc.domain.model.lookup.*
 import com.ulalax.ufc.domain.model.market.*
 import com.ulalax.ufc.domain.model.options.*
 import com.ulalax.ufc.domain.model.realtime.*
+import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.request.ScreenerRequest
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteApiResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
@@ -42,12 +45,16 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -2032,6 +2039,328 @@ class YahooClient internal constructor(
             financialHealth = financialHealth,
             growthRates = growthRates,
             analystRatings = analystRatings
+        )
+    }
+
+    /**
+     * Screener API를 호출하여 커스텀 쿼리로 종목을 검색합니다.
+     *
+     * @param query ScreenerQuery (커스텀 필터 조건)
+     * @param sortField 정렬 기준 필드 (기본값: TICKER)
+     * @param sortAsc 오름차순 정렬 여부 (기본값: false)
+     * @param size 결과 개수 (기본값: 100, 최대: 250)
+     * @param offset 페이지네이션 오프셋 (기본값: 0)
+     * @return ScreenerResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun screener(
+        query: ScreenerQuery,
+        sortField: ScreenerSortField = ScreenerSortField.TICKER,
+        sortAsc: Boolean = false,
+        size: Int = 100,
+        offset: Int = 0
+    ): ScreenerResult {
+        logger.debug(
+            "Calling Yahoo Finance Screener API (Custom): quoteType={}, sortField={}, size={}, offset={}",
+            query.quoteType, sortField.apiValue, size, offset
+        )
+
+        // 파라미터 검증
+        require(size in 1..250) { "size must be between 1 and 250, but was $size" }
+        require(offset >= 0) { "offset must be >= 0, but was $offset" }
+
+        // 쿼리 유효성 검사
+        query.validate()
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // 요청 바디 생성
+        val queryMap = query.toRequestBody()
+        val queryJson = convertMapToJsonElement(queryMap)
+
+        val requestBody = ScreenerRequest(
+            query = queryJson,
+            quoteType = query.quoteType,
+            sortField = sortField.apiValue,
+            sortType = if (sortAsc) "ASC" else "DESC",
+            size = size,
+            offset = offset
+        )
+
+        // API 요청 (POST)
+        val response = httpClient.post(YahooApiUrls.SCREENER) {
+            parameter("crumb", crumb)
+            contentType(ContentType.Application.Json)
+            setBody(requestBody)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Screener API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf(
+                    "quoteType" to query.quoteType,
+                    "sortField" to sortField.apiValue
+                )
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val screenerResponse = json.decodeFromString<ScreenerResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (screenerResponse.finance.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Screener API 에러: ${screenerResponse.finance.error.description}",
+                metadata = mapOf("errorCode" to screenerResponse.finance.error.code)
+            )
+        }
+
+        // 결과 확인
+        if (screenerResponse.finance.result.isNullOrEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.DATA_NOT_FOUND,
+                message = "Screener 결과를 찾을 수 없습니다",
+                metadata = mapOf("quoteType" to query.quoteType)
+            )
+        }
+
+        // ScreenerResult로 변환
+        return convertToScreenerResult(screenerResponse.finance.result.first())
+    }
+
+    /**
+     * Screener API를 호출하여 Predefined Query로 종목을 검색합니다 (String ID).
+     *
+     * @param predefinedId Predefined Screener ID (예: "day_gainers")
+     * @param count 결과 개수 (1-250)
+     * @param sortField 커스텀 정렬 필드 (null이면 기본값 사용)
+     * @param sortAsc 커스텀 정렬 방향 (null이면 기본값 사용)
+     * @return ScreenerResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun screener(
+        predefinedId: String,
+        count: Int = 25,
+        sortField: ScreenerSortField? = null,
+        sortAsc: Boolean? = null
+    ): ScreenerResult {
+        logger.debug(
+            "Calling Yahoo Finance Screener API (Predefined): scrIds={}, count={}",
+            predefinedId, count
+        )
+
+        // 파라미터 검증
+        require(count in 1..250) { "count must be between 1 and 250, but was $count" }
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청 (GET)
+        val response = httpClient.get(YahooApiUrls.SCREENER_PREDEFINED) {
+            parameter("scrIds", predefinedId)
+            parameter("count", count)
+            parameter("crumb", crumb)
+            if (sortField != null) {
+                parameter("sortField", sortField.apiValue)
+            }
+            if (sortAsc != null) {
+                parameter("sortType", if (sortAsc) "ASC" else "DESC")
+            }
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Screener API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("predefinedId" to predefinedId)
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val screenerResponse = json.decodeFromString<ScreenerResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (screenerResponse.finance.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Screener API 에러: ${screenerResponse.finance.error.description}",
+                metadata = mapOf("errorCode" to screenerResponse.finance.error.code)
+            )
+        }
+
+        // 결과 확인
+        if (screenerResponse.finance.result.isNullOrEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.DATA_NOT_FOUND,
+                message = "Screener 결과를 찾을 수 없습니다",
+                metadata = mapOf("predefinedId" to predefinedId)
+            )
+        }
+
+        // ScreenerResult로 변환
+        return convertToScreenerResult(screenerResponse.finance.result.first())
+    }
+
+    /**
+     * Screener API를 호출하여 Predefined Query로 종목을 검색합니다 (Enum).
+     *
+     * @param predefined PredefinedScreener Enum
+     * @param count 결과 개수 (1-250)
+     * @param sortField 커스텀 정렬 필드 (null이면 기본값 사용)
+     * @param sortAsc 커스텀 정렬 방향 (null이면 기본값 사용)
+     * @return ScreenerResult
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun screener(
+        predefined: PredefinedScreener,
+        count: Int = 25,
+        sortField: ScreenerSortField? = null,
+        sortAsc: Boolean? = null
+    ): ScreenerResult {
+        return screener(
+            predefinedId = predefined.apiId,
+            count = count,
+            sortField = sortField ?: predefined.defaultSortField,
+            sortAsc = sortAsc ?: predefined.defaultSortAsc
+        )
+    }
+
+    /**
+     * Internal ScreenerApiResult를 public ScreenerResult로 변환합니다.
+     *
+     * @param apiResult 내부 API 응답 결과
+     * @return ScreenerResult
+     */
+    private fun convertToScreenerResult(
+        apiResult: com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerApiResult
+    ): ScreenerResult {
+        val quotes = apiResult.quotes.mapNotNull { quoteMap ->
+            try {
+                convertToScreenerQuote(quoteMap)
+            } catch (e: Exception) {
+                logger.warn("Failed to parse screener quote: ${e.message}")
+                null
+            }
+        }
+
+        return ScreenerResult(
+            id = apiResult.id,
+            title = apiResult.title,
+            description = apiResult.description,
+            count = apiResult.count,
+            total = apiResult.total,
+            start = apiResult.start,
+            quotes = quotes
+        )
+    }
+
+    /**
+     * Map을 JsonElement로 변환하는 헬퍼 함수
+     *
+     * @param map 변환할 Map
+     * @return JsonElement
+     */
+    private fun convertMapToJsonElement(map: Map<String, Any>): JsonElement {
+        return buildJsonObject {
+            map.forEach { (key, value) ->
+                when (value) {
+                    is String -> put(key, value)
+                    is Number -> put(key, value)
+                    is Boolean -> put(key, value)
+                    is List<*> -> {
+                        putJsonArray(key) {
+                            value.forEach { item ->
+                                when (item) {
+                                    is Map<*, *> -> add(convertMapToJsonElement(item as Map<String, Any>))
+                                    is String -> add(item)
+                                    is Number -> add(item)
+                                    is Boolean -> add(item)
+                                    else -> add(JsonNull)
+                                }
+                            }
+                        }
+                    }
+                    is Map<*, *> -> put(key, convertMapToJsonElement(value as Map<String, Any>))
+                    else -> put(key, JsonNull)
+                }
+            }
+        }
+    }
+
+    /**
+     * Internal quote Map을 public ScreenerQuote로 변환합니다.
+     *
+     * @param quoteMap 내부 API 응답 quote
+     * @return ScreenerQuote
+     */
+    private fun convertToScreenerQuote(quoteMap: Map<String, JsonElement>): ScreenerQuote {
+        // symbol은 필수
+        val symbol = quoteMap["symbol"]?.jsonPrimitive?.content
+            ?: throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "symbol 필드가 없습니다"
+            )
+
+        // 표준 필드 추출
+        val shortName = quoteMap["shortname"]?.jsonPrimitive?.contentOrNull
+        val longName = quoteMap["longname"]?.jsonPrimitive?.contentOrNull
+        val quoteType = quoteMap["quoteType"]?.jsonPrimitive?.contentOrNull
+        val sector = quoteMap["sector"]?.jsonPrimitive?.contentOrNull
+        val industry = quoteMap["industry"]?.jsonPrimitive?.contentOrNull
+        val exchange = quoteMap["exchange"]?.jsonPrimitive?.contentOrNull
+
+        // 숫자 필드 추출
+        val marketCap = quoteMap["marketCap"]?.jsonPrimitive?.longOrNull
+        val regularMarketPrice = quoteMap["regularMarketPrice"]?.jsonPrimitive?.doubleOrNull
+        val regularMarketChange = quoteMap["regularMarketChange"]?.jsonPrimitive?.doubleOrNull
+        val regularMarketChangePercent = quoteMap["regularMarketChangePercent"]?.jsonPrimitive?.doubleOrNull
+        val regularMarketVolume = quoteMap["regularMarketVolume"]?.jsonPrimitive?.longOrNull
+
+        // 나머지는 additionalFields에 저장
+        val standardFields = setOf(
+            "symbol", "shortname", "longname", "quoteType", "sector", "industry", "exchange",
+            "marketCap", "regularMarketPrice", "regularMarketChange", "regularMarketChangePercent", "regularMarketVolume"
+        )
+
+        val additionalFields = quoteMap
+            .filterKeys { it !in standardFields }
+            .mapValues { (_, value) ->
+                when {
+                    value is JsonNull -> null
+                    value.jsonPrimitive.isString -> value.jsonPrimitive.content
+                    else -> value.jsonPrimitive.longOrNull ?: value.jsonPrimitive.doubleOrNull
+                }
+            }
+
+        return ScreenerQuote(
+            symbol = symbol,
+            shortName = shortName,
+            longName = longName,
+            quoteType = quoteType,
+            sector = sector,
+            industry = industry,
+            exchange = exchange,
+            marketCap = marketCap,
+            regularMarketPrice = regularMarketPrice,
+            regularMarketChange = regularMarketChange,
+            regularMarketChangePercent = regularMarketChangePercent,
+            regularMarketVolume = regularMarketVolume,
+            additionalFields = additionalFields
         )
     }
 
