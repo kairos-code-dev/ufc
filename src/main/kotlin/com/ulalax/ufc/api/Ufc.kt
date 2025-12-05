@@ -4,6 +4,8 @@ import com.ulalax.ufc.infrastructure.yahoo.YahooClient
 import com.ulalax.ufc.domain.model.chart.ChartEventType
 import com.ulalax.ufc.domain.model.chart.Interval
 import com.ulalax.ufc.domain.model.chart.Period
+import com.ulalax.ufc.domain.model.fundamentals.FundamentalsTimeseriesResult
+import com.ulalax.ufc.domain.model.fundamentals.FundamentalsType
 import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
 import com.ulalax.ufc.domain.model.quote.QuoteSummaryModuleResult
 import com.ulalax.ufc.infrastructure.fred.FredClient
@@ -30,6 +32,14 @@ class Ufc private constructor(
 
     suspend fun earningsCalendar(symbol: String, limit: Int = 12, offset: Int = 0) =
         yahoo.earningsCalendar(symbol, limit, offset)
+
+    suspend fun fundamentalsTimeseries(
+        symbol: String,
+        types: List<FundamentalsType>,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null
+    ): FundamentalsTimeseriesResult =
+        yahoo.fundamentalsTimeseries(symbol, types, startDate, endDate)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,
