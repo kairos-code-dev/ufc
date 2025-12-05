@@ -67,4 +67,11 @@ object YahooApiUrls {
      * 예: $FUNDAMENTALS_TIMESERIES/AAPL?period1=1609459200&period2=1640995200
      */
     const val FUNDAMENTALS_TIMESERIES = "$QUERY2/ws/fundamentals-timeseries/v1/finance/timeseries"
+
+    /**
+     * Earnings Calendar 엔드포인트
+     * 특정 심볼의 실적 발표 일정을 HTML 스크래핑을 통해 조회
+     * 예: $EARNINGS_CALENDAR?symbol=AAPL&offset=0&size=25
+     */
+    const val EARNINGS_CALENDAR = "https://finance.yahoo.com/calendar/earnings"
 }

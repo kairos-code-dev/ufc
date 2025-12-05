@@ -28,6 +28,9 @@ class Ufc private constructor(
                       period: Period = Period.OneYear, vararg events: ChartEventType) =
         yahoo.chart(symbol, interval, period, *events)
 
+    suspend fun earningsCalendar(symbol: String, limit: Int = 12, offset: Int = 0) =
+        yahoo.earningsCalendar(symbol, limit, offset)
+
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,
                        endDate: LocalDate? = null, frequency: DataFrequency? = null) =

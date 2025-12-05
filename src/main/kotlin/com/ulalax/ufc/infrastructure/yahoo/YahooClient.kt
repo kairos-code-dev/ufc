@@ -11,6 +11,14 @@ import com.ulalax.ufc.infrastructure.yahoo.internal.response.ChartDataResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteSummaryResponse
 import com.ulalax.ufc.domain.model.chart.*
 import com.ulalax.ufc.domain.model.quote.*
+import com.ulalax.ufc.domain.model.earnings.*
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTableRow
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -645,6 +653,280 @@ class YahooClient internal constructor(
             prices = prices,
             events = events
         )
+    }
+
+    /**
+     * Earnings Calendar API를 호출하여 실적 발표 일정을 조회합니다.
+     *
+     * HTML 스크래핑을 통해 데이터를 수집하므로, Yahoo Finance 웹 페이지 구조 변경 시
+     * 파싱이 실패할 수 있습니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL")
+     * @param limit 조회할 레코드 수 (기본값: 12, 최대: 100)
+     * @param offset 페이지네이션 오프셋 (기본값: 0)
+     * @return EarningsCalendar
+     * @throws ApiException API 호출 실패 시
+     * @throws DataParsingException HTML 파싱 실패 시
+     */
+    suspend fun earningsCalendar(
+        symbol: String,
+        limit: Int = 12,
+        offset: Int = 0
+    ): EarningsCalendar {
+        // 파라미터 검증
+        require(symbol.isNotBlank()) { "Symbol must not be blank" }
+        require(limit in 1..100) { "Limit must be between 1 and 100, got $limit" }
+        require(offset >= 0) { "Offset must be non-negative, got $offset" }
+
+        logger.debug("Calling Yahoo Finance Earnings Calendar: symbol={}, limit={}, offset={}", symbol, limit, offset)
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // Yahoo Finance의 size 파라미터 계산
+        val size = when {
+            limit <= 25 -> 25
+            limit <= 50 -> 50
+            else -> 100
+        }
+
+        // HTML 요청
+        val response = httpClient.get(YahooApiUrls.EARNINGS_CALENDAR) {
+            parameter("symbol", symbol)
+            parameter("offset", offset)
+            parameter("size", size)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Earnings Calendar API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("symbol" to symbol, "offset" to offset, "size" to size)
+            )
+        }
+
+        // HTML 파싱
+        val html = response.body<String>()
+        val htmlResponse = parseEarningsCalendarHtml(html)
+
+        // 데이터 변환 (limit 적용)
+        val events = htmlResponse.rows
+            .take(limit)
+            .mapNotNull { row -> convertToEarningsEvent(row) }
+
+        // 50% 이상 파싱 실패 시 예외 발생
+        val successRate = if (htmlResponse.rows.isEmpty()) 1.0
+                         else events.size.toDouble() / htmlResponse.rows.take(limit).size.toDouble()
+
+        if (successRate < 0.5) {
+            logger.warn("Earnings Calendar 파싱 성공률 낮음: ${successRate * 100}%")
+            throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "Earnings Calendar 파싱 실패율이 50%를 초과했습니다 (성공률: ${successRate * 100}%)",
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "totalRows" to htmlResponse.rows.size,
+                    "parsedRows" to events.size
+                )
+            )
+        }
+
+        return EarningsCalendar(
+            symbol = symbol,
+            events = events,
+            requestedLimit = limit,
+            requestedOffset = offset,
+            actualCount = events.size
+        )
+    }
+
+    /**
+     * HTML을 파싱하여 EarningsCalendarHtmlResponse로 변환합니다.
+     *
+     * @param html Yahoo Finance Earnings Calendar HTML
+     * @return EarningsCalendarHtmlResponse
+     */
+    private fun parseEarningsCalendarHtml(html: String): EarningsCalendarHtmlResponse {
+        logger.debug("HTML length: ${html.length}, contains table: ${html.contains("<table")}")
+
+        // 테이블 존재 확인
+        if (!html.contains("<table")) {
+            logger.warn("No table found in HTML response. HTML preview: ${html.take(500)}")
+            return EarningsCalendarHtmlResponse(hasTable = false, rows = emptyList())
+        }
+
+        val rows = mutableListOf<EarningsTableRow>()
+
+        // 간단한 HTML 파싱: <tr>...</tr> 태그 추출
+        val trPattern = Regex("<tr[^>]*>(.*?)</tr>", RegexOption.DOT_MATCHES_ALL)
+        val tdPattern = Regex("<td[^>]*>(.*?)</td>", RegexOption.DOT_MATCHES_ALL)
+
+        trPattern.findAll(html).forEach { trMatch ->
+            val trContent = trMatch.groupValues[1]
+            val tds = tdPattern.findAll(trContent).map { it.groupValues[1].trim() }.toList()
+
+            // 테이블 행이 6개 컬럼을 가지는 경우만 처리
+            // [Symbol, Company, Earnings Date, EPS Estimate, Reported EPS, Surprise (%)]
+            if (tds.size >= 6) {
+                try {
+                    val symbol = cleanHtml(tds[0])
+                    val company = cleanHtml(tds[1])
+                    val earningsDateRaw = cleanHtml(tds[2])
+                    val epsEstimateRaw = cleanHtml(tds[3])
+                    val reportedEpsRaw = cleanHtml(tds[4])
+                    val surprisePercentRaw = cleanHtml(tds[5])
+
+                    // Symbol이 존재하고 Earnings Date가 존재하는 행만 추가
+                    if (symbol.isNotBlank() && earningsDateRaw.isNotBlank()) {
+                        rows.add(
+                            EarningsTableRow(
+                                symbol = symbol,
+                                company = company,
+                                earningsDateRaw = earningsDateRaw,
+                                epsEstimateRaw = epsEstimateRaw,
+                                reportedEpsRaw = reportedEpsRaw,
+                                surprisePercentRaw = surprisePercentRaw
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    logger.warn("Failed to parse earnings table row: ${e.message}")
+                }
+            }
+        }
+
+        logger.debug("Parsed ${rows.size} rows from HTML table")
+        return EarningsCalendarHtmlResponse(hasTable = true, rows = rows)
+    }
+
+    /**
+     * HTML 태그와 엔티티를 제거하고 순수 텍스트를 추출합니다.
+     *
+     * @param html HTML 문자열
+     * @return 정제된 텍스트
+     */
+    private fun cleanHtml(html: String): String {
+        return html
+            .replace(Regex("<[^>]*>"), "") // HTML 태그 제거
+            .replace("&nbsp;", " ")
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&quot;", "\"")
+            .replace("&#39;", "'")
+            .trim()
+    }
+
+    /**
+     * EarningsTableRow를 EarningsEvent로 변환합니다.
+     *
+     * @param row HTML 파싱 결과
+     * @return EarningsEvent, 파싱 실패 시 null
+     */
+    private fun convertToEarningsEvent(row: EarningsTableRow): EarningsEvent? {
+        return try {
+            // 날짜 파싱
+            val (earningsDate, timeZone) = parseEarningsDate(row.earningsDateRaw)
+
+            // 숫자 파싱
+            val epsEstimate = parseDoubleOrNull(row.epsEstimateRaw)
+            val reportedEps = parseDoubleOrNull(row.reportedEpsRaw)
+            val surprisePercent = parsePercentOrNull(row.surprisePercentRaw)
+
+            EarningsEvent(
+                earningsDate = earningsDate,
+                timeZone = timeZone,
+                epsEstimate = epsEstimate,
+                reportedEps = reportedEps,
+                surprisePercent = surprisePercent
+            )
+        } catch (e: Exception) {
+            logger.warn("Failed to convert earnings event: ${e.message}, row=$row")
+            null
+        }
+    }
+
+    /**
+     * Earnings Date 문자열을 파싱하여 Instant와 TimeZone을 반환합니다.
+     *
+     * 예시: "October 30, 2025 at 4 PM EDT" → (Instant, "America/New_York")
+     *
+     * @param dateStr Earnings Date 원본 문자열
+     * @return Pair<Instant, String?> (UTC Instant, IANA TimeZone)
+     */
+    private fun parseEarningsDate(dateStr: String): Pair<Instant, String?> {
+        // 타임존 추출 (마지막 단어)
+        val parts = dateStr.trim().split(" ")
+        val timeZoneAbbr = parts.lastOrNull() ?: ""
+        val ianaTimeZone = mapTimeZone(timeZoneAbbr)
+
+        // 날짜 부분 파싱 (타임존 제거)
+        val dateWithoutTz = dateStr.replace(timeZoneAbbr, "").trim()
+
+        // 포맷: "MMMM d, yyyy 'at' h a" (예: "October 30, 2025 at 4 PM")
+        val formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h a", Locale.ENGLISH)
+        val localDateTime = LocalDateTime.parse(dateWithoutTz, formatter)
+
+        // ZonedDateTime으로 변환 (IANA TimeZone 적용)
+        val zoneId = if (ianaTimeZone != null) {
+            java.time.ZoneId.of(ianaTimeZone)
+        } else {
+            java.time.ZoneId.of("UTC")
+        }
+        val zonedDateTime = ZonedDateTime.of(localDateTime, zoneId)
+
+        // Instant로 변환
+        val instant = zonedDateTime.toInstant()
+
+        return Pair(instant, ianaTimeZone)
+    }
+
+    /**
+     * Yahoo Finance 타임존 약어를 IANA 타임존으로 매핑합니다.
+     *
+     * @param abbr 타임존 약어 (예: "EDT", "PST")
+     * @return IANA 타임존 (예: "America/New_York"), 매핑 실패 시 null
+     */
+    private fun mapTimeZone(abbr: String): String? {
+        return when (abbr.uppercase()) {
+            "EDT", "EST" -> "America/New_York"
+            "PDT", "PST" -> "America/Los_Angeles"
+            "CDT", "CST" -> "America/Chicago"
+            "MDT", "MST" -> "America/Denver"
+            else -> null
+        }
+    }
+
+    /**
+     * 문자열을 Double로 파싱합니다.
+     * "-" 또는 빈 문자열은 null로 반환합니다.
+     *
+     * @param str 원본 문자열
+     * @return Double 또는 null
+     */
+    private fun parseDoubleOrNull(str: String): Double? {
+        val trimmed = str.trim()
+        return when {
+            trimmed.isEmpty() || trimmed == "-" -> null
+            else -> trimmed.toDoubleOrNull()
+        }
+    }
+
+    /**
+     * 퍼센트 문자열을 Double로 파싱합니다.
+     * "-" 또는 빈 문자열은 null로 반환합니다.
+     *
+     * @param str 원본 문자열 (예: "6.49%")
+     * @return Double 또는 null
+     */
+    private fun parsePercentOrNull(str: String): Double? {
+        val trimmed = str.trim().replace("%", "")
+        return when {
+            trimmed.isEmpty() || trimmed == "-" -> null
+            else -> trimmed.toDoubleOrNull()
+        }
     }
 
     /**
