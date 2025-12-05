@@ -190,6 +190,19 @@ suspend fun options(symbol: String, expirationDate: Long? = null): OptionsData
 fun getExpirationDatesAsLocalDate(): List<LocalDate>
 fun findNearestStrike(targetStrike: Double): Double?
 fun findAtTheMoneyOptions(): Pair<OptionContract?, OptionContract?>
+fun getUnderlyingPrice(): Double?
+fun hasExpirationDate(expirationDate: Long): Boolean
+```
+
+#### OptionsChain
+
+```kotlin
+fun findCall(strike: Double): OptionContract?
+fun findPut(strike: Double): OptionContract?
+fun getInTheMoneyCall(): List<OptionContract>
+fun getInTheMoneyPut(): List<OptionContract>
+fun getOutOfTheMoneyCall(): List<OptionContract>
+fun getOutOfTheMoneyPut(): List<OptionContract>
 ```
 
 #### OptionContract
@@ -300,15 +313,19 @@ fun getTimeValue(underlyingPrice: Double, isCall: Boolean): Double?
 ### 5.4 패키지 구조
 
 ```
-com.ulalax.ufc.yahoo
-  ├─ YahooClient.kt              # options() 메서드
-  ├─ model/
-  │    ├─ OptionsData.kt
-  │    ├─ OptionsChain.kt
-  │    ├─ OptionContract.kt
-  │    └─ UnderlyingQuote.kt
-  └─ internal/
-       ├─ response/
-       │    └─ OptionsResponse.kt
-       └─ YahooApiUrls.kt
+com.ulalax.ufc
+  ├─ infrastructure/
+  │    └─ yahoo/
+  │         ├─ YahooClient.kt              # options() 메서드
+  │         └─ internal/
+  │              ├─ response/
+  │              │    └─ OptionsResponse.kt
+  │              └─ YahooApiUrls.kt
+  └─ domain/
+       └─ model/
+            └─ options/
+                 ├─ OptionsData.kt
+                 ├─ OptionsChain.kt
+                 ├─ OptionContract.kt
+                 └─ UnderlyingQuote.kt
 ```

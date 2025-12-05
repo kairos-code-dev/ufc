@@ -174,6 +174,12 @@ suspend fun earningsCalendar(
 |-----|------|
 | EarningsCalendar | 실적 발표 일정 목록 |
 
+| 예외 | 설명 |
+|-----|------|
+| IllegalArgumentException | 파라미터 검증 실패 (require() 사용) |
+| ApiException | HTTP 요청 실패 (ErrorCode.EXTERNAL_API_ERROR) |
+| DataParsingException | HTML 파싱 실패 (ErrorCode.DATA_PARSING_ERROR) |
+
 ### 3.4 필드 매핑
 
 | Yahoo HTML | Domain 필드 | 변환 |
@@ -211,16 +217,16 @@ suspend fun earningsCalendar(
 
 ### 4.1 ErrorCode 매핑
 
-| 에러 케이스 | ErrorCode | 설명 |
+| 에러 케이스 | ErrorCode/Exception | 설명 |
 |-----------|-----------|------|
-| symbol 빈 문자열 | INVALID_PARAMETER | 파라미터 검증 실패 |
-| limit 범위 초과 | INVALID_PARAMETER | 1-100 범위 위반 |
-| offset 음수 | INVALID_PARAMETER | 0 이상 필요 |
-| HTTP 4xx/5xx | EXTERNAL_API_ERROR | API 오류 |
-| Rate Limit (429) | RATE_LIMITED | 요청 제한 |
-| HTML 파싱 실패 | DATA_PARSING_ERROR | 역직렬화 실패 |
-| 날짜 파싱 실패 | DATA_PARSING_ERROR | 날짜 형식 오류 |
-| 50% 이상 행 파싱 실패 | DATA_PARSING_ERROR | 대량 파싱 오류 |
+| symbol 빈 문자열 | IllegalArgumentException | Kotlin require() 사용, 파라미터 검증 실패 |
+| limit 범위 초과 | IllegalArgumentException | Kotlin require() 사용, 1-100 범위 위반 |
+| offset 음수 | IllegalArgumentException | Kotlin require() 사용, 0 이상 필요 |
+| HTTP 4xx/5xx | EXTERNAL_API_ERROR | API 오류 (ApiException) |
+| Rate Limit (429) | RATE_LIMIT_EXCEEDED | 요청 제한 (rateLimiter.acquire()로 처리) |
+| HTML 파싱 실패 | DATA_PARSING_ERROR | 역직렬화 실패 (DataParsingException) |
+| 날짜 파싱 실패 | DATA_PARSING_ERROR | 날짜 형식 오류 (DataParsingException) |
+| 50% 이상 행 파싱 실패 | DATA_PARSING_ERROR | 대량 파싱 오류 (DataParsingException) |
 
 ### 4.2 빈 결과 처리
 
@@ -241,11 +247,12 @@ suspend fun earningsCalendar(
 
 | 에러 | 재시도 | 횟수 |
 |-----|-------|-----|
-| Rate Limit (429) | Yes | Rate Limiter 처리 |
-| Network Error | Yes | 3회 |
-| HTTP 5xx | Yes | 3회 |
+| Rate Limit (429) | Yes | Rate Limiter가 자동 처리 |
+| Network Error | Yes | Ktor 클라이언트 설정에 따름 |
+| HTTP 5xx | Yes | Ktor 클라이언트 설정에 따름 |
 | HTTP 4xx | No | - |
 | 파싱 실패 | No | - |
+| IllegalArgumentException | No | - |
 
 ---
 

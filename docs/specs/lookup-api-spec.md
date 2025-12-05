@@ -1,7 +1,9 @@
 # Lookup API 기술 명세서
 
-> **Version**: 2.0
+> **Version**: 2.1
 > **작성일**: 2025-12-05
+> **최종 수정일**: 2025-12-05
+> **변경 내역**: Yahoo Finance API 필드 구조 변경 반영 (새 필드 추가, 폴백 로직 문서화)
 
 ---
 
@@ -77,6 +79,12 @@ Yahoo Finance Lookup API를 통해 검색어 기반으로 **금융상품(주식,
 | | total | Int | Yes |
 | | documents | List&lt;LookupDocumentResponse&gt; | Yes |
 | LookupDocumentResponse | symbol | String | Yes |
+| | shortName | String | Yes |
+| | exchange | String | Yes |
+| | quoteType | String | Yes |
+| | industryName | String | Yes |
+| | rank | Int | Yes |
+| | industryLink | String | Yes |
 | | name | String | Yes |
 | | exch | String | Yes |
 | | type | String | Yes |
@@ -93,20 +101,28 @@ Yahoo Finance Lookup API를 통해 검색어 기반으로 **금융상품(주식,
 
 ### 2.4 documents 필드 상세
 
-| 필드 | 설명 | 예시 |
-|-----|------|------|
-| symbol | 티커 심볼 | "AAPL" |
-| name | 금융상품 명칭 | "Apple Inc." |
-| exch | 거래소 코드 | "NMS" |
-| exchDisp | 거래소 표시명 | "NASDAQ" |
-| type | 타입 코드 | "S" (Stock) |
-| typeDisp | 타입 표시명 | "Equity" |
-| industry | 산업 코드 | - |
-| industryDisp | 산업 표시명 | "Consumer Electronics" |
-| sector | 섹터 코드 | - |
-| sectorDisp | 섹터 표시명 | "Technology" |
-| score | 관련도 점수 | 1234.56 |
-| isYahooFinance | Yahoo Finance 지원 여부 | true |
+| 필드 | 설명 | 예시 | 비고 |
+|-----|------|------|------|
+| symbol | 티커 심볼 | "AAPL" | |
+| shortName | 금융상품 명칭 | "Apple Inc." | 주요 필드 |
+| exchange | 거래소 코드 | "NMS" | 주요 필드 |
+| quoteType | 타입 코드 | "EQUITY" | 주요 필드 |
+| industryName | 산업 표시명 | "Consumer Electronics" | 주요 필드 |
+| rank | 관련도 점수 (정수) | 1234 | 주요 필드 |
+| industryLink | 산업 링크 | "/sector/ms_technology" | |
+| name | 금융상품 명칭 | "Apple Inc." | 하위호환성 유지 |
+| exch | 거래소 코드 | "NMS" | 하위호환성 유지 |
+| type | 타입 코드 | "S" (Stock) | 하위호환성 유지 |
+| exchDisp | 거래소 표시명 | "NASDAQ" | |
+| typeDisp | 타입 표시명 | "Equity" | |
+| industry | 산업 코드 | - | |
+| industryDisp | 산업 표시명 | "Consumer Electronics" | 하위호환성 유지 |
+| sector | 섹터 코드 | - | |
+| sectorDisp | 섹터 표시명 | "Technology" | |
+| score | 관련도 점수 | 1234.56 | 하위호환성 유지 |
+| isYahooFinance | Yahoo Finance 지원 여부 | true | |
+
+**참고**: Yahoo Finance API는 필드 구조를 변경했습니다. 새로운 필드(`shortName`, `exchange`, `quoteType`, `industryName`, `rank`)가 주요 필드이며, 기존 필드(`name`, `exch`, `type`, `industryDisp`, `score`)는 하위 호환성을 위해 유지됩니다. 구현은 새 필드를 우선 사용하고, 없으면 기존 필드로 폴백합니다.
 
 ### 2.5 TypeCode 매핑
 
@@ -182,6 +198,12 @@ enum class LookupType(val apiValue: String) {
 | | total | Int? |
 | | documents | List&lt;LookupDocumentResponse&gt;? |
 | LookupDocumentResponse | symbol | String? |
+| | shortName | String? |
+| | exchange | String? |
+| | quoteType | String? |
+| | industryName | String? |
+| | rank | Int? |
+| | industryLink | String? |
 | | name | String? |
 | | exch | String? |
 | | type | String? |
@@ -218,20 +240,24 @@ suspend fun lookup(
 
 ### 3.4 필드 매핑
 
-| Yahoo 필드 | Domain 필드 | 변환 |
-|-----------|------------|------|
-| symbol | symbol | 필수 검증 |
-| name | name | 필수 검증 |
-| exch | exchange | 그대로 |
-| exchDisp | exchangeDisplay | 그대로 |
-| type | typeCode | 그대로 |
-| typeDisp | typeDisplay | 그대로 |
-| industry | industry | 그대로 |
-| industryDisp | industryDisplay | 그대로 |
-| sector | sector | 그대로 |
-| sectorDisp | sectorDisplay | 그대로 |
-| score | score | Double? |
-| isYahooFinance | isYahooFinance | Boolean? |
+| Yahoo 필드 | Domain 필드 | 변환 | 비고 |
+|-----------|------------|------|------|
+| symbol | symbol | 필수 검증 | |
+| shortName (또는 name) | name | 필수 검증 | shortName 우선, 없으면 name 사용 |
+| exchange (또는 exch) | exchange | 그대로 | exchange 우선, 없으면 exch 사용 |
+| exchDisp | exchangeDisplay | 그대로 | |
+| quoteType (또는 type) | typeCode | 그대로 | quoteType 우선, 없으면 type 사용 |
+| typeDisp | typeDisplay | 그대로 | |
+| industry | industry | 그대로 | |
+| industryName (또는 industryDisp) | industryDisplay | 그대로 | industryName 우선, 없으면 industryDisp 사용 |
+| sector | sector | 그대로 | |
+| sectorDisp | sectorDisplay | 그대로 | |
+| rank (또는 score) | score | Int를 Double로 변환 | rank 우선 (Int→Double), 없으면 score (Double) 사용 |
+| isYahooFinance | isYahooFinance | Boolean? | |
+
+**매핑 로직**:
+- 구현은 새 API 필드를 우선적으로 사용하고, 없는 경우 기존 필드로 폴백합니다
+- `symbol`과 `name` (또는 `shortName`)은 필수 필드이며, 둘 중 하나라도 누락되면 해당 문서는 결과에서 제외됩니다
 
 ---
 

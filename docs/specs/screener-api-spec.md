@@ -260,6 +260,16 @@ enum class ScreenerOperator {
 
 - **하위 클래스**: `EquityField` (Enum), `FundField` (Enum)
 
+#### FieldValueType (Enum)
+
+```kotlin
+enum class FieldValueType {
+    NUMBER,  // 숫자 타입 (Long, Double 등)
+    STRING,  // 문자열 타입
+    ENUM     // 열거형 타입 (특정 값만 허용)
+}
+```
+
 #### ScreenerSortField (Enum)
 
 ```kotlin
@@ -488,8 +498,8 @@ suspend fun screener(
 
 | 컴포넌트 | 위치 |
 |---------|------|
-| YahooClient | `com.ulalax.ufc.yahoo.YahooClient` |
-| Domain 모델 | `com.ulalax.ufc.yahoo.model.screener` |
+| YahooClient | `com.ulalax.ufc.infrastructure.yahoo.YahooClient` |
+| Domain 모델 | `com.ulalax.ufc.domain.model.screener` |
 | Internal 모델 | `com.ulalax.ufc.yahoo.internal.response` |
 | Ufc 파사드 | `com.ulalax.ufc.Ufc` |
 

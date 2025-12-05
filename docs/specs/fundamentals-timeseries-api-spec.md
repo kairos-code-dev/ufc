@@ -181,6 +181,12 @@ Yahoo Finance Fundamentals Timeseries API를 통해 **재무제표의 시계열 
 | hasData(type) | Boolean | 특정 타입 데이터 존재 여부 |
 | get(type) | List&lt;TimeseriesDataPoint&gt;? | 특정 타입 데이터 조회 |
 
+**팩토리 메서드**:
+
+| 메서드 | 반환 타입 | 설명 |
+|-------|----------|------|
+| empty(symbol) | FundamentalsTimeseriesResult | 빈 결과 생성 (companion object) |
+
 #### TimeseriesDataPoint
 
 | 필드 | 타입 | Nullable | 설명 |
@@ -266,8 +272,8 @@ suspend fun fundamentalsTimeseries(
 |---------|------|-------|------|
 | symbol | String | - | 필수, 공백 불가 |
 | types | List&lt;FundamentalsType&gt; | - | 필수, 빈 리스트 불가 |
-| startDate | LocalDate | 5년 전 | 선택 |
-| endDate | LocalDate | 오늘 | 선택, startDate보다 이후여야 함 |
+| startDate | LocalDate? | null | 선택 (null인 경우 내부적으로 적절한 과거 날짜 사용) |
+| endDate | LocalDate? | null | 선택 (null인 경우 내부적으로 현재 날짜 사용), startDate보다 이후여야 함 |
 
 | 반환 | 설명 |
 |-----|------|

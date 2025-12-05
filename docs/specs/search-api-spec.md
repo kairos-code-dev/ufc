@@ -166,9 +166,9 @@ Yahoo Finance Search API를 통해 **심볼, 회사명, 뉴스를 검색**한다
 | 클래스 | 필드 | 타입 |
 |-------|-----|------|
 | SearchApiResponse | count | Int? |
-| | quotes | List&lt;QuoteResult&gt;? |
+| | quotes | List&lt;SearchQuoteResult&gt;? |
 | | news | List&lt;NewsResult&gt;? |
-| QuoteResult | symbol | String? |
+| SearchQuoteResult | symbol | String? |
 | | shortname | String? |
 | | longname | String? |
 | | quoteType | String? |

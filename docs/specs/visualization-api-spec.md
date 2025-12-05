@@ -79,7 +79,7 @@ Yahoo Finance Visualization API를 통해 특정 심볼의 **실적 발표 일�
 
 ### 3.1 Domain 모델
 
-#### EarningsDates
+#### VisualizationEarningsCalendar
 
 | 필드 | 타입 | Nullable | 설명 |
 |-----|------|----------|------|
@@ -90,7 +90,7 @@ Yahoo Finance Visualization API를 통해 특정 심볼의 **실적 발표 일�
 
 | 필드 | 타입 | Nullable | 설명 |
 |-----|------|----------|------|
-| earningsDate | Instant | No | 실적 발표 일시 |
+| earningsDate | Long | No | 실적 발표 일시 (epoch seconds) |
 | timezoneShortName | String | Yes | 시간대 약어 |
 | epsEstimate | Double | Yes | EPS 추정치 |
 | epsActual | Double | Yes | EPS 실제값 |
@@ -148,7 +148,7 @@ enum class EarningsEventType(val code: Int) {
 ### 3.4 API 메서드 시그니처
 
 ```kotlin
-suspend fun visualization(symbol: String, limit: Int = 12): EarningsDates
+suspend fun visualization(symbol: String, limit: Int = 12): VisualizationEarningsCalendar
 ```
 
 | 파라미터 | 타입 | 기본값 | 제약 |
@@ -158,13 +158,13 @@ suspend fun visualization(symbol: String, limit: Int = 12): EarningsDates
 
 | 반환 | 설명 |
 |-----|------|
-| EarningsDates | 실적 발표 일정 목록 |
+| VisualizationEarningsCalendar | 실적 발표 일정 목록 |
 
 ### 3.5 필드 매핑
 
 | Yahoo 필드 | Domain 필드 | 변환 |
 |-----------|------------|------|
-| startdatetime | earningsDate | ISO 8601 → Instant |
+| startdatetime | earningsDate | ISO 8601 → Long (epoch seconds) |
 | timeZoneShortName | timezoneShortName | 그대로 |
 | epsestimate | epsEstimate | Double? |
 | epsactual | epsActual | 0.0 → null |
@@ -188,9 +188,9 @@ suspend fun visualization(symbol: String, limit: Int = 12): EarningsDates
 
 | 상황 | 처리 |
 |-----|------|
-| rows = [] | 빈 EarningsDates 반환 (예외 아님) |
-| 존재하지 않는 심볼 | 빈 EarningsDates 반환 |
-| ETF (실적 없음) | 빈 EarningsDates 반환 |
+| rows = [] | 빈 VisualizationEarningsCalendar 반환 (예외 아님) |
+| 존재하지 않는 심볼 | 빈 VisualizationEarningsCalendar 반환 |
+| ETF (실적 없음) | 빈 VisualizationEarningsCalendar 반환 |
 
 ### 4.3 재시도 정책
 
