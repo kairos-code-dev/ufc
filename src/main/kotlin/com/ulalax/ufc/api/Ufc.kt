@@ -16,6 +16,7 @@ import com.ulalax.ufc.domain.model.market.MarketTimeResult
 import com.ulalax.ufc.domain.model.options.OptionsData
 import com.ulalax.ufc.domain.model.realtime.QuoteData
 import com.ulalax.ufc.domain.model.screener.*
+import com.ulalax.ufc.domain.model.search.SearchResponse
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -76,6 +77,9 @@ class Ufc private constructor(
     suspend fun screener(predefined: PredefinedScreener, count: Int = 25,
                          sortField: ScreenerSortField? = null, sortAsc: Boolean? = null) =
         yahoo.screener(predefined, count, sortField, sortAsc)
+
+    suspend fun search(query: String, quotesCount: Int = 8, newsCount: Int = 8, enableFuzzyQuery: Boolean = false): SearchResponse =
+        yahoo.search(query, quotesCount, newsCount, enableFuzzyQuery)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,

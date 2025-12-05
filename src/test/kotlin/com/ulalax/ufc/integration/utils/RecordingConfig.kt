@@ -81,6 +81,9 @@ object RecordingConfig {
 
             /** Market API 응답 (시장 정보) */
             const val MARKET = "$BASE/market"
+
+            /** Search API 응답 (종목 및 뉴스 검색) */
+            const val SEARCH = "$BASE/search"
         }
 
         // ========================================

@@ -1,0 +1,308 @@
+{
+  "query": "Samsung",
+  "count": 15,
+  "quotes": [
+    {
+      "symbol": "005930.KS",
+      "shortName": "SamsungElec",
+      "longName": "Samsung Electronics Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20053.0
+    },
+    {
+      "symbol": "028050.KS",
+      "shortName": "SamsungE\u0026A",
+      "longName": "Samsung E\u0026A Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Industrials",
+      "industry": "Engineering \u0026 Construction",
+      "score": 20013.0
+    },
+    {
+      "symbol": "005935.KS",
+      "shortName": "SamsungElec(1P)",
+      "longName": "Samsung Electronics Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 20009.0
+    },
+    {
+      "symbol": "009150.KS",
+      "shortName": "SamsungElecMech",
+      "longName": "Samsung Electro-Mechanics Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Technology",
+      "industry": "Electronic Components",
+      "score": 20009.0
+    },
+    {
+      "symbol": "459580.KS",
+      "shortName": "KODEX CD Rate Active(SYNTH)",
+      "longName": "Samsung Kodex Cd Rate Active Etf(Synth)",
+      "quoteType": "ETF",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "score": 20007.0
+    },
+    {
+      "symbol": "207940.KS",
+      "shortName": "SAMSUNG BIOLOGICS",
+      "longName": "Samsung Biologics Co.,Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "score": 20007.0
+    },
+    {
+      "symbol": "006400.KS",
+      "shortName": "SAMSUNG SDI CO.,LTD.",
+      "longName": "Samsung SDI Co., Ltd.",
+      "quoteType": "EQUITY",
+      "exchange": "KSC",
+      "exchangeDisplay": "Korea",
+      "sector": "Industrials",
+      "industry": "Electrical Equipment \u0026 Parts",
+      "score": 20007.0
+    }
+  ],
+  "news": [
+    {
+      "uuid": "1f775a8b-fb2a-397a-9faf-8f3915eb0735",
+      "title": "Samsung Electronics (KOSE:A005930): Revisiting Valuation After a Strong 90-Day Share Price Rally",
+      "publisher": "Simply Wall St.",
+      "link": "https://finance.yahoo.com/news/samsung-electronics-kose-a005930-revisiting-070834801.html",
+      "publishTime": 1764745714,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/teKwdFu78rgnl2pUwvDJtw--~B/aD00MzI7dz0xMTk0O2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/435262445ed0ec580756e993baba457c",
+            "width": 1194,
+            "height": 432,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Qz1wsf3kBI_2ES0bMlGhNA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/simply_wall_st__316/435262445ed0ec580756e993baba457c",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "SSNLF"
+      ]
+    },
+    {
+      "uuid": "b57371ea-1e86-3567-aa80-454acf8a92fc",
+      "title": "Cadence Design Systems, Inc. (CDNS): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/cadence-design-systems-inc-cdns-024826796.html",
+      "publishTime": 1764902906,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/QaXGFxQruYpNkONRLFTcbg--~B/aD02MTk7dz03NzQ7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/8e16f59c64a1e98835c2402590a9fb02",
+            "width": 774,
+            "height": 619,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/ZJG15QKj3eEgnJQgZoHWxA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/8e16f59c64a1e98835c2402590a9fb02",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "CDNS",
+        "SSNLF",
+        "INTC",
+        "SNPS"
+      ]
+    },
+    {
+      "uuid": "785e43f9-2dfe-32b9-ac8d-2c963d8b1342",
+      "title": "AT\u0026T makes a harsh change customers will see on their bills",
+      "publisher": "TheStreet",
+      "link": "https://finance.yahoo.com/m/785e43f9-2dfe-32b9-ac8d-2c963d8b1342/at%26t-makes-a-harsh-change.html",
+      "publishTime": 1764900180,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/mr_jL76Mz3OaubbgtGMw3w--~B/aD02NzU7dz0xMjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thestreet_881/059bfc0dff85e4acf67b4afdf017096a",
+            "width": 1200,
+            "height": 675,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/dMamN0A8r4r0pWnNrQx7DA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/thestreet_881/059bfc0dff85e4acf67b4afdf017096a",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "T"
+      ]
+    },
+    {
+      "uuid": "3adf9497-cb43-34ab-af36-f44ae64e2945",
+      "title": "Hot tech gifts for the holidays",
+      "publisher": "CBS News Videos",
+      "link": "https://finance.yahoo.com/m/3adf9497-cb43-34ab-af36-f44ae64e2945/hot-tech-gifts-for-the.html",
+      "publishTime": 1764857304,
+      "type": "VIDEO",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/noiW2mhjOF2048it8QfzTg--~B/aD0xMDgwO3c9MTkyMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/video.cbsnewsvideos.com/43338eb900b34c95e52dff4e627b26a5",
+            "width": 1920,
+            "height": 1080,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/6bETIp4G37qvdcqIWcjhYw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/video.cbsnewsvideos.com/43338eb900b34c95e52dff4e627b26a5",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
+      "uuid": "93961916-b1f2-33a9-a749-97dbbf5df7d3",
+      "title": "Inside Samsung’s investment in a US contact center",
+      "publisher": "CX Dive",
+      "link": "https://finance.yahoo.com/m/93961916-b1f2-33a9-a749-97dbbf5df7d3/inside-samsung%E2%80%99s-investment.html",
+      "publishTime": 1764831600,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/YPk1bUuQpoJEUNhliMtEAQ--~B/aD05MDA7dz0xNjAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/cx_dive_844/1ddd7ded519860ffd5b2e89a8e30aea1",
+            "width": 1600,
+            "height": 900,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/JdV6Nyk6VJizNVh5133jIg--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/cx_dive_844/1ddd7ded519860ffd5b2e89a8e30aea1",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "SSNLF",
+        "HHS"
+      ]
+    },
+    {
+      "uuid": "6ab10869-330c-3c92-8cae-00796be2e5e8",
+      "title": "Micron Dumps Its ‘Crucial’ Business. That’s Not Why the Stock Is Down.",
+      "publisher": "Barrons.com",
+      "link": "https://finance.yahoo.com/m/6ab10869-330c-3c92-8cae-00796be2e5e8/micron-dumps-its-%E2%80%98crucial%E2%80%99.html",
+      "publishTime": 1764884880,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/VQltYJ_eyaUCfpL9SBtPnA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/8cd383521e06e71eadd36833d74c8018",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/NBhY.8__pKWZP2C.et9F4A--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/Barrons.com/8cd383521e06e71eadd36833d74c8018",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "MU",
+        "NVDA",
+        "000660.KS",
+        "SSNLF"
+      ]
+    },
+    {
+      "uuid": "a8762dce-cd83-30f9-8278-1b0c3b8881a3",
+      "title": "Lam Research Corporation (LRCX): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/lam-research-corporation-lrcx-bull-191841251.html",
+      "publishTime": 1764875921,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/tVzxedAgO8KDxWxqGWzguA--~B/aD02Njc7dz0xMDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/71211da031f80acee19bd7526e4ccf64",
+            "width": 1000,
+            "height": 667,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/bmhgZMlhS7v.SJcEMJ2ONA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/71211da031f80acee19bd7526e4ccf64",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "LRCX",
+        "TSM",
+        "INTC",
+        "SSNLF",
+        "GFS"
+      ]
+    },
+    {
+      "uuid": "f1630432-5f61-3a1d-b97a-0942a58e4635",
+      "title": "Sandisk Corporation (SNDK): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/sandisk-corporation-sndk-bull-case-191346194.html",
+      "publishTime": 1764875626,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/6pLsWYJpA6.PjT8vkawfMQ--~B/aD01NjU7dz04NDc7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/2601bc206d25d13ef03fba318e5250eb",
+            "width": 847,
+            "height": 565,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/IPI.2g_cx3X7Gupy39iWZw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/2601bc206d25d13ef03fba318e5250eb",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "SNDK"
+      ]
+    }
+  ]
+}

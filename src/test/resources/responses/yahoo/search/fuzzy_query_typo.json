@@ -1,0 +1,300 @@
+{
+  "query": "Appel",
+  "count": 15,
+  "quotes": [
+    {
+      "symbol": "AAPL",
+      "shortName": "Apple Inc.",
+      "longName": "Apple Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "score": 33267.0
+    },
+    {
+      "symbol": "AMAT",
+      "shortName": "Applied Materials, Inc.",
+      "longName": "Applied Materials, Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Semiconductor Equipment \u0026 Materials",
+      "score": 20572.0
+    },
+    {
+      "symbol": "APLD",
+      "shortName": "Applied Digital Corporation",
+      "longName": "Applied Digital Corporation",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "score": 20309.0
+    },
+    {
+      "symbol": "APP",
+      "shortName": "Applovin Corporation",
+      "longName": "AppLovin Corporation",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Communication Services",
+      "industry": "Advertising Agencies",
+      "score": 20271.0
+    },
+    {
+      "symbol": "AAOI",
+      "shortName": "Applied Optoelectronics, Inc.",
+      "longName": "Applied Optoelectronics, Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NGM",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Communication Equipment",
+      "score": 20112.0
+    },
+    {
+      "symbol": "SAIC",
+      "shortName": "Science Applications Internatio",
+      "longName": "Science Applications International Corporation",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Technology",
+      "industry": "Information Technology Services",
+      "score": 20061.0
+    },
+    {
+      "symbol": "APLS",
+      "shortName": "Apellis Pharmaceuticals, Inc.",
+      "longName": "Apellis Pharmaceuticals, Inc.",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "exchangeDisplay": "NASDAQ",
+      "sector": "Healthcare",
+      "industry": "Biotechnology",
+      "score": 20048.0
+    }
+  ],
+  "news": [
+    {
+      "uuid": "639bbc6f-849f-3f96-8f6b-ff41e13a7e20",
+      "title": "Globalstar, Inc. (GSAT): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/globalstar-inc-gsat-bull-case-025047009.html",
+      "publishTime": 1764903047,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/g_34llVXzHSDtr3r6yMFmA--~B/aD01MTk7dz05MjM7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
+            "width": 923,
+            "height": 519,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/8OlkYrcoOUDqg2SZfiB1Yw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/f365dafd2cc64ed2f0816d9296bdeb21",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "GSAT",
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "c47ee2c3-ce29-3542-a904-eee099b972ed",
+      "title": "Arm Holdings plc (ARM): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/arm-holdings-plc-arm-bull-024757439.html",
+      "publishTime": 1764902877,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/G.cKRN8IP80H1qgS5GfnFg--~B/aD01NjM7dz0xMDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/7efe2fd7da893ca97a9bb2743c4a5482",
+            "width": 1000,
+            "height": 563,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/WZeoWQH3.4TsMV2GEg9nBg--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/7efe2fd7da893ca97a9bb2743c4a5482",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "ARM",
+        "AAPL",
+        "QCOM",
+        "AMZN"
+      ]
+    },
+    {
+      "uuid": "766af35c-bba5-3bdb-8b16-5ea88571c4e2",
+      "title": "Why Warren Buffett Is Quietly Increasing His Stake in Alphabet",
+      "publisher": "Motley Fool",
+      "link": "https://finance.yahoo.com/m/766af35c-bba5-3bdb-8b16-5ea88571c4e2/why-warren-buffett-is-quietly.html",
+      "publishTime": 1764902100,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/hXGgV2DqZxOxFlTFscThog--~B/aD05MzM7dz0xNDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/2230702fd98adf49091765fab5c83b6e",
+            "width": 1400,
+            "height": 933,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Jf1M7i.Ss20ZrSRT6h76Zg--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/motleyfool.com/2230702fd98adf49091765fab5c83b6e",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "GOOG",
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "f1ca8227-f4ed-37a7-951e-266d4ba18a40",
+      "title": "Amkor Technology, Inc. (AMKR): A Bull Case Theory",
+      "publisher": "Insider Monkey",
+      "link": "https://finance.yahoo.com/news/amkor-technology-inc-amkr-bull-022852958.html",
+      "publishTime": 1764901732,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/X0D_W4yPG5wPEDjAy0EuxA--~B/aD00MjI7dz03NTA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/insidermonkey.com/5a271c683a97dd9dc5bdc272e8f0669e",
+            "width": 750,
+            "height": 422,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/_3yZHJ1HM6iVqv6JvJHwEQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/5a271c683a97dd9dc5bdc272e8f0669e",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AMKR",
+        "AAPL",
+        "NVDA",
+        "QCOM",
+        "AMD",
+        "TSM",
+        "GFS"
+      ]
+    },
+    {
+      "uuid": "3364dee4-683a-3a93-b0dc-edbfa4bbe3f1",
+      "title": "Meta Plans to Shift Spending Away From the Metaverse",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/3364dee4-683a-3a93-b0dc-edbfa4bbe3f1/meta-plans-to-shift-spending.html",
+      "publishTime": 1764895920,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/CiXPNZwWYuqhwnuHZ7dE3g--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/b05e9719c94e0dee408ea56c15fd3173",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/nPU0dyD.EFa62Pl3H9163g--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/b05e9719c94e0dee408ea56c15fd3173",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "META",
+        "AAPL"
+      ]
+    },
+    {
+      "uuid": "517d5ed4-6b18-3fa8-badf-ab2606a70926",
+      "title": "Top Apple Executives to Leave, Adding to Recent Departures",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/517d5ed4-6b18-3fa8-badf-ab2606a70926/top-apple-executives-to.html",
+      "publishTime": 1764893820,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/4XWcUrnVl4yb302BUsqN.A--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/fb0961ae4c90bf9351d3ccdde10ca5a1",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/OHBJLV3NgBIivdHWNoYDUw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/fb0961ae4c90bf9351d3ccdde10ca5a1",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "9a0abc7f-b47c-340e-b762-9da627e4cefe",
+      "title": "Apple Names Meta Alum Jennifer Newstead as General Counsel, Senior VP",
+      "publisher": "MT Newswires",
+      "link": "https://finance.yahoo.com/news/apple-names-meta-alum-jennifer-225555740.html",
+      "publishTime": 1764888955,
+      "type": "STORY",
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    },
+    {
+      "uuid": "868a5896-585f-3f51-b5ba-ad21f06aa642",
+      "title": "Apple’s executive shake-up continues with departures of general counsel and policy head",
+      "publisher": "TechCrunch",
+      "link": "https://finance.yahoo.com/news/apple-executive-shake-continues-departures-222801659.html",
+      "publishTime": 1764887281,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/pvcHWysNZQd34ev3PT4HLg--~B/aD0yNjY3O3c9NDAwMDthcHBpZD15dGFjaHlvbg--/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
+            "width": 4000,
+            "height": 2667,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Heg3vMLeuns8y0dRM.jHmQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/techcrunch_finance_785/2032e551005c417dab7dcfe81041ccbe",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL",
+        "META"
+      ]
+    }
+  ]
+}
