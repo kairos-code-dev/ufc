@@ -1,11 +1,11 @@
 package com.ulalax.ufc.integration.yahoo
 
-import com.ulalax.ufc.common.exception.ApiException
+import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
 import com.ulalax.ufc.integration.utils.ResponseRecorder
-import com.ulalax.ufc.yahoo.model.*
+import com.ulalax.ufc.domain.model.chart.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName

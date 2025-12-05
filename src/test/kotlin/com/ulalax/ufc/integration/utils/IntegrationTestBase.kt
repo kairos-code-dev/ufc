@@ -1,8 +1,8 @@
 package com.ulalax.ufc.integration.utils
 
-import com.ulalax.ufc.Ufc
-import com.ulalax.ufc.UfcConfig
-import com.ulalax.ufc.common.ratelimit.GlobalRateLimiters
+import com.ulalax.ufc.api.Ufc
+import com.ulalax.ufc.api.UfcConfig
+import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterAll

@@ -22,16 +22,16 @@
       "postMarketChangePercent": {
         "raw": {
           "isString": false,
-          "content": "-0.0016743897"
+          "content": "-0.0010688219"
         },
-        "fmt": "-0.17%"
+        "fmt": "-0.11%"
       },
       "postMarketPrice": {
         "raw": {
           "isString": false,
-          "content": "280.23"
+          "content": "280.4"
         },
-        "fmt": "280.23"
+        "fmt": "280.40"
       },
       "regularMarketPreviousClose": {
         "raw": {
@@ -43,14 +43,14 @@
       "regularMarketChange": {
         "raw": {
           "isString": false,
-          "content": "-3.4499817"
+          "content": "-3.44998"
         },
         "fmt": "-3.45"
       },
       "regularMarketChangePercent": {
         "raw": {
           "isString": false,
-          "content": "-0.01214141"
+          "content": "-0.012141401"
         },
         "fmt": "-1.21%"
       }
@@ -74,14 +74,14 @@
       "averageVolume": {
         "raw": {
           "isString": false,
-          "content": "51205688"
+          "content": "51147250"
         },
-        "fmt": "51.21M"
+        "fmt": "51.15M"
       },
       "averageVolume10days": {
         "raw": {
           "isString": false,
-          "content": "45510030"
+          "content": "45514180"
         },
         "fmt": "45.51M"
       },

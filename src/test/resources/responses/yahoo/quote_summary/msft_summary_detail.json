@@ -22,16 +22,16 @@
       "averageVolume": {
         "raw": {
           "isString": false,
-          "content": "22223177"
+          "content": "22066412"
         },
-        "fmt": "22.22M"
+        "fmt": "22.07M"
       },
       "averageVolume10days": {
         "raw": {
           "isString": false,
-          "content": "26244320"
+          "content": "26249540"
         },
-        "fmt": "26.24M"
+        "fmt": "26.25M"
       },
       "beta": {
         "raw": {

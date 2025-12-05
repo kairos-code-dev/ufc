@@ -1,6 +1,7 @@
 package com.ulalax.ufc.integration.businessinsider
 
-import com.ulalax.ufc.common.exception.ValidationException
+import com.ulalax.ufc.domain.exception.ValidationException
+import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
@@ -275,12 +276,12 @@ class IsinSearchSpec : IntegrationTestBase() {
             // 2. Yahoo Finance API에서 해당 심볼로 조회
             val quoteResult = ufc.yahoo.quoteSummary(
                 symbol,
-                com.ulalax.ufc.yahoo.model.QuoteSummaryModule.PRICE
+                com.ulalax.ufc.domain.model.quote.QuoteSummaryModule.PRICE
             )
 
             // 3. 검증
             assertThat(quoteResult).isNotNull()
-            assertThat(quoteResult.hasModule(com.ulalax.ufc.yahoo.model.QuoteSummaryModule.PRICE)).isTrue()
+            assertThat(quoteResult.hasModule(com.ulalax.ufc.domain.model.quote.QuoteSummaryModule.PRICE)).isTrue()
         }
     }
 
@@ -325,7 +326,7 @@ class IsinSearchSpec : IntegrationTestBase() {
             // Then - Yahoo Finance API로 실제 조회 가능한지 확인
             val yahooQuote = ufc.yahoo.quoteSummary(
                 yahooSymbol,
-                com.ulalax.ufc.yahoo.model.QuoteSummaryModule.PRICE
+                com.ulalax.ufc.domain.model.quote.QuoteSummaryModule.PRICE
             )
 
             assertThat(yahooQuote).isNotNull()
