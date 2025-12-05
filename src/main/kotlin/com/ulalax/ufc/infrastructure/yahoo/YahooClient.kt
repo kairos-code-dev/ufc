@@ -16,7 +16,9 @@ import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.earnings.*
 import com.ulalax.ufc.domain.model.lookup.*
 import com.ulalax.ufc.domain.model.market.*
+import com.ulalax.ufc.domain.model.options.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketTimeResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
@@ -1507,6 +1509,169 @@ class YahooClient internal constructor(
                 gmtOffsetMillis = timezoneInfo.gmtoffset
             ),
             currentTime = item.time?.let { parseInstant(it, "time") }
+        )
+    }
+
+    /**
+     * Options API를 호출하여 옵션 체인 데이터를 조회합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL")
+     * @param expirationDate 만기일 Unix Timestamp (초 단위, 선택적)
+     * @return OptionsData
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun options(
+        symbol: String,
+        expirationDate: Long? = null
+    ): OptionsData {
+        logger.debug(
+            "Calling Yahoo Finance Options API: symbol={}, expirationDate={}",
+            symbol, expirationDate
+        )
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get("${YahooApiUrls.OPTIONS}/$symbol") {
+            parameter("crumb", crumb)
+            expirationDate?.let { parameter("date", it) }
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Options API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "expirationDate" to (expirationDate?.toString() ?: "null")
+                )
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val optionsResponse = json.decodeFromString<OptionsResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (optionsResponse.optionChain.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Options API 에러: ${optionsResponse.optionChain.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "errorCode" to (optionsResponse.optionChain.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인
+        if (optionsResponse.optionChain.result.isNullOrEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.DATA_NOT_FOUND,
+                message = "옵션 데이터를 찾을 수 없습니다: $symbol",
+                metadata = mapOf("symbol" to symbol)
+            )
+        }
+
+        // OptionsResult를 OptionsData로 변환
+        val optionsResult = optionsResponse.optionChain.result.first()
+        return convertToOptionsData(optionsResult)
+    }
+
+    /**
+     * Internal OptionsResult를 public OptionsData로 변환합니다.
+     *
+     * @param result 내부 API 응답 결과
+     * @return OptionsData
+     */
+    private fun convertToOptionsData(
+        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResult
+    ): OptionsData {
+        // 기초 자산 정보 변환
+        val underlyingQuote = result.quote?.let { convertUnderlyingQuote(it) }
+
+        // 옵션 체인 변환 (첫 번째 만기일의 옵션)
+        val optionsChain = if (result.options.isNotEmpty()) {
+            convertOptionsChain(result.options.first())
+        } else {
+            // 옵션 데이터가 없는 경우 빈 체인 반환
+            OptionsChain(
+                expirationDate = result.expirationDates.firstOrNull() ?: 0L,
+                hasMiniOptions = result.hasMiniOptions,
+                calls = emptyList(),
+                puts = emptyList()
+            )
+        }
+
+        return OptionsData(
+            underlyingSymbol = result.underlyingSymbol,
+            expirationDates = result.expirationDates,
+            strikes = result.strikes,
+            hasMiniOptions = result.hasMiniOptions,
+            underlyingQuote = underlyingQuote,
+            optionsChain = optionsChain
+        )
+    }
+
+    /**
+     * Internal UnderlyingQuoteResponse를 public UnderlyingQuote로 변환합니다.
+     */
+    private fun convertUnderlyingQuote(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.UnderlyingQuoteResponse
+    ): UnderlyingQuote {
+        return UnderlyingQuote(
+            symbol = response.symbol,
+            shortName = response.shortName,
+            regularMarketPrice = response.regularMarketPrice,
+            regularMarketChange = response.regularMarketChange,
+            regularMarketChangePercent = response.regularMarketChangePercent,
+            regularMarketVolume = response.regularMarketVolume,
+            regularMarketTime = response.regularMarketTime
+        )
+    }
+
+    /**
+     * Internal OptionsChainResponse를 public OptionsChain으로 변환합니다.
+     */
+    private fun convertOptionsChain(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsChainResponse
+    ): OptionsChain {
+        return OptionsChain(
+            expirationDate = response.expirationDate,
+            hasMiniOptions = response.hasMiniOptions,
+            calls = response.calls.map { convertOptionContract(it) },
+            puts = response.puts.map { convertOptionContract(it) }
+        )
+    }
+
+    /**
+     * Internal OptionContractResponse를 public OptionContract로 변환합니다.
+     */
+    private fun convertOptionContract(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionContractResponse
+    ): OptionContract {
+        return OptionContract(
+            contractSymbol = response.contractSymbol,
+            strike = response.strike,
+            currency = response.currency,
+            lastPrice = response.lastPrice,
+            change = response.change,
+            percentChange = response.percentChange,
+            volume = response.volume,
+            openInterest = response.openInterest,
+            bid = response.bid,
+            ask = response.ask,
+            contractSize = response.contractSize,
+            expiration = response.expiration,
+            lastTradeDate = response.lastTradeDate,
+            impliedVolatility = response.impliedVolatility,
+            inTheMoney = response.inTheMoney
         )
     }
 

@@ -94,4 +94,11 @@ object YahooApiUrls {
      * 예: $MARKET_TIME?market=us
      */
     const val MARKET_TIME = "$QUERY1/v6/finance/markettime"
+
+    /**
+     * Options 엔드포인트
+     * 특정 심볼의 옵션 체인 데이터를 반환
+     * 예: $OPTIONS/AAPL?crumb=xxx&date=1704326400
+     */
+    const val OPTIONS = "$QUERY2/v7/finance/options"
 }
