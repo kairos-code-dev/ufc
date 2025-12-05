@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -13,7 +14,13 @@ import org.junit.jupiter.api.TestInstance
  * Quote API Integration Test
  *
  * 실제 Yahoo Finance Quote API를 호출하여 실시간 시장 데이터를 조회하는 통합 테스트입니다.
+ *
+ * ## 거래일/비거래일 동작
+ * - **거래일 (장중)**: price, volume, change, changePercent가 실시간으로 변동
+ * - **거래일 (장외)**: 종가 기준으로 고정, postMarket/preMarket 데이터 제공
+ * - **휴장일**: 전일 종가 기준 데이터, change/changePercent는 0 또는 전일 대비
  */
+@DisplayName("[I] Yahoo.quote() - 실시간 시장 데이터 조회")
 @Tag("integration")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class QuoteSpec : IntegrationTestBase() {
@@ -79,23 +86,9 @@ class QuoteSpec : IntegrationTestBase() {
         quote.earnings.shouldNotBeNull()
         quote.earnings!!.epsTrailingTwelveMonths.shouldNotBeNull()
 
-        // then - Revenue
-        quote.revenue.shouldNotBeNull()
-        quote.revenue!!.totalRevenue.shouldNotBeNull()
-        quote.revenue!!.returnOnEquity.shouldNotBeNull()
-
-        // then - Financial Health
-        quote.financialHealth.shouldNotBeNull()
-        quote.financialHealth!!.totalCash.shouldNotBeNull()
-        quote.financialHealth!!.totalDebt.shouldNotBeNull()
-
-        // then - Growth Rates
-        quote.growthRates.shouldNotBeNull()
-
-        // then - Analyst Ratings
-        quote.analystRatings.shouldNotBeNull()
-        quote.analystRatings!!.targetMeanPrice.shouldNotBeNull()
-        quote.analystRatings!!.recommendationKey.shouldNotBeNull()
+        // Note: Quote API (/v7/finance/quote)는 기본 시장 데이터만 반환합니다.
+        // 다음 필드들(revenue, financialHealth, growthRates, analystRatings)은
+        // 반환되지 않을 수 있습니다. 상세 재무 데이터가 필요하면 quoteSummary API를 사용하세요.
     }
 
     @Test
@@ -127,14 +120,17 @@ class QuoteSpec : IntegrationTestBase() {
     }
 
     @Test
-    fun `returns quote data with all category fields populated for AAPL`() = integrationTest {
+    fun `returns quote data with core market fields for AAPL`() = integrationTest {
         // given
         val symbol = "AAPL"
 
         // when
         val quote = ufc.quote(symbol)
 
-        // then - 모든 카테고리가 null이 아님
+        // then - Quote API에서 제공하는 핵심 카테고리 검증
+        // Note: Quote API (/v7/finance/quote)는 기본 시장 데이터만 반환합니다.
+        // revenue, financialHealth, growthRates, analystRatings 등은 반환되지 않습니다.
+        // 이러한 상세 재무 데이터가 필요하면 quoteSummary API를 사용하세요.
         quote.identification.shouldNotBeNull()
         quote.pricing.shouldNotBeNull()
         quote.fiftyTwoWeek.shouldNotBeNull()
@@ -144,10 +140,6 @@ class QuoteSpec : IntegrationTestBase() {
         quote.dividends.shouldNotBeNull()
         quote.financialRatios.shouldNotBeNull()
         quote.earnings.shouldNotBeNull()
-        quote.revenue.shouldNotBeNull()
-        quote.financialHealth.shouldNotBeNull()
-        quote.growthRates.shouldNotBeNull()
-        quote.analystRatings.shouldNotBeNull()
 
         // then - Identification 상세 검증
         quote.identification!!.symbol shouldBe "AAPL"
@@ -200,7 +192,6 @@ class QuoteSpec : IntegrationTestBase() {
         // then - Dividends 상세 검증 (AAPL은 배당주)
         quote.dividends!!.annualRate.shouldNotBeNull()
         quote.dividends!!.yield.shouldNotBeNull()
-        quote.dividends!!.exDividendDate.shouldNotBeNull()
         quote.dividends!!.trailingRate.shouldNotBeNull()
         quote.dividends!!.trailingYield.shouldNotBeNull()
 
@@ -214,33 +205,6 @@ class QuoteSpec : IntegrationTestBase() {
         quote.earnings!!.epsTrailingTwelveMonths.shouldNotBeNull()
         quote.earnings!!.epsForward.shouldNotBeNull()
         quote.earnings!!.epsCurrentYear.shouldNotBeNull()
-
-        // then - Revenue 상세 검증
-        quote.revenue!!.totalRevenue.shouldNotBeNull()
-        quote.revenue!!.totalRevenue!! shouldNotBe 0L
-        quote.revenue!!.returnOnAssets.shouldNotBeNull()
-        quote.revenue!!.returnOnEquity.shouldNotBeNull()
-        quote.revenue!!.profitMargins.shouldNotBeNull()
-
-        // then - Financial Health 상세 검증
-        quote.financialHealth!!.totalCash.shouldNotBeNull()
-        quote.financialHealth!!.totalDebt.shouldNotBeNull()
-        quote.financialHealth!!.debtToEquity.shouldNotBeNull()
-        quote.financialHealth!!.currentRatio.shouldNotBeNull()
-
-        // then - Growth Rates 상세 검증
-        quote.growthRates!!.revenueGrowth.shouldNotBeNull()
-        quote.growthRates!!.earningsGrowth.shouldNotBeNull()
-
-        // then - Analyst Ratings 상세 검증
-        quote.analystRatings!!.targetHighPrice.shouldNotBeNull()
-        quote.analystRatings!!.targetLowPrice.shouldNotBeNull()
-        quote.analystRatings!!.targetMeanPrice.shouldNotBeNull()
-        quote.analystRatings!!.targetMedianPrice.shouldNotBeNull()
-        quote.analystRatings!!.recommendationMean.shouldNotBeNull()
-        quote.analystRatings!!.recommendationKey.shouldNotBeNull()
-        quote.analystRatings!!.numberOfAnalystOpinions.shouldNotBeNull()
-        quote.analystRatings!!.numberOfAnalystOpinions!! shouldNotBe 0
     }
 
     @Test

@@ -7,8 +7,8 @@ import java.nio.file.Paths
  * 레코딩 설정 및 경로 관리
  *
  * ResponseRecorder가 API 응답을 저장할 때 사용하는 설정입니다.
- * - 레코딩 활성화 여부: -Drecord.responses=true로 설정
  * - 저장 경로: src/test/resources/responses/
+ * - 레코딩은 integrationTest(category, fileName) { } 함수 시그니처를 통해 제어됩니다.
  *
  * 구조:
  * - Yahoo: Yahoo Finance API
@@ -17,31 +17,20 @@ import java.nio.file.Paths
  *
  * ## 사용 예제
  * ```kotlin
- * // 레코딩 활성화 확인
- * if (RecordingConfig.isRecordingEnabled) {
- *     ResponseRecorder.record(data, RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY, "aapl_price")
+ * // 레코딩 활성화 (category, fileName 파라미터 제공)
+ * integrationTest("yahoo/quote_summary", "aapl_price") {
+ *     val result = ufc.yahoo.quoteSummary("AAPL", QuoteSummaryModule.PRICE)
+ *     // API raw 응답이 자동으로 레코딩됨
+ * }
+ *
+ * // 레코딩 비활성화 (category, fileName 없이 호출)
+ * integrationTest {
+ *     val result = ufc.yahoo.quoteSummary("AAPL", QuoteSummaryModule.PRICE)
+ *     // 레코딩 없음
  * }
  * ```
  */
 object RecordingConfig {
-    /**
-     * 레코딩 활성화 여부
-     *
-     * 기본값: true (Integration Test 실행 시 자동으로 응답 레코딩)
-     * 레코딩 비활성화: ./gradlew test -Precord.responses=false
-     *
-     * 사용 예시:
-     * ```bash
-     * # 레코딩 활성화 (기본)
-     * ./gradlew test
-     *
-     * # 레코딩 비활성화
-     * ./gradlew test -Precord.responses=false
-     * ```
-     */
-    val isRecordingEnabled: Boolean
-        get() = System.getProperty("record.responses", "true").toBoolean()
-
     /**
      * 레코딩 파일 저장 경로
      * Test 리소스 경로로 저장됩니다.

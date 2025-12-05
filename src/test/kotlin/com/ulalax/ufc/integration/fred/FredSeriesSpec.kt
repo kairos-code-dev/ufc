@@ -4,7 +4,6 @@ import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.FredApiKeyCondition
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -38,7 +37,7 @@ import java.time.LocalDate
  * - FRED API Key가 없으면 테스트가 스킵됩니다.
  * - FRED API는 120 requests/minute 제한이 있습니다.
  */
-@DisplayName("FredClient.series() - FRED 시계열 데이터 조회")
+@DisplayName("[I] Fred.series() - FRED 시계열 데이터 조회")
 @ExtendWith(FredApiKeyCondition::class)
 class FredSeriesSpec : IntegrationTestBase() {
 
@@ -48,7 +47,10 @@ class FredSeriesSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("GDP 시계열을 조회할 수 있다")
-        fun `returns GDP series data`() = integrationTest {
+        fun `returns GDP series data`() = integrationTest(
+            RecordingConfig.Paths.Fred.SERIES,
+            "gdp_series"
+        ) {
             // Given
             val seriesId = TestFixtures.FredSeries.GDP
 
@@ -60,15 +62,6 @@ class FredSeriesSpec : IntegrationTestBase() {
             assertThat(result.id).isEqualTo(seriesId)
             assertThat(result.title).contains("Gross Domestic Product")
             assertThat(result.observations).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "gdp_series"
-                )
-            }
         }
 
         @Test
@@ -85,15 +78,6 @@ class FredSeriesSpec : IntegrationTestBase() {
             assertThat(result.id).isEqualTo(seriesId)
             assertThat(result.title).contains("Unemployment Rate")
             assertThat(result.observations).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "unrate_series"
-                )
-            }
         }
     }
 
@@ -146,11 +130,8 @@ class FredSeriesSpec : IntegrationTestBase() {
             // Then
             val dates = result.observations.map { it.date }
             assertThat(dates).isSorted()
-
-            // 첫 번째 날짜가 마지막보다 빠른지 확인
-            if (dates.size > 1) {
-                assertThat(dates.first()).isBefore(dates.last())
-            }
+            assertThat(dates.size).isGreaterThan(1)
+            assertThat(dates.first()).isBefore(dates.last())
         }
     }
 
@@ -182,15 +163,6 @@ class FredSeriesSpec : IntegrationTestBase() {
                 assertThat(observation.date).isAfterOrEqualTo(startDate)
                 assertThat(observation.date).isBeforeOrEqualTo(endDate)
             }
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "gdp_date_range"
-                )
-            }
         }
 
         @Test
@@ -220,7 +192,10 @@ class FredSeriesSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("시계열 메타데이터만 조회할 수 있다")
-        fun `can fetch series metadata only`() = integrationTest {
+        fun `can fetch series metadata only`() = integrationTest(
+            RecordingConfig.Paths.Fred.SERIES,
+            "gdp_info"
+        ) {
             // Given
             val seriesId = TestFixtures.FredSeries.GDP
 
@@ -232,15 +207,6 @@ class FredSeriesSpec : IntegrationTestBase() {
             assertThat(result.id).isEqualTo(seriesId)
             assertThat(result.title).contains("Gross Domestic Product")
             assertThat(result.frequency).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "gdp_info"
-                )
-            }
         }
     }
 
@@ -386,15 +352,6 @@ class FredSeriesSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.id).isEqualTo(seriesId)
             assertThat(result.observations).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "fed_funds_rate"
-                )
-            }
         }
 
         @Test
@@ -410,15 +367,6 @@ class FredSeriesSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.id).isEqualTo(seriesId)
             assertThat(result.observations).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Fred.SERIES,
-                    "treasury_10y"
-                )
-            }
         }
     }
 

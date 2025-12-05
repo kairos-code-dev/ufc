@@ -80,6 +80,31 @@
   ],
   "news": [
     {
+      "uuid": "7d355c35-e292-38e6-a439-d9d647a63574",
+      "title": "More Than Just Sound. Get The Crowd Moving with JBL PartyBox 720",
+      "publisher": "ACCESS Newswire",
+      "link": "https://finance.yahoo.com/news/more-just-sound-crowd-moving-053000564.html",
+      "publishTime": 1764912600,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/Nrx8is_Jq6SiMGicvzNAMw--~B/aD01NjA7dz04NDA7YXBwaWQ9eXRhY2h5b24-/https://media.zenfs.com/en/accesswire.ca/745ffbdb0f9575d47212cfd2d32d9073",
+            "width": 840,
+            "height": 560,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/eA_stKCDJcwmYzq3l0r4zQ--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/accesswire.ca/745ffbdb0f9575d47212cfd2d32d9073",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": []
+    },
+    {
       "uuid": "65d5cb95-509a-3e79-92a1-a61388bffb97",
       "title": "T-Mobile quietly makes bold move to hold onto customers longer",
       "publisher": "TheStreet",
@@ -271,37 +296,6 @@
         "NVDA",
         "000660.KS",
         "SSNLF"
-      ]
-    },
-    {
-      "uuid": "a8762dce-cd83-30f9-8278-1b0c3b8881a3",
-      "title": "Lam Research Corporation (LRCX): A Bull Case Theory",
-      "publisher": "Insider Monkey",
-      "link": "https://finance.yahoo.com/news/lam-research-corporation-lrcx-bull-191841251.html",
-      "publishTime": 1764875921,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/tVzxedAgO8KDxWxqGWzguA--~B/aD02Njc7dz0xMDAwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/71211da031f80acee19bd7526e4ccf64",
-            "width": 1000,
-            "height": 667,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/bmhgZMlhS7v.SJcEMJ2ONA--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/71211da031f80acee19bd7526e4ccf64",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
-      "relatedTickers": [
-        "LRCX",
-        "TSM",
-        "INTC",
-        "SSNLF",
-        "GFS"
       ]
     }
   ]

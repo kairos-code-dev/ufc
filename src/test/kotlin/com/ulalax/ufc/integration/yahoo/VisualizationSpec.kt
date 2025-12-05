@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'VisualizationSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.visualization() - 실적 발표 일정 조회")
+@DisplayName("[I] Yahoo.visualization() - 실적 발표 일정 조회")
 class VisualizationSpec : IntegrationTestBase() {
 
     @Nested

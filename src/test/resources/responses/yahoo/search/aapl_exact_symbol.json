@@ -86,6 +86,33 @@
       ]
     },
     {
+      "uuid": "c314539d-a418-33ad-b9c0-22a15338821e",
+      "title": "Apple Departures Point to Challenges for iPhone’s Dominance",
+      "publisher": "The Wall Street Journal",
+      "link": "https://finance.yahoo.com/m/c314539d-a418-33ad-b9c0-22a15338821e/apple-departures-point-to.html",
+      "publishTime": 1764914100,
+      "type": "STORY",
+      "thumbnail": {
+        "resolutions": [
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/5PedKaLTMkEw4_ErWoBdeA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 1280,
+            "height": 640,
+            "tag": "original"
+          },
+          {
+            "url": "https://s.yimg.com/uu/api/res/1.2/fgTkN2glwmVinWLnlyMhpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
+            "width": 140,
+            "height": 140,
+            "tag": "140x140"
+          }
+        ]
+      },
+      "relatedTickers": [
+        "AAPL"
+      ]
+    },
+    {
       "uuid": "2d08fb49-11ce-3eac-bcf4-eb6a79b3f7dc",
       "title": "Apple (AAPL) Price Target Raised as Loop Capital Sees Stronger iPhone 17 Demand",
       "publisher": "Insider Monkey",
@@ -102,33 +129,6 @@
           },
           {
             "url": "https://s.yimg.com/uu/api/res/1.2/2HgYcMmdLV0r9Rjp3aYY7Q--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/insidermonkey.com/33c90aa2f52f95ec19a5ca71fdfbcf4b",
-            "width": 140,
-            "height": 140,
-            "tag": "140x140"
-          }
-        ]
-      },
-      "relatedTickers": [
-        "AAPL"
-      ]
-    },
-    {
-      "uuid": "c314539d-a418-33ad-b9c0-22a15338821e",
-      "title": "Apple Departures Point to Challenges for iPhone’s Dominance",
-      "publisher": "The Wall Street Journal",
-      "link": "https://finance.yahoo.com/m/c314539d-a418-33ad-b9c0-22a15338821e/apple-departures-point-to.html",
-      "publishTime": 1764907560,
-      "type": "STORY",
-      "thumbnail": {
-        "resolutions": [
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/5PedKaLTMkEw4_ErWoBdeA--~B/aD02NDA7dz0xMjgwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
-            "width": 1280,
-            "height": 640,
-            "tag": "original"
-          },
-          {
-            "url": "https://s.yimg.com/uu/api/res/1.2/fgTkN2glwmVinWLnlyMhpw--~B/Zmk9ZmlsbDtoPTE0MDtweW9mZj0wO3c9MTQwO2FwcGlkPXl0YWNoeW9u/https://media.zenfs.com/en/wsj.com/8ce32cbceacdf9e70042beff767f0ca8",
             "width": 140,
             "height": 140,
             "tag": "140x140"

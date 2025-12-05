@@ -1,8 +1,6 @@
 package com.ulalax.ufc.integration.yahoo
 
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
-import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import com.ulalax.ufc.domain.model.market.MarketCode
 import com.ulalax.ufc.domain.model.market.MarketState
 import org.assertj.core.api.Assertions.assertThat
@@ -11,10 +9,15 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 /**
- * YahooClient Market API Integration 테스트
+ * Yahoo Market API Integration 테스트
  *
  * 이 테스트는 실제 Yahoo Finance API를 호출하여 Market Summary와 Market Time 기능을 검증합니다.
  * API 가이드처럼 읽힐 수 있도록 @Nested 그룹핑 패턴을 사용합니다.
+ *
+ * ## 거래일/비거래일 동작
+ * - **거래일 (장중)**: marketState=REGULAR, 실시간 지수 가격/변동률 제공
+ * - **거래일 (장외)**: marketState=PRE/POST, 프리마켓/애프터마켓 데이터 제공
+ * - **휴장일**: marketState=CLOSED, 전일 종가 기준 데이터
  *
  * ## 테스트 실행 방법
  * ```bash
@@ -25,7 +28,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'MarketSpec$MarketSummary'
  * ```
  */
-@DisplayName("YahooClient Market API - 시장 정보 조회")
+@DisplayName("[I] Yahoo Market API - 시장 정보 조회")
 class MarketSpec : IntegrationTestBase() {
 
     @Nested
@@ -58,14 +61,7 @@ class MarketSpec : IntegrationTestBase() {
                 assertThat(item.shortName).isNotBlank()
             }
 
-            // Record - TODO: Instant 타입 직렬화 이슈로 비활성화
-            // if (RecordingConfig.isRecordingEnabled) {
-            //     ResponseRecorder.record(
-            //         result,
-            //         RecordingConfig.Paths.Yahoo.MARKET,
-            //         "us_market_summary"
-            //     )
-            // }
+            // Note: Instant 타입 직렬화 이슈로 레코딩 비활성화
         }
 
         // TODO: 한국 시장은 API 파라미터가 다를 수 있음 - 추후 조사 필요
@@ -86,15 +82,6 @@ class MarketSpec : IntegrationTestBase() {
         //     // KOSPI 또는 KOSDAQ이 포함되어 있는지 확인
         //     val symbols = result.items.map { it.symbol }
         //     assertThat(symbols).anyMatch { it.contains("KS11") || it.contains("KQ11") }
-        //
-        //     // Record
-        //     if (RecordingConfig.isRecordingEnabled) {
-        //         ResponseRecorder.record(
-        //             result,
-        //             RecordingConfig.Paths.Yahoo.MARKET,
-        //             "kr_market_summary"
-        //         )
-        //     }
         // }
 
         @Test

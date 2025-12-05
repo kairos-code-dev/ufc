@@ -2347,10 +2347,15 @@ class YahooClient internal constructor(
         val additionalFields = quoteMap
             .filterKeys { it !in standardFields }
             .mapValues { (_, value) ->
-                when {
-                    value is JsonNull -> null
-                    value.jsonPrimitive.isString -> value.jsonPrimitive.content
-                    else -> value.jsonPrimitive.longOrNull ?: value.jsonPrimitive.doubleOrNull
+                when (value) {
+                    is JsonNull -> null
+                    is JsonPrimitive -> when {
+                        value.isString -> value.content
+                        else -> value.longOrNull ?: value.doubleOrNull ?: value.booleanOrNull
+                    }
+                    is JsonArray -> value.toString()
+                    is JsonObject -> value.toString()
+                    else -> null
                 }
             }
 

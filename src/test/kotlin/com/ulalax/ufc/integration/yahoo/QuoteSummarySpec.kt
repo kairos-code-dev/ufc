@@ -4,7 +4,6 @@ import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import com.ulalax.ufc.domain.model.chart.*
 import com.ulalax.ufc.domain.model.quote.*
 import org.assertj.core.api.Assertions.assertThat
@@ -28,7 +27,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'QuoteSummarySpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.quoteSummary() - 주식 요약 정보 조회")
+@DisplayName("[I] Yahoo.quoteSummary() - 주식 요약 정보 조회")
 class QuoteSummarySpec : IntegrationTestBase() {
 
     @Nested
@@ -37,7 +36,10 @@ class QuoteSummarySpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("AAPL의 PRICE 모듈을 조회할 수 있다")
-        fun `returns price module for AAPL`() = integrationTest {
+        fun `returns price module for AAPL`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
+            "aapl_price"
+        ) {
             // Given
             val symbol = TestFixtures.Symbols.AAPL
 
@@ -47,20 +49,14 @@ class QuoteSummarySpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.hasModule(QuoteSummaryModule.PRICE)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "aapl_price"
-                )
-            }
         }
 
         @Test
         @DisplayName("MSFT의 SUMMARY_DETAIL 모듈을 조회할 수 있다")
-        fun `returns summary detail module for MSFT`() = integrationTest {
+        fun `returns summary detail module for MSFT`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
+            "msft_summary_detail"
+        ) {
             // Given
             val symbol = TestFixtures.Symbols.MSFT
 
@@ -70,15 +66,6 @@ class QuoteSummarySpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.hasModule(QuoteSummaryModule.SUMMARY_DETAIL)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "msft_summary_detail"
-                )
-            }
         }
     }
 
@@ -141,15 +128,6 @@ class QuoteSummarySpec : IntegrationTestBase() {
             assertThat(result.hasModule(QuoteSummaryModule.PRICE)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.SUMMARY_DETAIL)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.FINANCIAL_DATA)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "aapl_multiple_modules"
-                )
-            }
         }
 
         @Test
@@ -165,15 +143,6 @@ class QuoteSummarySpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.hasModule(QuoteSummaryModule.PRICE)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "tsla_stock_modules"
-                )
-            }
         }
     }
 
@@ -306,20 +275,14 @@ class QuoteSummarySpec : IntegrationTestBase() {
             assertThat(result.hasModule(QuoteSummaryModule.SUMMARY_DETAIL)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.ASSET_PROFILE)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.FINANCIAL_DATA)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "aapl_stock_modules_preset"
-                )
-            }
         }
 
         @Test
         @DisplayName("fundModules() 프리셋을 사용할 수 있다 (SPY ETF)")
-        fun `can use fundModules preset for ETF`() = integrationTest {
+        fun `can use fundModules preset for ETF`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
+            "spy_fund_modules"
+        ) {
             // Given
             val symbol = "SPY" // S&P 500 ETF
             val fundModules = QuoteSummaryModule.fundModules()
@@ -332,15 +295,6 @@ class QuoteSummarySpec : IntegrationTestBase() {
             assertThat(result.hasModule(QuoteSummaryModule.PRICE)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.SUMMARY_DETAIL)).isTrue()
             assertThat(result.hasModule(QuoteSummaryModule.TOP_HOLDINGS)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.QUOTE_SUMMARY,
-                    "spy_fund_modules_preset"
-                )
-            }
         }
     }
 

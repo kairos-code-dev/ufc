@@ -4,7 +4,6 @@ import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import com.ulalax.ufc.domain.model.chart.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -13,10 +12,15 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 /**
- * YahooClient.chart() API Integration 테스트
+ * Yahoo.chart() API Integration 테스트
  *
  * 이 테스트는 실제 Yahoo Finance API를 호출하여 Chart 기능을 검증합니다.
  * API 가이드처럼 읽힐 수 있도록 @Nested 그룹핑 패턴을 사용합니다.
+ *
+ * ## 거래일/비거래일 동작
+ * - **거래일 (장중)**: 당일 봉의 OHLCV가 실시간으로 업데이트, 마지막 봉은 미완성
+ * - **거래일 (장외)**: 당일 봉 완성, 과거 데이터는 동일
+ * - **휴장일**: 당일 데이터 없음, 마지막 거래일까지의 데이터만 반환
  *
  * ## 테스트 실행 방법
  * ```bash
@@ -27,7 +31,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'ChartSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.chart() - 차트 데이터 조회")
+@DisplayName("[I] Yahoo.chart() - 차트 데이터 조회")
 class ChartSpec : IntegrationTestBase() {
 
     @Nested
@@ -36,7 +40,10 @@ class ChartSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("AAPL의 1년 일봉 차트를 조회할 수 있다")
-        fun `returns chart data for AAPL with 1 year period`() = integrationTest {
+        fun `returns chart data for AAPL with 1 year period`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.CHART,
+            "aapl_1y_daily"
+        ) {
             // Given
             val symbol = TestFixtures.Symbols.AAPL
             val interval = Interval.OneDay
@@ -49,15 +56,6 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.meta.symbol).isEqualTo(symbol)
             assertThat(result.prices).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.CHART,
-                    "aapl_1y_daily"
-                )
-            }
         }
 
         @Test
@@ -75,15 +73,6 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.meta.symbol).isEqualTo(symbol)
             assertThat(result.prices).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.CHART,
-                    "msft_1mo_hourly"
-                )
-            }
         }
     }
 
@@ -136,7 +125,10 @@ class ChartSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("배당금 이벤트를 조회할 수 있다")
-        fun `can fetch dividend events`() = integrationTest {
+        fun `can fetch dividend events`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.CHART,
+            "aapl_dividends"
+        ) {
             // Given
             val symbol = TestFixtures.Symbols.AAPL
             val interval = Interval.OneDay
@@ -153,19 +145,6 @@ class ChartSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.hasEvent(ChartEventType.DIVIDEND)).isTrue()
-
-            // 배당 이벤트가 있으면 확인
-            val dividends = result.getDividends()
-            if (dividends != null && dividends.isNotEmpty()) {
-                // Record
-                if (RecordingConfig.isRecordingEnabled) {
-                    ResponseRecorder.record(
-                        result,
-                        RecordingConfig.Paths.Yahoo.CHART,
-                        "aapl_dividends"
-                    )
-                }
-            }
         }
 
         @Test
@@ -189,15 +168,6 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.hasEvent(ChartEventType.DIVIDEND)).isTrue()
             assertThat(result.hasEvent(ChartEventType.SPLIT)).isTrue()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.CHART,
-                    "aapl_all_events"
-                )
-            }
         }
     }
 
@@ -335,14 +305,6 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(meta.symbol).isEqualTo(symbol)
             assertThat(meta.currency).isNotNull()
             assertThat(meta.regularMarketPrice).isNotNull().isGreaterThan(0.0)
-
-            // exchange와 currencySymbol은 optional
-            if (meta.exchange != null) {
-                assertThat(meta.exchange).isNotBlank()
-            }
-            if (meta.currencySymbol != null) {
-                assertThat(meta.currencySymbol).isNotBlank()
-            }
         }
 
         @Test
@@ -365,24 +327,21 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result.hasEvent(ChartEventType.DIVIDEND)).isTrue()
 
             val dividends = result.getDividends()
-            if (!dividends.isNullOrEmpty()) {
-                val firstEntry = dividends.entries.first()
-                val timestamp = firstEntry.key
-                val dividend = firstEntry.value
+            assertThat(dividends).isNotNull().isNotEmpty()
 
-                assertThat(timestamp).isNotBlank()
-                assertThat(dividend.amount).isNotNull().isGreaterThan(0.0)
-                assertThat(dividend.date).isNotNull().isGreaterThan(0)
-            }
+            val firstEntry = dividends!!.entries.first()
+            assertThat(firstEntry.key).isNotBlank()
+            assertThat(firstEntry.value.amount).isNotNull().isGreaterThan(0.0)
+            assertThat(firstEntry.value.date).isNotNull().isGreaterThan(0)
         }
 
         @Test
         @DisplayName("주식분할 이벤트 데이터를 추출할 수 있다")
         fun `can extract split events`() = integrationTest {
-            // Given
+            // Given - AAPL은 2020년 8/31에 4:1 분할이 있었음, 최대 기간으로 조회
             val symbol = TestFixtures.Symbols.AAPL
             val interval = Interval.OneDay
-            val period = Period.FiveYears
+            val period = Period.Max
 
             // When
             val result = ufc.yahoo.chart(
@@ -396,16 +355,13 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result.hasEvent(ChartEventType.SPLIT)).isTrue()
 
             val splits = result.getSplits()
-            if (!splits.isNullOrEmpty()) {
-                val firstEntry = splits.entries.first()
-                val timestamp = firstEntry.key
-                val split = firstEntry.value
+            assertThat(splits).isNotNull().isNotEmpty()
 
-                assertThat(timestamp).isNotBlank()
-                assertThat(split.date).isNotNull().isGreaterThan(0)
-                assertThat(split.numerator).isNotNull()
-                assertThat(split.denominator).isNotNull()
-            }
+            val firstEntry = splits!!.entries.first()
+            assertThat(firstEntry.key).isNotBlank()
+            assertThat(firstEntry.value.date).isNotNull().isGreaterThan(0)
+            assertThat(firstEntry.value.numerator).isNotNull()
+            assertThat(firstEntry.value.denominator).isNotNull()
         }
 
         @Test
@@ -464,15 +420,6 @@ class ChartSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.meta.symbol).isEqualTo(symbol)
             assertThat(result.prices).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.CHART,
-                    "btc_usd_chart"
-                )
-            }
         }
     }
 

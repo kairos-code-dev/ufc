@@ -24,7 +24,7 @@ import java.time.LocalDate
  * ./gradlew test --tests 'FundamentalsTimeseriesSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.fundamentalsTimeseries() - 재무제표 시계열 데이터 조회")
+@DisplayName("[I] Yahoo.fundamentalsTimeseries() - 재무제표 시계열 데이터 조회")
 class FundamentalsTimeseriesSpec : IntegrationTestBase() {
 
     @Nested
@@ -66,12 +66,12 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
         @Test
         @DisplayName("여러 재무 항목을 동시에 조회할 수 있다")
         fun `returns multiple fundamentals types`() = integrationTest {
-            // Given
+            // Given - 확실히 데이터가 있는 타입들 사용
             val symbol = TestFixtures.Symbols.AAPL
             val types = listOf(
                 FundamentalsType.ANNUAL_TOTAL_REVENUE,
-                FundamentalsType.QUARTERLY_NET_INCOME,
-                FundamentalsType.TRAILING_EPS
+                FundamentalsType.QUARTERLY_TOTAL_REVENUE,
+                FundamentalsType.ANNUAL_NET_INCOME
             )
 
             // When
@@ -83,12 +83,8 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
 
             // 각 타입별로 데이터 존재 확인
             types.forEach { type ->
-                // 모든 타입이 데이터를 가지지 않을 수 있으므로 hasData만 체크
                 val data = result.get(type)
-                if (data != null) {
-                    assertThat(data).isNotEmpty()
-                    println("$type: ${data.size} data points")
-                }
+                assertThat(data).isNotNull().isNotEmpty()
             }
         }
 
@@ -109,12 +105,9 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             assertThat(result.symbol).isEqualTo(symbol)
 
             val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            if (revenues != null) {
-                assertThat(revenues).isNotEmpty()
-                // 날짜 범위 내에 있는지 확인 (API는 정확한 범위를 보장하지 않을 수 있음)
-                revenues.forEach { dataPoint ->
-                    assertThat(dataPoint.asOfDate).isNotNull()
-                }
+            assertThat(revenues).isNotNull().isNotEmpty()
+            revenues!!.forEach { dataPoint ->
+                assertThat(dataPoint.asOfDate).isNotNull()
             }
         }
     }
@@ -136,12 +129,9 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val netIncomes = result.get(FundamentalsType.QUARTERLY_NET_INCOME)
-
-            if (netIncomes != null) {
-                assertThat(netIncomes).isNotEmpty()
-                netIncomes.forEach { dataPoint ->
-                    assertThat(dataPoint.periodType).isIn("3M", "UNKNOWN")
-                }
+            assertThat(netIncomes).isNotNull().isNotEmpty()
+            netIncomes!!.forEach { dataPoint ->
+                assertThat(dataPoint.periodType).isIn("3M", "UNKNOWN")
             }
         }
 
@@ -159,12 +149,9 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val revenue = result.get(FundamentalsType.TRAILING_TOTAL_REVENUE)
-
-            if (revenue != null) {
-                assertThat(revenue).isNotEmpty()
-                revenue.forEach { dataPoint ->
-                    assertThat(dataPoint.periodType).isIn("TTM", "UNKNOWN")
-                }
+            assertThat(revenue).isNotNull().isNotEmpty()
+            revenue!!.forEach { dataPoint ->
+                assertThat(dataPoint.periodType).isIn("TTM", "UNKNOWN")
             }
         }
     }
@@ -186,12 +173,9 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val assets = result.get(FundamentalsType.ANNUAL_TOTAL_ASSETS)
-
-            if (assets != null) {
-                assertThat(assets).isNotEmpty()
-                assets.forEach { dataPoint ->
-                    assertThat(dataPoint.periodType).isIn("12M", "UNKNOWN")
-                }
+            assertThat(assets).isNotNull().isNotEmpty()
+            assets!!.forEach { dataPoint ->
+                assertThat(dataPoint.periodType).isIn("12M", "UNKNOWN")
             }
         }
 
@@ -208,10 +192,7 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val shares = result.get(FundamentalsType.QUARTERLY_ORDINARY_SHARES_NUMBER)
-
-            if (shares != null) {
-                assertThat(shares).isNotEmpty()
-            }
+            assertThat(shares).isNotNull().isNotEmpty()
         }
     }
 
@@ -232,10 +213,7 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val cashFlows = result.get(FundamentalsType.ANNUAL_OPERATING_CASH_FLOW)
-
-            if (cashFlows != null) {
-                assertThat(cashFlows).isNotEmpty()
-            }
+            assertThat(cashFlows).isNotNull().isNotEmpty()
         }
 
         @Test
@@ -251,10 +229,7 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             val freeCashFlows = result.get(FundamentalsType.QUARTERLY_FREE_CASH_FLOW)
-
-            if (freeCashFlows != null) {
-                assertThat(freeCashFlows).isNotEmpty()
-            }
+            assertThat(freeCashFlows).isNotNull().isNotEmpty()
         }
     }
 
@@ -274,11 +249,11 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
 
             // Then
             val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            if (revenues != null && revenues.size > 1) {
-                for (i in 0 until revenues.size - 1) {
-                    assertThat(revenues[i].asOfDate)
-                        .isBeforeOrEqualTo(revenues[i + 1].asOfDate)
-                }
+            assertThat(revenues).isNotNull()
+            assertThat(revenues!!.size).isGreaterThan(1)
+            for (i in 0 until revenues.size - 1) {
+                assertThat(revenues[i].asOfDate)
+                    .isBeforeOrEqualTo(revenues[i + 1].asOfDate)
             }
         }
 
@@ -334,6 +309,31 @@ class FundamentalsTimeseriesSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.symbol).isEqualTo(symbol)
             // ETF는 재무 데이터가 없을 수 있음
+        }
+
+        @Test
+        @DisplayName("일부 재무 타입은 데이터가 없을 수 있다")
+        fun `some fundamentals types may return null`() = integrationTest {
+            // Given - TRAILING_EPS 같은 일부 타입은 모든 종목에 존재하지 않음
+            val symbol = TestFixtures.Symbols.AAPL
+            val types = listOf(
+                FundamentalsType.ANNUAL_TOTAL_REVENUE,  // 거의 항상 존재
+                FundamentalsType.TRAILING_EPS           // 존재하지 않을 수 있음
+            )
+
+            // When
+            val result = ufc.fundamentalsTimeseries(symbol, types)
+
+            // Then
+            assertThat(result).isNotNull()
+
+            // ANNUAL_TOTAL_REVENUE는 대부분 존재
+            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+            assertThat(revenues).isNotNull()
+
+            // TRAILING_EPS는 null일 수 있음 - 이는 정상 동작임
+            val eps = result.get(FundamentalsType.TRAILING_EPS)
+            // eps가 null이거나 empty일 수 있음 - API 특성상 정상
         }
     }
 }

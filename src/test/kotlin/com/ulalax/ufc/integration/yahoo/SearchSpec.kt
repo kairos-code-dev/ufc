@@ -2,7 +2,6 @@ package com.ulalax.ufc.integration.yahoo
 
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -23,7 +22,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'SearchSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.search() - 종목 및 뉴스 검색")
+@DisplayName("[I] Yahoo.search() - 종목 및 뉴스 검색")
 class SearchSpec : IntegrationTestBase() {
 
     @Nested
@@ -32,7 +31,10 @@ class SearchSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("Apple 검색 시 AAPL 종목을 찾을 수 있다")
-        fun `returns AAPL when searching for Apple`() = integrationTest {
+        fun `returns AAPL when searching for Apple`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.SEARCH,
+            "apple_search"
+        ) {
             // Given
             val query = "Apple"
 
@@ -44,15 +46,6 @@ class SearchSpec : IntegrationTestBase() {
             assertThat(result.query).isEqualTo(query)
             assertThat(result.quotes).isNotEmpty()
             assertThat(result.quotes).anyMatch { it.symbol == "AAPL" }
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.SEARCH,
-                    "apple_search"
-                )
-            }
         }
 
         @Test
@@ -69,15 +62,6 @@ class SearchSpec : IntegrationTestBase() {
             assertThat(result.quotes).isNotEmpty()
             assertThat(result.quotes.first().symbol).isEqualTo("AAPL")
             assertThat(result.quotes.first().score).isGreaterThan(0.0)
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.SEARCH,
-                    "aapl_exact_symbol"
-                )
-            }
         }
     }
 
@@ -112,14 +96,12 @@ class SearchSpec : IntegrationTestBase() {
             // When
             val result = ufc.yahoo.search(query, quotesCount = 1, newsCount = 10)
 
-            // Then
-            if (result.news.isNotEmpty()) {
-                val firstNews = result.news.first()
-
-                assertThat(firstNews.uuid).isNotBlank()
-                assertThat(firstNews.title).isNotBlank()
-                assertThat(firstNews.link).isNotBlank()
-                assertThat(firstNews.publishTime).isGreaterThan(0L)
+            // Then - 뉴스가 있으면 필수 필드 검증
+            result.news.forEach { news ->
+                assertThat(news.uuid).isNotBlank()
+                assertThat(news.title).isNotBlank()
+                assertThat(news.link).isNotBlank()
+                assertThat(news.publishTime).isGreaterThan(0L)
             }
         }
     }
@@ -168,15 +150,6 @@ class SearchSpec : IntegrationTestBase() {
             // Then
             // 퍼지 검색이 활성화되면 오타에도 Apple 관련 결과가 나올 수 있음
             assertThat(result).isNotNull()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.SEARCH,
-                    "fuzzy_query_typo"
-                )
-            }
         }
     }
 
@@ -234,15 +207,6 @@ class SearchSpec : IntegrationTestBase() {
                 it.symbol.contains("Samsung", ignoreCase = true) ||
                 it.longName?.contains("Samsung", ignoreCase = true) == true
             }
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.SEARCH,
-                    "samsung_multi_country"
-                )
-            }
         }
 
         @Test
@@ -258,15 +222,6 @@ class SearchSpec : IntegrationTestBase() {
             assertThat(result.quotes).isNotEmpty()
             assertThat(result.quotes).anyMatch {
                 it.symbol == "SPY" && it.quoteType == "ETF"
-            }
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.SEARCH,
-                    "spy_etf"
-                )
             }
         }
     }

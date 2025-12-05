@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'EarningsCalendarSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.earningsCalendar() - 실적 발표 일정 조회")
+@DisplayName("[I] Yahoo.earningsCalendar() - 실적 발표 일정 조회")
 class EarningsCalendarSpec : IntegrationTestBase() {
 
     @Nested
@@ -44,18 +44,9 @@ class EarningsCalendarSpec : IntegrationTestBase() {
             assertThat(result.requestedLimit).isEqualTo(12)
             assertThat(result.requestedOffset).isEqualTo(0)
 
-            // NOTE: HTML 스크래핑은 Yahoo Finance 페이지 구조 변경으로 현재 작동하지 않을 수 있음
-            // 빈 결과도 허용 (기본 아키텍처 검증 목적)
-            println("Events count: ${result.actualCount}")
-
-            if (result.isNotEmpty()) {
-                // 이벤트가 있으면 검증
-                result.events.first().let { event ->
-                    assertThat(event.earningsDate).isNotNull()
-                    println("First earnings event: date=${event.earningsDate}, tz=${event.timeZone}, eps=${event.epsEstimate}")
-                }
-            } else {
-                println("No earnings events found - HTML scraping may need update")
+            // HTML 스크래핑 기반이므로 결과가 있으면 검증
+            result.events.forEach { event ->
+                assertThat(event.earningsDate).isNotNull()
             }
         }
 
@@ -89,15 +80,6 @@ class EarningsCalendarSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.requestedOffset).isEqualTo(offset)
-
-            // NOTE: HTML 스크래핑 이슈로 빈 결과 허용
-            println("Events count with offset=$offset: ${result.events.size}")
-
-            if (result.isNotEmpty()) {
-                // offset=1은 과거 실적부터 조회하므로 reportedEps가 존재할 가능성이 높음
-                val historicalCount = result.events.count { it.reportedEps != null }
-                println("Historical events count: $historicalCount / ${result.events.size}")
-            }
         }
     }
 
@@ -142,15 +124,12 @@ class EarningsCalendarSpec : IntegrationTestBase() {
 
             // When
             val result = ufc.earningsCalendar(symbol)
-            val nextEarnings = result.getNextEarnings()
+            val futureEvents = result.getFutureEvents()
 
-            // Then
-            if (nextEarnings != null) {
-                assertThat(nextEarnings.isFuture()).isTrue()
-                assertThat(nextEarnings.reportedEps).isNull()
-                println("Next earnings: ${nextEarnings.earningsDate} (${nextEarnings.timeZone})")
-            } else {
-                println("No future earnings scheduled")
+            // Then - 미래 실적이 있으면 첫 번째가 다음 실적
+            futureEvents.forEach { event ->
+                assertThat(event.isFuture()).isTrue()
+                assertThat(event.reportedEps).isNull()
             }
         }
 
@@ -162,15 +141,12 @@ class EarningsCalendarSpec : IntegrationTestBase() {
 
             // When
             val result = ufc.earningsCalendar(symbol, limit = 20, offset = 1)
-            val latestHistorical = result.getLatestHistoricalEarnings()
+            val historicalEvents = result.getHistoricalEvents()
 
-            // Then
-            if (latestHistorical != null) {
-                assertThat(latestHistorical.isHistorical()).isTrue()
-                assertThat(latestHistorical.reportedEps).isNotNull()
-                println("Latest historical: ${latestHistorical.earningsDate}, EPS=${latestHistorical.reportedEps}")
-            } else {
-                println("No historical earnings found")
+            // Then - 과거 실적들 검증
+            historicalEvents.forEach { event ->
+                assertThat(event.isHistorical()).isTrue()
+                assertThat(event.reportedEps).isNotNull()
             }
         }
     }
@@ -194,21 +170,13 @@ class EarningsCalendarSpec : IntegrationTestBase() {
             val positiveSurprises = withSurprise.filter { it.hasPositiveSurprise() }
             val negativeSurprises = withSurprise.filter { it.hasNegativeSurprise() }
 
-            println("Total historical: ${historical.size}")
-            println("With surprise data: ${withSurprise.size}")
-            println("Positive surprises: ${positiveSurprises.size}")
-            println("Negative surprises: ${negativeSurprises.size}")
-
-            if (positiveSurprises.isNotEmpty()) {
-                positiveSurprises.first().let { event ->
-                    assertThat(event.surprisePercent).isGreaterThan(0.0)
-                }
+            // 서프라이즈가 있는 이벤트들 검증
+            positiveSurprises.forEach { event ->
+                assertThat(event.surprisePercent).isGreaterThan(0.0)
             }
 
-            if (negativeSurprises.isNotEmpty()) {
-                negativeSurprises.first().let { event ->
-                    assertThat(event.surprisePercent).isLessThan(0.0)
-                }
+            negativeSurprises.forEach { event ->
+                assertThat(event.surprisePercent).isLessThan(0.0)
             }
         }
     }
@@ -264,9 +232,7 @@ class EarningsCalendarSpec : IntegrationTestBase() {
             // Then
             assertThat(result).isNotNull()
             assertThat(result.requestedLimit).isEqualTo(limit)
-            if (result.isNotEmpty()) {
-                assertThat(result.events.size).isLessThanOrEqualTo(limit)
-            }
+            assertThat(result.events.size).isLessThanOrEqualTo(limit)
         }
 
         @Test

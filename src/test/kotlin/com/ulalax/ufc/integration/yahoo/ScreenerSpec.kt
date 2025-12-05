@@ -11,10 +11,15 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 /**
- * YahooClient.screener() API Integration 테스트
+ * Yahoo.screener() API Integration 테스트
  *
  * 이 테스트는 실제 Yahoo Finance Screener API를 호출하여 검증합니다.
  * API 가이드처럼 읽힐 수 있도록 @Nested 그룹핑 패턴을 사용합니다.
+ *
+ * ## 거래일/비거래일 동작
+ * - **거래일 (장중)**: DAY_GAINERS, MOST_ACTIVES 등의 순위가 실시간으로 변동
+ * - **거래일 (장외)**: 종가 기준 순위 고정
+ * - **휴장일**: 전일 데이터 기준, 일부 스크리너는 빈 결과 반환 가능
  *
  * ## 테스트 실행 방법
  * ```bash
@@ -25,7 +30,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'ScreenerSpec$PredefinedScreeners'
  * ```
  */
-@DisplayName("YahooClient.screener() - 종목 스크리너")
+@DisplayName("[I] Yahoo.screener() - 종목 스크리너")
 class ScreenerSpec : IntegrationTestBase() {
 
     @Nested
@@ -44,11 +49,9 @@ class ScreenerSpec : IntegrationTestBase() {
             assertThat(result.quotes).hasSizeLessThanOrEqualTo(10)
 
             // 첫 번째 종목 검증
-            if (result.quotes.isNotEmpty()) {
-                val firstQuote = result.quotes.first()
-                assertThat(firstQuote.symbol).isNotBlank()
-                assertThat(firstQuote.regularMarketChangePercent).isNotNull()
-            }
+            val firstQuote = result.quotes.first()
+            assertThat(firstQuote.symbol).isNotBlank()
+            assertThat(firstQuote.regularMarketChangePercent).isNotNull()
         }
 
         @Test
@@ -122,9 +125,7 @@ class ScreenerSpec : IntegrationTestBase() {
 
             // 시가총액 검증
             result.quotes.forEach { quote ->
-                if (quote.marketCap != null) {
-                    assertThat(quote.marketCap).isGreaterThan(1_000_000_000L)
-                }
+                assertThat(quote.marketCap).isNotNull().isGreaterThan(1_000_000_000L)
             }
         }
 
@@ -147,12 +148,14 @@ class ScreenerSpec : IntegrationTestBase() {
 
             // Then
             assertThat(result).isNotNull()
+            assertThat(result.quotes).isNotEmpty()
 
-            // 섹터 검증
-            result.quotes.forEach { quote ->
-                if (quote.sector != null) {
-                    assertThat(quote.sector).isEqualTo("Technology")
-                }
+            // Note: sector 필드는 필터 조건에 포함되어도 응답에서 null일 수 있음
+            // 이는 Yahoo Finance API의 특성으로, 필터는 서버에서 적용되지만
+            // 응답 필드는 별도로 요청해야 함
+            val quotesWithSector = result.quotes.filter { it.sector != null }
+            quotesWithSector.forEach { quote ->
+                assertThat(quote.sector).isEqualTo("Technology")
             }
         }
 
@@ -199,9 +202,7 @@ class ScreenerSpec : IntegrationTestBase() {
 
             // 거래소 검증
             result.quotes.forEach { quote ->
-                if (quote.exchange != null) {
-                    assertThat(quote.exchange).isIn("NYQ", "NMS")
-                }
+                assertThat(quote.exchange).isNotNull().isIn("NYQ", "NMS")
             }
         }
     }
@@ -336,15 +337,8 @@ class ScreenerSpec : IntegrationTestBase() {
             assertThat(result.start).isGreaterThanOrEqualTo(0)
 
             // Then - 종목 정보
-            if (result.quotes.isNotEmpty()) {
-                val quote = result.quotes.first()
-
-                // 필수 필드
-                assertThat(quote.symbol).isNotBlank()
-
-                // Optional 필드들은 null일 수 있음
-                // 하지만 대부분의 경우 값이 있을 것
-            }
+            val quote = result.quotes.first()
+            assertThat(quote.symbol).isNotBlank()
         }
 
         @Test
@@ -357,13 +351,9 @@ class ScreenerSpec : IntegrationTestBase() {
             )
 
             // Then
-            if (result.quotes.isNotEmpty()) {
-                val quote = result.quotes.first()
-
-                // additionalFields는 비어있지 않을 수 있음
-                // (정렬 필드 등 추가 데이터가 포함될 수 있음)
-                assertThat(quote.additionalFields).isNotNull()
-            }
+            assertThat(result.quotes).isNotEmpty()
+            val quote = result.quotes.first()
+            assertThat(quote.additionalFields).isNotNull()
         }
     }
 

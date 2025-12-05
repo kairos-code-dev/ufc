@@ -5,7 +5,6 @@ import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -35,7 +34,7 @@ import org.junit.jupiter.api.Test
  *   - KR7005930003: 삼성전자 (한국)
  *   - JP3633400001: Toyota Motor (일본)
  */
-@DisplayName("BusinessInsiderClient.searchIsin() - ISIN 검색")
+@DisplayName("[I] BusinessInsider.searchIsin() - ISIN 검색")
 class IsinSearchSpec : IntegrationTestBase() {
 
     @Nested
@@ -44,7 +43,10 @@ class IsinSearchSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("Apple ISIN으로 검색할 수 있다")
-        fun `returns result for Apple ISIN`() = integrationTest {
+        fun `returns result for Apple ISIN`() = integrationTest(
+            RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH,
+            "apple_isin"
+        ) {
             // Given
             val isin = TestFixtures.Isin.APPLE  // US0378331005
 
@@ -56,15 +58,6 @@ class IsinSearchSpec : IntegrationTestBase() {
             assertThat(result.isin).isEqualTo(isin)
             assertThat(result.symbol).isEqualTo("AAPL")
             assertThat(result.name).contains("Apple")
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH,
-                    "apple_isin"
-                )
-            }
         }
 
         @Test
@@ -81,15 +74,6 @@ class IsinSearchSpec : IntegrationTestBase() {
             assertThat(result.isin).isEqualTo(isin)
             assertThat(result.symbol).isEqualTo("MSFT")
             assertThat(result.name).contains("Microsoft")
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH,
-                    "microsoft_isin"
-                )
-            }
         }
 
         @Test
@@ -105,15 +89,6 @@ class IsinSearchSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.isin).isEqualTo(isin)
             assertThat(result.name).contains("Samsung")
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH,
-                    "samsung_isin"
-                )
-            }
         }
     }
 
@@ -302,15 +277,6 @@ class IsinSearchSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.isin).isEqualTo(isin)
             assertThat(result.name).contains("Toyota")
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH,
-                    "toyota_isin"
-                )
-            }
         }
 
         @Test

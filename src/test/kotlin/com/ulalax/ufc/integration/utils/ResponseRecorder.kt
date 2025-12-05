@@ -65,8 +65,6 @@ object ResponseRecorder {
      * @param fileName 파일명 (확장자 제외)
      */
     inline fun <reified T> record(data: T, category: String, fileName: String) {
-        if (!RecordingConfig.isRecordingEnabled) return
-
         val outputDir = RecordingConfig.baseOutputPath.resolve(category)
         Files.createDirectories(outputDir)
 
@@ -82,8 +80,6 @@ object ResponseRecorder {
      * 데이터가 MAX_RECORD_SIZE를 초과하면 처음 MAX_RECORD_SIZE개만 레코딩
      */
     inline fun <reified T> recordList(data: List<T>, category: String, fileName: String) {
-        if (!RecordingConfig.isRecordingEnabled) return
-
         if (data.isEmpty()) {
             println("[Recording] Warning: No data to record for $category/$fileName")
             return
@@ -121,8 +117,6 @@ object ResponseRecorder {
      * ```
      */
     fun recordRaw(jsonString: String, category: String, fileName: String): Boolean {
-        if (!RecordingConfig.isRecordingEnabled) return false
-
         if (jsonString.isBlank()) {
             println("[Recording] Warning: Empty JSON string for $category/$fileName")
             return false
@@ -186,8 +180,6 @@ object ResponseRecorder {
         chunkSize: Int = DEFAULT_CHUNK_SIZE,
         enableMemoryLogging: Boolean = false
     ): Int {
-        if (!RecordingConfig.isRecordingEnabled) return 0
-
         if (data.isEmpty()) {
             println("[Recording] Warning: No data to record for $category/$fileName")
             return 0

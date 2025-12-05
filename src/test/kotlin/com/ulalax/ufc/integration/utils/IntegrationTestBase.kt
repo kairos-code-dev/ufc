@@ -3,8 +3,10 @@ package com.ulalax.ufc.integration.utils
 import com.ulalax.ufc.api.Ufc
 import com.ulalax.ufc.api.UfcConfig
 import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
+import com.ulalax.ufc.infrastructure.common.recording.ResponseRecordingContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Tag
@@ -27,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * ## 사용 예제
  * ```kotlin
- * @DisplayName("YahooClient.quoteSummary() - 주식 요약 정보 조회")
+ * @DisplayName("Yahoo.quoteSummary() - 주식 요약 정보 조회")
  * class QuoteSummaryIntegrationTest : IntegrationTestBase() {
  *
  *     @Test
@@ -110,9 +112,10 @@ abstract class IntegrationTestBase {
     }
 
     /**
-     * Integration 테스트 실행 헬퍼 함수
+     * Integration 테스트 실행 헬퍼 함수 (레코딩 없음)
      *
      * 코루틴 환경에서 테스트를 실행하며, 기본 타임아웃을 30초로 설정합니다.
+     * API 응답을 레코딩하지 않습니다.
      *
      * @param timeout 테스트 타임아웃 (기본값: 30초)
      * @param block 실행할 테스트 코드 블록
@@ -136,4 +139,49 @@ abstract class IntegrationTestBase {
         timeout: Duration = 30.seconds,
         block: suspend () -> Unit
     ) = runTest(timeout = timeout) { block() }
+
+    /**
+     * Integration 테스트 실행 헬퍼 함수 (레코딩 활성화)
+     *
+     * 코루틴 환경에서 테스트를 실행하며, API 응답을 파일로 레코딩합니다.
+     * 레코딩 목적: API가 반환하는 raw 데이터의 형식을 이해하기 위함
+     * 정상 동작하는 케이스만 레코딩해야 합니다.
+     *
+     * @param category 레코딩 카테고리 (예: "yahoo/quote_summary", "fred/series")
+     * @param fileName 저장할 파일 이름 (예: "aapl_price")
+     * @param timeout 테스트 타임아웃 (기본값: 30초)
+     * @param block 실행할 테스트 코드 블록
+     *
+     * ## 사용 예제
+     * ```kotlin
+     * @Test
+     * fun `returns price module for AAPL`() = integrationTest("yahoo/quote_summary", "aapl_price") {
+     *     val result = ufc.yahoo.quoteSummary("AAPL", QuoteSummaryModule.PRICE)
+     *     assertThat(result).isNotNull()
+     * }
+     * ```
+     */
+    protected inline fun integrationTest(
+        category: String,
+        fileName: String,
+        timeout: Duration = 30.seconds,
+        crossinline block: suspend () -> Unit
+    ): Unit = runTest(timeout = timeout) {
+        val recordingContext = ResponseRecordingContext()
+        withContext(recordingContext) {
+            block()
+
+            // 캡처된 응답 body가 있으면 레코딩
+            val responseBody = recordingContext.getResponseBody()
+            if (responseBody != null) {
+                ResponseRecorder.recordRaw(
+                    jsonString = responseBody,
+                    category = category,
+                    fileName = fileName
+                )
+            } else {
+                println("[IntegrationTest] Warning: 캡처된 응답이 없습니다. ($category/$fileName)")
+            }
+        }
+    }
 }

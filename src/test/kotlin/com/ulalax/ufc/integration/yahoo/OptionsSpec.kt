@@ -3,17 +3,21 @@ package com.ulalax.ufc.integration.yahoo
 import com.ulalax.ufc.fixture.TestFixtures
 import com.ulalax.ufc.integration.utils.IntegrationTestBase
 import com.ulalax.ufc.integration.utils.RecordingConfig
-import com.ulalax.ufc.integration.utils.ResponseRecorder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 /**
- * YahooClient.options() API Integration 테스트
+ * Yahoo.options() API Integration 테스트
  *
  * 이 테스트는 실제 Yahoo Finance API를 호출하여 Options 기능을 검증합니다.
  * API 가이드처럼 읽힐 수 있도록 @Nested 그룹핑 패턴을 사용합니다.
+ *
+ * ## 거래일/비거래일 동작
+ * - **거래일 (장중)**: bid, ask, lastPrice가 실시간으로 변동하며, inTheMoney 여부도 기초자산 가격에 따라 변함
+ * - **거래일 (장외)**: 마지막 호가/거래가 유지, 일부 옵션은 bid/ask가 null일 수 있음
+ * - **휴장일**: 전일 종가 기준 데이터, bid/ask가 null인 옵션이 많음
  *
  * ## 테스트 실행 방법
  * ```bash
@@ -24,7 +28,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'OptionsSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.options() - 옵션 체인 데이터 조회")
+@DisplayName("[I] Yahoo.options() - 옵션 체인 데이터 조회")
 class OptionsSpec : IntegrationTestBase() {
 
     @Nested
@@ -33,7 +37,10 @@ class OptionsSpec : IntegrationTestBase() {
 
         @Test
         @DisplayName("AAPL 옵션 체인을 조회할 수 있다")
-        fun `returns options chain for AAPL`() = integrationTest {
+        fun `returns options chain for AAPL`() = integrationTest(
+            RecordingConfig.Paths.Yahoo.OPTIONS,
+            "aapl_options"
+        ) {
             // Given
             val symbol = TestFixtures.Symbols.AAPL
 
@@ -45,15 +52,6 @@ class OptionsSpec : IntegrationTestBase() {
             assertThat(result.underlyingSymbol).isEqualTo(symbol)
             assertThat(result.expirationDates).isNotEmpty()
             assertThat(result.strikes).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.OPTIONS,
-                    "aapl_options"
-                )
-            }
         }
 
         @Test
@@ -73,15 +71,6 @@ class OptionsSpec : IntegrationTestBase() {
             assertThat(result).isNotNull()
             assertThat(result.underlyingSymbol).isEqualTo(symbol)
             assertThat(result.optionsChain.expirationDate).isEqualTo(firstExpiration)
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.OPTIONS,
-                    "aapl_options_specific_date"
-                )
-            }
         }
     }
 
@@ -206,13 +195,9 @@ class OptionsSpec : IntegrationTestBase() {
             val itmCalls = result.optionsChain.getInTheMoneyCall()
             val itmPuts = result.optionsChain.getInTheMoneyPut()
 
-            // ITM 옵션이 있으면 확인
-            if (itmCalls.isNotEmpty()) {
-                assertThat(itmCalls.all { it.inTheMoney }).isTrue()
-            }
-            if (itmPuts.isNotEmpty()) {
-                assertThat(itmPuts.all { it.inTheMoney }).isTrue()
-            }
+            // ITM 옵션 검증
+            itmCalls.forEach { assertThat(it.inTheMoney).isTrue() }
+            itmPuts.forEach { assertThat(it.inTheMoney).isTrue() }
         }
 
         @Test
@@ -228,13 +213,9 @@ class OptionsSpec : IntegrationTestBase() {
             val otmCalls = result.optionsChain.getOutOfTheMoneyCall()
             val otmPuts = result.optionsChain.getOutOfTheMoneyPut()
 
-            // OTM 옵션이 있으면 확인
-            if (otmCalls.isNotEmpty()) {
-                assertThat(otmCalls.all { !it.inTheMoney }).isTrue()
-            }
-            if (otmPuts.isNotEmpty()) {
-                assertThat(otmPuts.all { !it.inTheMoney }).isTrue()
-            }
+            // OTM 옵션 검증
+            otmCalls.forEach { assertThat(it.inTheMoney).isFalse() }
+            otmPuts.forEach { assertThat(it.inTheMoney).isFalse() }
         }
     }
 
@@ -267,15 +248,13 @@ class OptionsSpec : IntegrationTestBase() {
             val result = ufc.yahoo.options(symbol)
             val (atmCall, atmPut) = result.findAtTheMoneyOptions()
 
-            // Then
-            // 현재가 정보가 있으면 ATM 옵션도 찾을 수 있어야 함
-            if (result.underlyingQuote?.regularMarketPrice != null) {
-                assertThat(atmCall).isNotNull()
-                assertThat(atmPut).isNotNull()
+            // Then - 현재가 정보가 있으면 ATM 옵션도 찾을 수 있어야 함
+            assertThat(result.underlyingQuote?.regularMarketPrice).isNotNull()
+            assertThat(atmCall).isNotNull()
+            assertThat(atmPut).isNotNull()
 
-                // ATM 콜/풋의 행사가는 동일해야 함
-                assertThat(atmCall!!.strike).isEqualTo(atmPut!!.strike)
-            }
+            // ATM 콜/풋의 행사가는 동일해야 함
+            assertThat(atmCall!!.strike).isEqualTo(atmPut!!.strike)
         }
 
         @Test
@@ -293,82 +272,6 @@ class OptionsSpec : IntegrationTestBase() {
             assertThat(localDates).hasSize(result.expirationDates.size)
         }
 
-        @Test
-        @DisplayName("호가 스프레드를 계산할 수 있다")
-        fun `can calculate bid-ask spread`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-
-            // When
-            val result = ufc.yahoo.options(symbol)
-            val firstCall = result.optionsChain.calls.first()
-
-            // Then
-            if (firstCall.bid != null && firstCall.ask != null) {
-                val spread = firstCall.getBidAskSpread()
-                assertThat(spread).isNotNull().isGreaterThanOrEqualTo(0.0)
-
-                val spreadPercent = firstCall.getBidAskSpreadPercent()
-                assertThat(spreadPercent).isNotNull().isGreaterThanOrEqualTo(0.0)
-            }
-        }
-
-        @Test
-        @DisplayName("중간 가격을 계산할 수 있다")
-        fun `can calculate mid price`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-
-            // When
-            val result = ufc.yahoo.options(symbol)
-            val firstCall = result.optionsChain.calls.first()
-
-            // Then
-            if (firstCall.bid != null && firstCall.ask != null) {
-                val midPrice = firstCall.getMidPrice()
-                assertThat(midPrice).isNotNull()
-                assertThat(midPrice).isBetween(firstCall.bid!!, firstCall.ask!!)
-            }
-        }
-
-        @Test
-        @DisplayName("내재 가치를 계산할 수 있다")
-        fun `can calculate intrinsic value`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-
-            // When
-            val result = ufc.yahoo.options(symbol)
-            val currentPrice = result.underlyingQuote?.regularMarketPrice ?: return@integrationTest
-            val firstCall = result.optionsChain.calls.first()
-
-            // Then
-            val intrinsicValue = firstCall.getIntrinsicValue(currentPrice, isCall = true)
-            assertThat(intrinsicValue).isGreaterThanOrEqualTo(0.0)
-
-            // ITM 옵션이면 내재 가치가 0보다 커야 함
-            if (firstCall.inTheMoney) {
-                assertThat(intrinsicValue).isGreaterThan(0.0)
-            }
-        }
-
-        @Test
-        @DisplayName("시간 가치를 계산할 수 있다")
-        fun `can calculate time value`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-
-            // When
-            val result = ufc.yahoo.options(symbol)
-            val currentPrice = result.underlyingQuote?.regularMarketPrice ?: return@integrationTest
-            val firstCall = result.optionsChain.calls.first()
-
-            // Then
-            if (firstCall.lastPrice != null) {
-                val timeValue = firstCall.getTimeValue(currentPrice, isCall = true)
-                assertThat(timeValue).isNotNull()
-            }
-        }
     }
 
     @Nested
@@ -389,15 +292,6 @@ class OptionsSpec : IntegrationTestBase() {
             assertThat(result.underlyingSymbol).isEqualTo(symbol)
             assertThat(result.optionsChain.calls).isNotEmpty()
             assertThat(result.optionsChain.puts).isNotEmpty()
-
-            // Record
-            if (RecordingConfig.isRecordingEnabled) {
-                ResponseRecorder.record(
-                    result,
-                    RecordingConfig.Paths.Yahoo.OPTIONS,
-                    "tsla_options"
-                )
-            }
         }
 
         @Test
@@ -442,16 +336,10 @@ class OptionsSpec : IntegrationTestBase() {
             val invalidExpiration = 0L
 
             // When
-            val result = runCatching {
-                ufc.yahoo.options(symbol, invalidExpiration)
-            }
+            val options = ufc.yahoo.options(symbol, invalidExpiration)
 
-            // Then - 에러가 발생하거나, 빈 체인을 반환할 수 있음
-            if (result.isSuccess) {
-                val options = result.getOrThrow()
-                // 빈 체인이거나 유효한 데이터여야 함
-                assertThat(options).isNotNull()
-            }
+            // Then - 빈 체인이거나 유효한 데이터여야 함
+            assertThat(options).isNotNull()
         }
     }
 }

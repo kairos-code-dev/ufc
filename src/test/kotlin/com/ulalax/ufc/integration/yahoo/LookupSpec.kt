@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
  * ./gradlew test --tests 'LookupSpec$BasicBehavior'
  * ```
  */
-@DisplayName("YahooClient.lookup() - 금융상품 검색")
+@DisplayName("[I] Yahoo.lookup() - 금융상품 검색")
 class LookupSpec : IntegrationTestBase() {
 
     @Nested

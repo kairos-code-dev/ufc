@@ -169,12 +169,6 @@ object SmartRecorder {
         category: String,
         fileName: String
     ) {
-        // 레코딩이 비활성화된 경우 조기 반환
-        if (!RecordingConfig.isRecordingEnabled) {
-            logger.debug("레코딩이 비활성화되어 있습니다. 스킵합니다.")
-            return
-        }
-
         // 빈 데이터 체크
         if (data.isEmpty()) {
             logger.warn("$category/$fileName 에 레코딩할 데이터가 없습니다.")
@@ -212,12 +206,6 @@ object SmartRecorder {
         category: String,
         fileName: String
     ) {
-        // 레코딩이 비활성화된 경우 조기 반환
-        if (!RecordingConfig.isRecordingEnabled) {
-            logger.debug("레코딩이 비활성화되어 있습니다. 스킵합니다.")
-            return
-        }
-
         // ResponseRecorder를 통해 실제 레코딩 수행
         ResponseRecorder.record(data, category, fileName)
 
