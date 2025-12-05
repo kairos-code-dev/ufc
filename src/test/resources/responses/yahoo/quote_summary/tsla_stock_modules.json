@@ -1,0 +1,825 @@
+{
+  "requestedModules": [
+    "PRICE",
+    "SUMMARY_DETAIL",
+    "ASSET_PROFILE",
+    "QUOTE_TYPE",
+    "DEFAULT_KEY_STATISTICS",
+    "FINANCIAL_DATA",
+    "EARNINGS_TREND",
+    "EARNINGS_HISTORY",
+    "RECOMMENDATION_TREND",
+    "MAJOR_HOLDERS",
+    "INSIDER_TRANSACTIONS"
+  ],
+  "modules": {
+    "PRICE": {
+      "maxAge": 1,
+      "regularMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "454.53"
+        },
+        "fmt": "454.53"
+      },
+      "currency": "USD",
+      "symbol": "TSLA",
+      "longName": "Tesla, Inc.",
+      "shortName": "Tesla, Inc.",
+      "exchange": "NMS",
+      "postMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.0025960722"
+        },
+        "fmt": "-0.26%"
+      },
+      "postMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "453.35"
+        },
+        "fmt": "453.35"
+      },
+      "regularMarketPreviousClose": {
+        "raw": {
+          "isString": false,
+          "content": "446.74"
+        },
+        "fmt": "446.74"
+      },
+      "regularMarketChange": {
+        "raw": {
+          "isString": false,
+          "content": "7.7900085"
+        },
+        "fmt": "7.79"
+      },
+      "regularMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "0.017437454"
+        },
+        "fmt": "1.74%"
+      }
+    },
+    "SUMMARY_DETAIL": {
+      "maxAge": 1,
+      "dividendRate": {},
+      "dividendYield": {},
+      "averageVolume": {
+        "raw": {
+          "isString": false,
+          "content": "89528622"
+        },
+        "fmt": "89.53M"
+      },
+      "averageVolume10days": {
+        "raw": {
+          "isString": false,
+          "content": "76850300"
+        },
+        "fmt": "76.85M"
+      },
+      "beta": {
+        "raw": {
+          "isString": false,
+          "content": "1.872"
+        },
+        "fmt": "1.87"
+      },
+      "regularMarketDayHigh": {
+        "raw": {
+          "isString": false,
+          "content": "454.63"
+        },
+        "fmt": "454.63"
+      },
+      "regularMarketDayLow": {
+        "raw": {
+          "isString": false,
+          "content": "445.39"
+        },
+        "fmt": "445.39"
+      },
+      "regularMarketVolume": {
+        "raw": {
+          "isString": false,
+          "content": "70859932"
+        },
+        "fmt": "70.86M"
+      },
+      "marketCap": {
+        "raw": {
+          "isString": false,
+          "content": "1511684571136"
+        },
+        "fmt": "1.51T"
+      },
+      "exDividendDate": {},
+      "trailingPE": {
+        "raw": {
+          "isString": false,
+          "content": "317.85315"
+        },
+        "fmt": "317.85"
+      },
+      "forwardPE": {
+        "raw": {
+          "isString": false,
+          "content": "140.28703"
+        },
+        "fmt": "140.29"
+      },
+      "fiftyTwoWeekHigh": {
+        "raw": {
+          "isString": false,
+          "content": "488.54"
+        },
+        "fmt": "488.54"
+      },
+      "fiftyTwoWeekLow": {
+        "raw": {
+          "isString": false,
+          "content": "214.25"
+        },
+        "fmt": "214.25"
+      }
+    },
+    "ASSET_PROFILE": {
+      "sector": "Consumer Cyclical",
+      "industry": "Auto Manufacturers",
+      "website": "https://www.tesla.com",
+      "longBusinessSummary": "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems in the United States, China, and internationally. The company operates in two segments, Automotive; and Energy Generation and Storage. The Automotive segment offers electric vehicles, as well as sells automotive regulatory credits; and non-warranty after-sales vehicle, used vehicles, body shop and parts, supercharging, retail merchandise, and vehicle insurance services. This segment also provides sedans and sport utility vehicles through direct and used vehicle sales, a network of Tesla Superchargers, and in-app upgrades; purchase financing and leasing services; services for electric vehicles through its company-owned service locations and Tesla mobile service technicians; and vehicle limited warranties and extended service plans. The Energy Generation and Storage segment engages in the design, manufacture, installation, sale, and leasing of solar energy generation and energy storage products, and related services to residential, commercial, and industrial customers and utilities through its website, stores, and galleries, as well as through a network of channel partners. This segment also provides services and repairs to its energy product customers, including under warranty; and various financing options to its residential customers. The company was formerly known as Tesla Motors, Inc. and changed its name to Tesla, Inc. in February 2017. Tesla, Inc. was incorporated in 2003 and is headquartered in Austin, Texas.",
+      "country": "United States",
+      "city": "Austin",
+      "address1": "1 Tesla Road",
+      "phone": "512 516 8177",
+      "state": "TX",
+      "zip": "78725",
+      "fullTimeEmployees": 125665
+    },
+    "QUOTE_TYPE": {
+      "exchange": "NMS",
+      "quoteType": "EQUITY",
+      "symbol": "TSLA",
+      "shortName": "Tesla, Inc.",
+      "longName": "Tesla, Inc."
+    },
+    "DEFAULT_KEY_STATISTICS": {
+      "sharesOutstanding": {
+        "raw": {
+          "isString": false,
+          "content": "3325819167"
+        },
+        "fmt": "3.33B"
+      },
+      "maxAge": 1
+    },
+    "FINANCIAL_DATA": {
+      "maxAge": 86400,
+      "operatingCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "15747999744"
+        },
+        "fmt": "15.75B"
+      },
+      "freeCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "2979249920"
+        },
+        "fmt": "2.98B"
+      },
+      "totalDebt": {
+        "raw": {
+          "isString": false,
+          "content": "13788000256"
+        },
+        "fmt": "13.79B"
+      },
+      "totalCash": {
+        "raw": {
+          "isString": false,
+          "content": "41647001600"
+        },
+        "fmt": "41.65B"
+      },
+      "currentRatio": {
+        "raw": {
+          "isString": false,
+          "content": "2.066"
+        },
+        "fmt": "2.07"
+      },
+      "returnOnEquity": {
+        "raw": {
+          "isString": false,
+          "content": "0.06791"
+        },
+        "fmt": "6.79%"
+      },
+      "returnOnAssets": {
+        "raw": {
+          "isString": false,
+          "content": "0.0235"
+        },
+        "fmt": "2.35%"
+      },
+      "profitMargins": {
+        "raw": {
+          "isString": false,
+          "content": "0.05314"
+        },
+        "fmt": "5.31%"
+      },
+      "revenueGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "0.116"
+        },
+        "fmt": "11.60%"
+      },
+      "earningsGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "-0.371"
+        },
+        "fmt": "-37.10%"
+      },
+      "recommendationKey": "hold"
+    },
+    "EARNINGS_TREND": {
+      "maxAge": 1,
+      "trend": [
+        {
+          "maxAge": 1,
+          "period": "0q",
+          "endDate": "2025-12-31"
+        },
+        {
+          "maxAge": 1,
+          "period": "+1q",
+          "endDate": "2026-03-31"
+        },
+        {
+          "maxAge": 1,
+          "period": "0y",
+          "endDate": "2025-12-31"
+        },
+        {
+          "maxAge": 1,
+          "period": "+1y",
+          "endDate": "2026-12-31"
+        }
+      ]
+    },
+    "EARNINGS_HISTORY": {
+      "maxAge": 86400,
+      "history": [
+        {
+          "maxAge": 1,
+          "period": "-4q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "0.76703"
+            },
+            "fmt": "0.77"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "0.73"
+            },
+            "fmt": "0.73"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "-0.04"
+            },
+            "fmt": "-0.04"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "-0.048299998"
+            },
+            "fmt": "-4.83%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-3q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "0.41468"
+            },
+            "fmt": "0.41"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "0.27"
+            },
+            "fmt": "0.27"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "-0.14"
+            },
+            "fmt": "-0.14"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "-0.3489"
+            },
+            "fmt": "-34.89%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-2q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "0.40391"
+            },
+            "fmt": "0.4"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "0.4"
+            },
+            "fmt": "0.4"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "-0.0"
+            },
+            "fmt": "-0"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "-0.0097"
+            },
+            "fmt": "-0.97%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-1q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "0.55885"
+            },
+            "fmt": "0.56"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "0.5"
+            },
+            "fmt": "0.5"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "-0.06"
+            },
+            "fmt": "-0.06"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "-0.105299994"
+            },
+            "fmt": "-10.53%"
+          }
+        }
+      ]
+    },
+    "INSIDER_TRANSACTIONS": {
+      "maxAge": 1,
+      "transactions": [
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK ELON REEVE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "EHRENPREIS IRA MATTHEW"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "EHRENPREIS IRA MATTHEW"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "GEBBIA JOSEPH"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK ELON REEVE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILSON - THOMPSON KATHLEEN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MUSK KIMBAL J"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MURDOCH JAMES RUPERT"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "DENHOLM ROBYN M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ZHU XIAOTONG"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BAGLINO ANDREW D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "TANEJA VAIBHAV"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "requestedModules": [
+    "PRICE"
+  ],
+  "modules": {
+    "PRICE": {
+      "maxAge": 1,
+      "regularMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.7"
+        },
+        "fmt": "280.70"
+      },
+      "currency": "USD",
+      "symbol": "AAPL",
+      "longName": "Apple Inc.",
+      "shortName": "Apple Inc.",
+      "exchange": "NMS",
+      "postMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.0016743897"
+        },
+        "fmt": "-0.17%"
+      },
+      "postMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.23"
+        },
+        "fmt": "280.23"
+      },
+      "regularMarketPreviousClose": {
+        "raw": {
+          "isString": false,
+          "content": "284.15"
+        },
+        "fmt": "284.15"
+      },
+      "regularMarketChange": {
+        "raw": {
+          "isString": false,
+          "content": "-3.4499817"
+        },
+        "fmt": "-3.45"
+      },
+      "regularMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.01214141"
+        },
+        "fmt": "-1.21%"
+      }
+    }
+  }
+}

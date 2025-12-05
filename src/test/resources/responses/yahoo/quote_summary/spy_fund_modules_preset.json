@@ -1,0 +1,316 @@
+{
+  "requestedModules": [
+    "PRICE",
+    "SUMMARY_DETAIL",
+    "QUOTE_TYPE",
+    "TOP_HOLDINGS",
+    "FUND_PROFILE",
+    "FUND_PERFORMANCE"
+  ],
+  "modules": {
+    "PRICE": {
+      "maxAge": 1,
+      "regularMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "684.39"
+        },
+        "fmt": "684.39"
+      },
+      "currency": "USD",
+      "symbol": "SPY",
+      "longName": "SPDR S\u0026P 500 ETF",
+      "shortName": "SPDR S\u0026P 500",
+      "exchange": "PCX",
+      "postMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-2.6478086E-4"
+        },
+        "fmt": "-0.03%"
+      },
+      "postMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "684.2088"
+        },
+        "fmt": "684.21"
+      },
+      "regularMarketPreviousClose": {
+        "raw": {
+          "isString": false,
+          "content": "683.89"
+        },
+        "fmt": "683.89"
+      },
+      "regularMarketChange": {
+        "raw": {
+          "isString": false,
+          "content": "0.5"
+        },
+        "fmt": "0.50"
+      },
+      "regularMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "7.3111197E-4"
+        },
+        "fmt": "0.07%"
+      }
+    },
+    "SUMMARY_DETAIL": {
+      "maxAge": 1,
+      "dividendRate": {},
+      "dividendYield": {},
+      "averageVolume": {
+        "raw": {
+          "isString": false,
+          "content": "79621334"
+        },
+        "fmt": "79.62M"
+      },
+      "averageVolume10days": {
+        "raw": {
+          "isString": false,
+          "content": "84789510"
+        },
+        "fmt": "84.79M"
+      },
+      "beta": {},
+      "regularMarketDayHigh": {
+        "raw": {
+          "isString": false,
+          "content": "685.37"
+        },
+        "fmt": "685.37"
+      },
+      "regularMarketDayLow": {
+        "raw": {
+          "isString": false,
+          "content": "681.34"
+        },
+        "fmt": "681.34"
+      },
+      "regularMarketVolume": {
+        "raw": {
+          "isString": false,
+          "content": "61462098"
+        },
+        "fmt": "61.46M"
+      },
+      "marketCap": {},
+      "exDividendDate": {},
+      "trailingPE": {
+        "raw": {
+          "isString": false,
+          "content": "28.898314"
+        },
+        "fmt": "28.90"
+      },
+      "forwardPE": {},
+      "fiftyTwoWeekHigh": {
+        "raw": {
+          "isString": false,
+          "content": "689.7"
+        },
+        "fmt": "689.70"
+      },
+      "fiftyTwoWeekLow": {
+        "raw": {
+          "isString": false,
+          "content": "481.8"
+        },
+        "fmt": "481.80"
+      }
+    },
+    "QUOTE_TYPE": {
+      "exchange": "PCX",
+      "quoteType": "ETF",
+      "symbol": "SPY",
+      "shortName": "SPDR S\u0026P 500",
+      "longName": "SPDR S\u0026P 500 ETF"
+    },
+    "TOP_HOLDINGS": {
+      "holdings": [
+        {
+          "symbol": "NVDA",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0795969"
+            },
+            "fmt": "7.96%"
+          }
+        },
+        {
+          "symbol": "MSFT",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0673134"
+            },
+            "fmt": "6.73%"
+          }
+        },
+        {
+          "symbol": "AAPL",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0660685"
+            },
+            "fmt": "6.61%"
+          }
+        },
+        {
+          "symbol": "AMZN",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.037257"
+            },
+            "fmt": "3.73%"
+          }
+        },
+        {
+          "symbol": "META",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.027848499"
+            },
+            "fmt": "2.78%"
+          }
+        },
+        {
+          "symbol": "AVGO",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0271297"
+            },
+            "fmt": "2.71%"
+          }
+        },
+        {
+          "symbol": "GOOGL",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0247237"
+            },
+            "fmt": "2.47%"
+          }
+        },
+        {
+          "symbol": "TSLA",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.021818198"
+            },
+            "fmt": "2.18%"
+          }
+        },
+        {
+          "symbol": "GOOG",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0198845"
+            },
+            "fmt": "1.99%"
+          }
+        },
+        {
+          "symbol": "BRK-B",
+          "holdingPercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0161177"
+            },
+            "fmt": "1.61%"
+          }
+        }
+      ],
+      "equityHoldings": {
+        "priceToEarnings": {
+          "raw": {
+            "isString": false,
+            "content": "0.03555"
+          },
+          "fmt": "0.04"
+        },
+        "priceToBook": {
+          "raw": {
+            "isString": false,
+            "content": "0.19601"
+          },
+          "fmt": "0.2"
+        },
+        "priceToSales": {
+          "raw": {
+            "isString": false,
+            "content": "0.2848"
+          },
+          "fmt": "0.28"
+        },
+        "priceToCashflow": {
+          "raw": {
+            "isString": false,
+            "content": "0.05013"
+          },
+          "fmt": "0.05"
+        },
+        "medianMarketCap": {},
+        "threeYearEarningsGrowth": {}
+      },
+      "bondHoldings": {
+        "duration": {},
+        "maturity": {},
+        "creditQuality": {}
+      },
+      "sectorWeightings": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    "FUND_PROFILE": {
+      "categoryName": "Large Blend",
+      "family": "SPDR State Street Investment Management",
+      "legalType": "Exchange Traded Fund",
+      "feesExpensesInvestment": {
+        "annualReportExpenseRatio": {
+          "raw": {
+            "isString": false,
+            "content": "9.45E-4"
+          },
+          "fmt": "0.09%"
+        },
+        "annualHoldingsTurnover": {
+          "raw": {
+            "isString": false,
+            "content": "0.03"
+          },
+          "fmt": "3.00%"
+        },
+        "totalNetAssets": {
+          "raw": {
+            "isString": false,
+            "content": "439230.72"
+          },
+          "fmt": "439,230.72"
+        }
+      }
+    }
+  }
+}

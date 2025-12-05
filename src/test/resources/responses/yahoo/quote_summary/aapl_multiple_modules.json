@@ -1,0 +1,234 @@
+{
+  "requestedModules": [
+    "PRICE",
+    "SUMMARY_DETAIL",
+    "FINANCIAL_DATA"
+  ],
+  "modules": {
+    "PRICE": {
+      "maxAge": 1,
+      "regularMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.7"
+        },
+        "fmt": "280.70"
+      },
+      "currency": "USD",
+      "symbol": "AAPL",
+      "longName": "Apple Inc.",
+      "shortName": "Apple Inc.",
+      "exchange": "NMS",
+      "postMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.0016743897"
+        },
+        "fmt": "-0.17%"
+      },
+      "postMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.23"
+        },
+        "fmt": "280.23"
+      },
+      "regularMarketPreviousClose": {
+        "raw": {
+          "isString": false,
+          "content": "284.15"
+        },
+        "fmt": "284.15"
+      },
+      "regularMarketChange": {
+        "raw": {
+          "isString": false,
+          "content": "-3.4499817"
+        },
+        "fmt": "-3.45"
+      },
+      "regularMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.01214141"
+        },
+        "fmt": "-1.21%"
+      }
+    },
+    "SUMMARY_DETAIL": {
+      "maxAge": 1,
+      "dividendRate": {
+        "raw": {
+          "isString": false,
+          "content": "1.04"
+        },
+        "fmt": "1.04"
+      },
+      "dividendYield": {
+        "raw": {
+          "isString": false,
+          "content": "0.0037"
+        },
+        "fmt": "0.37%"
+      },
+      "averageVolume": {
+        "raw": {
+          "isString": false,
+          "content": "51205688"
+        },
+        "fmt": "51.21M"
+      },
+      "averageVolume10days": {
+        "raw": {
+          "isString": false,
+          "content": "45510030"
+        },
+        "fmt": "45.51M"
+      },
+      "beta": {
+        "raw": {
+          "isString": false,
+          "content": "1.109"
+        },
+        "fmt": "1.11"
+      },
+      "regularMarketDayHigh": {
+        "raw": {
+          "isString": false,
+          "content": "284.73"
+        },
+        "fmt": "284.73"
+      },
+      "regularMarketDayLow": {
+        "raw": {
+          "isString": false,
+          "content": "278.59"
+        },
+        "fmt": "278.59"
+      },
+      "regularMarketVolume": {
+        "raw": {
+          "isString": false,
+          "content": "42680947"
+        },
+        "fmt": "42.68M"
+      },
+      "marketCap": {
+        "raw": {
+          "isString": false,
+          "content": "4165697536000"
+        },
+        "fmt": "4.17T"
+      },
+      "exDividendDate": {
+        "raw": {
+          "isString": false,
+          "content": "1762732800"
+        },
+        "fmt": "2025-11-10"
+      },
+      "trailingPE": {
+        "raw": {
+          "isString": false,
+          "content": "37.576977"
+        },
+        "fmt": "37.58"
+      },
+      "forwardPE": {
+        "raw": {
+          "isString": false,
+          "content": "33.77858"
+        },
+        "fmt": "33.78"
+      },
+      "fiftyTwoWeekHigh": {
+        "raw": {
+          "isString": false,
+          "content": "288.62"
+        },
+        "fmt": "288.62"
+      },
+      "fiftyTwoWeekLow": {
+        "raw": {
+          "isString": false,
+          "content": "169.21"
+        },
+        "fmt": "169.21"
+      }
+    },
+    "FINANCIAL_DATA": {
+      "maxAge": 86400,
+      "operatingCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "111482003456"
+        },
+        "fmt": "111.48B"
+      },
+      "freeCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "78862254080"
+        },
+        "fmt": "78.86B"
+      },
+      "totalDebt": {
+        "raw": {
+          "isString": false,
+          "content": "112377004032"
+        },
+        "fmt": "112.38B"
+      },
+      "totalCash": {
+        "raw": {
+          "isString": false,
+          "content": "54697000960"
+        },
+        "fmt": "54.7B"
+      },
+      "currentRatio": {
+        "raw": {
+          "isString": false,
+          "content": "0.893"
+        },
+        "fmt": "0.89"
+      },
+      "returnOnEquity": {
+        "raw": {
+          "isString": false,
+          "content": "1.7142199"
+        },
+        "fmt": "171.42%"
+      },
+      "returnOnAssets": {
+        "raw": {
+          "isString": false,
+          "content": "0.22964"
+        },
+        "fmt": "22.96%"
+      },
+      "profitMargins": {
+        "raw": {
+          "isString": false,
+          "content": "0.26915002"
+        },
+        "fmt": "26.92%"
+      },
+      "revenueGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "0.079"
+        },
+        "fmt": "7.90%"
+      },
+      "earningsGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "0.912"
+        },
+        "fmt": "91.20%"
+      },
+      "recommendationKey": "buy"
+    }
+  }
+}

@@ -96,7 +96,7 @@ val unitTest = tasks.register<Test>("unitTest") {
     group = "verification"
 
     useJUnitPlatform {
-        excludeTags("integration", "liveTest")
+        excludeTags("integration")
     }
 
     // 유닛 테스트는 순차 실행
@@ -117,7 +117,6 @@ val integrationTest = tasks.register<Test>("integrationTest") {
 
     useJUnitPlatform {
         includeTags("integration")
-        excludeTags("liveTest")
     }
 
     // 통합 테스트 순차 실행 (Rate Limiting 방지)

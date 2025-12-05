@@ -1,0 +1,108 @@
+{
+  "requestedModules": [
+    "SUMMARY_DETAIL"
+  ],
+  "modules": {
+    "SUMMARY_DETAIL": {
+      "maxAge": 1,
+      "dividendRate": {
+        "raw": {
+          "isString": false,
+          "content": "3.64"
+        },
+        "fmt": "3.64"
+      },
+      "dividendYield": {
+        "raw": {
+          "isString": false,
+          "content": "0.0076"
+        },
+        "fmt": "0.76%"
+      },
+      "averageVolume": {
+        "raw": {
+          "isString": false,
+          "content": "22223177"
+        },
+        "fmt": "22.22M"
+      },
+      "averageVolume10days": {
+        "raw": {
+          "isString": false,
+          "content": "26244320"
+        },
+        "fmt": "26.24M"
+      },
+      "beta": {
+        "raw": {
+          "isString": false,
+          "content": "1.065"
+        },
+        "fmt": "1.07"
+      },
+      "regularMarketDayHigh": {
+        "raw": {
+          "isString": false,
+          "content": "481.322"
+        },
+        "fmt": "481.32"
+      },
+      "regularMarketDayLow": {
+        "raw": {
+          "isString": false,
+          "content": "476.49"
+        },
+        "fmt": "476.49"
+      },
+      "regularMarketVolume": {
+        "raw": {
+          "isString": false,
+          "content": "21899020"
+        },
+        "fmt": "21.9M"
+      },
+      "marketCap": {
+        "raw": {
+          "isString": false,
+          "content": "3574163570688"
+        },
+        "fmt": "3.57T"
+      },
+      "exDividendDate": {
+        "raw": {
+          "isString": false,
+          "content": "1771459200"
+        },
+        "fmt": "2026-02-19"
+      },
+      "trailingPE": {
+        "raw": {
+          "isString": false,
+          "content": "34.223488"
+        },
+        "fmt": "34.22"
+      },
+      "forwardPE": {
+        "raw": {
+          "isString": false,
+          "content": "32.16321"
+        },
+        "fmt": "32.16"
+      },
+      "fiftyTwoWeekHigh": {
+        "raw": {
+          "isString": false,
+          "content": "555.45"
+        },
+        "fmt": "555.45"
+      },
+      "fiftyTwoWeekLow": {
+        "raw": {
+          "isString": false,
+          "content": "344.79"
+        },
+        "fmt": "344.79"
+      }
+    }
+  }
+}

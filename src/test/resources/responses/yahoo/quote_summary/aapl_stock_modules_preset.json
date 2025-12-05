@@ -1,0 +1,739 @@
+{
+  "requestedModules": [
+    "PRICE",
+    "SUMMARY_DETAIL",
+    "ASSET_PROFILE",
+    "QUOTE_TYPE",
+    "DEFAULT_KEY_STATISTICS",
+    "FINANCIAL_DATA",
+    "EARNINGS_TREND",
+    "EARNINGS_HISTORY",
+    "RECOMMENDATION_TREND",
+    "MAJOR_HOLDERS",
+    "INSIDER_TRANSACTIONS"
+  ],
+  "modules": {
+    "PRICE": {
+      "maxAge": 1,
+      "regularMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.7"
+        },
+        "fmt": "280.70"
+      },
+      "currency": "USD",
+      "symbol": "AAPL",
+      "longName": "Apple Inc.",
+      "shortName": "Apple Inc.",
+      "exchange": "NMS",
+      "postMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.0016743897"
+        },
+        "fmt": "-0.17%"
+      },
+      "postMarketPrice": {
+        "raw": {
+          "isString": false,
+          "content": "280.23"
+        },
+        "fmt": "280.23"
+      },
+      "regularMarketPreviousClose": {
+        "raw": {
+          "isString": false,
+          "content": "284.15"
+        },
+        "fmt": "284.15"
+      },
+      "regularMarketChange": {
+        "raw": {
+          "isString": false,
+          "content": "-3.4499817"
+        },
+        "fmt": "-3.45"
+      },
+      "regularMarketChangePercent": {
+        "raw": {
+          "isString": false,
+          "content": "-0.01214141"
+        },
+        "fmt": "-1.21%"
+      }
+    },
+    "SUMMARY_DETAIL": {
+      "maxAge": 1,
+      "dividendRate": {
+        "raw": {
+          "isString": false,
+          "content": "1.04"
+        },
+        "fmt": "1.04"
+      },
+      "dividendYield": {
+        "raw": {
+          "isString": false,
+          "content": "0.0037"
+        },
+        "fmt": "0.37%"
+      },
+      "averageVolume": {
+        "raw": {
+          "isString": false,
+          "content": "51205688"
+        },
+        "fmt": "51.21M"
+      },
+      "averageVolume10days": {
+        "raw": {
+          "isString": false,
+          "content": "45510030"
+        },
+        "fmt": "45.51M"
+      },
+      "beta": {
+        "raw": {
+          "isString": false,
+          "content": "1.109"
+        },
+        "fmt": "1.11"
+      },
+      "regularMarketDayHigh": {
+        "raw": {
+          "isString": false,
+          "content": "284.73"
+        },
+        "fmt": "284.73"
+      },
+      "regularMarketDayLow": {
+        "raw": {
+          "isString": false,
+          "content": "278.59"
+        },
+        "fmt": "278.59"
+      },
+      "regularMarketVolume": {
+        "raw": {
+          "isString": false,
+          "content": "42680947"
+        },
+        "fmt": "42.68M"
+      },
+      "marketCap": {
+        "raw": {
+          "isString": false,
+          "content": "4165697536000"
+        },
+        "fmt": "4.17T"
+      },
+      "exDividendDate": {
+        "raw": {
+          "isString": false,
+          "content": "1762732800"
+        },
+        "fmt": "2025-11-10"
+      },
+      "trailingPE": {
+        "raw": {
+          "isString": false,
+          "content": "37.576977"
+        },
+        "fmt": "37.58"
+      },
+      "forwardPE": {
+        "raw": {
+          "isString": false,
+          "content": "33.77858"
+        },
+        "fmt": "33.78"
+      },
+      "fiftyTwoWeekHigh": {
+        "raw": {
+          "isString": false,
+          "content": "288.62"
+        },
+        "fmt": "288.62"
+      },
+      "fiftyTwoWeekLow": {
+        "raw": {
+          "isString": false,
+          "content": "169.21"
+        },
+        "fmt": "169.21"
+      }
+    },
+    "ASSET_PROFILE": {
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "website": "https://www.apple.com",
+      "longBusinessSummary": "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide. The company offers iPhone, a line of smartphones; Mac, a line of personal computers; iPad, a line of multi-purpose tablets; and wearables, home, and accessories comprising AirPods, Apple Vision Pro, Apple TV, Apple Watch, Beats products, and HomePod, as well as Apple branded and third-party accessories. It also provides AppleCare support and cloud services; and operates various platforms, including the App Store that allow customers to discover and download applications and digital content, such as books, music, video, games, and podcasts, as well as advertising services include third-party licensing arrangements and its own advertising platforms. In addition, the company offers various subscription-based services, such as Apple Arcade, a game subscription service; Apple Fitness+, a personalized fitness service; Apple Music, which offers users a curated listening experience with on-demand radio stations; Apple News+, a subscription news and magazine service; Apple TV, which offers exclusive original content and live sports; Apple Card, a co-branded credit card; and Apple Pay, a cashless payment service, as well as licenses its intellectual property. The company serves consumers, and small and mid-sized businesses; and the education, enterprise, and government markets. It distributes third-party applications for its products through the App Store. The company also sells its products through its retail and online stores, and direct sales force; and third-party cellular network carriers and resellers. The company was formerly known as Apple Computer, Inc. and changed its name to Apple Inc. in January 2007. Apple Inc. was founded in 1976 and is headquartered in Cupertino, California.",
+      "country": "United States",
+      "city": "Cupertino",
+      "address1": "One Apple Park Way",
+      "phone": "(408) 996-1010",
+      "state": "CA",
+      "zip": "95014",
+      "fullTimeEmployees": 166000
+    },
+    "QUOTE_TYPE": {
+      "exchange": "NMS",
+      "quoteType": "EQUITY",
+      "symbol": "AAPL",
+      "shortName": "Apple Inc.",
+      "longName": "Apple Inc."
+    },
+    "DEFAULT_KEY_STATISTICS": {
+      "sharesOutstanding": {
+        "raw": {
+          "isString": false,
+          "content": "14776353000"
+        },
+        "fmt": "14.78B"
+      },
+      "maxAge": 1
+    },
+    "FINANCIAL_DATA": {
+      "maxAge": 86400,
+      "operatingCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "111482003456"
+        },
+        "fmt": "111.48B"
+      },
+      "freeCashflow": {
+        "raw": {
+          "isString": false,
+          "content": "78862254080"
+        },
+        "fmt": "78.86B"
+      },
+      "totalDebt": {
+        "raw": {
+          "isString": false,
+          "content": "112377004032"
+        },
+        "fmt": "112.38B"
+      },
+      "totalCash": {
+        "raw": {
+          "isString": false,
+          "content": "54697000960"
+        },
+        "fmt": "54.7B"
+      },
+      "currentRatio": {
+        "raw": {
+          "isString": false,
+          "content": "0.893"
+        },
+        "fmt": "0.89"
+      },
+      "returnOnEquity": {
+        "raw": {
+          "isString": false,
+          "content": "1.7142199"
+        },
+        "fmt": "171.42%"
+      },
+      "returnOnAssets": {
+        "raw": {
+          "isString": false,
+          "content": "0.22964"
+        },
+        "fmt": "22.96%"
+      },
+      "profitMargins": {
+        "raw": {
+          "isString": false,
+          "content": "0.26915002"
+        },
+        "fmt": "26.92%"
+      },
+      "revenueGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "0.079"
+        },
+        "fmt": "7.90%"
+      },
+      "earningsGrowth": {
+        "raw": {
+          "isString": false,
+          "content": "0.912"
+        },
+        "fmt": "91.20%"
+      },
+      "recommendationKey": "buy"
+    },
+    "EARNINGS_TREND": {
+      "maxAge": 1,
+      "trend": [
+        {
+          "maxAge": 1,
+          "period": "0q",
+          "endDate": "2025-12-31"
+        },
+        {
+          "maxAge": 1,
+          "period": "+1q",
+          "endDate": "2026-03-31"
+        },
+        {
+          "maxAge": 1,
+          "period": "0y",
+          "endDate": "2026-09-30"
+        },
+        {
+          "maxAge": 1,
+          "period": "+1y",
+          "endDate": "2027-09-30"
+        }
+      ]
+    },
+    "EARNINGS_HISTORY": {
+      "maxAge": 86400,
+      "history": [
+        {
+          "maxAge": 1,
+          "period": "-4q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "2.34102"
+            },
+            "fmt": "2.34"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "2.4"
+            },
+            "fmt": "2.4"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "0.06"
+            },
+            "fmt": "0.06"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0252"
+            },
+            "fmt": "2.52%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-3q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "1.62253"
+            },
+            "fmt": "1.62"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "1.65"
+            },
+            "fmt": "1.65"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "0.03"
+            },
+            "fmt": "0.03"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.016900001"
+            },
+            "fmt": "1.69%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-2q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "1.42572"
+            },
+            "fmt": "1.43"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "1.57"
+            },
+            "fmt": "1.57"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "0.14"
+            },
+            "fmt": "0.14"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.1012"
+            },
+            "fmt": "10.12%"
+          }
+        },
+        {
+          "maxAge": 1,
+          "period": "-1q",
+          "epsEstimate": {
+            "raw": {
+              "isString": false,
+              "content": "1.76993"
+            },
+            "fmt": "1.77"
+          },
+          "epsActual": {
+            "raw": {
+              "isString": false,
+              "content": "1.85"
+            },
+            "fmt": "1.85"
+          },
+          "epsDifference": {
+            "raw": {
+              "isString": false,
+              "content": "0.08"
+            },
+            "fmt": "0.08"
+          },
+          "surprisePercent": {
+            "raw": {
+              "isString": false,
+              "content": "0.0452"
+            },
+            "fmt": "4.52%"
+          }
+        }
+      ]
+    },
+    "INSIDER_TRANSACTIONS": {
+      "maxAge": 1,
+      "transactions": [
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "PAREKH KEVAN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "PAREKH KEVAN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KHAN SABIH"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "PAREKH KEVAN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "PAREKH KEVAN"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LOZANO MONICA C."
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WAGNER SUSAN L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "JUNG ANDREA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "SUGAR RONALD D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "GORSKY ALEX"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "AUSTIN WANDA M"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MAESTRI LUCA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MAESTRI LUCA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "KONDO CHRISTOPHER"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MAESTRI LUCA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "COOK TIMOTHY D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WILLIAMS JEFFREY E"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "ADAMS KATHERINE L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "O\u0027BRIEN DEIRDRE"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "MAESTRI LUCA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "BELL JAMES A"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LOZANO MONICA C."
+        },
+        {
+          "maxAge": 1,
+          "filerName": "WAGNER SUSAN L"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "JUNG ANDREA"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "SUGAR RONALD D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "LEVINSON ARTHUR D"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "GORSKY ALEX"
+        },
+        {
+          "maxAge": 1,
+          "filerName": "GORE ALBERT A JR"
+        }
+      ]
+    }
+  }
+}
