@@ -10,6 +10,9 @@ import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
 import com.ulalax.ufc.domain.model.quote.QuoteSummaryModuleResult
 import com.ulalax.ufc.domain.model.lookup.LookupType
 import com.ulalax.ufc.domain.model.lookup.LookupResult
+import com.ulalax.ufc.domain.model.market.MarketCode
+import com.ulalax.ufc.domain.model.market.MarketSummaryResult
+import com.ulalax.ufc.domain.model.market.MarketTimeResult
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -45,6 +48,12 @@ class Ufc private constructor(
 
     suspend fun lookup(query: String, type: LookupType = LookupType.ALL, count: Int = 25): LookupResult =
         yahoo.lookup(query, type, count)
+
+    suspend fun marketSummary(market: MarketCode): MarketSummaryResult =
+        yahoo.marketSummary(market)
+
+    suspend fun marketTime(market: MarketCode): MarketTimeResult =
+        yahoo.marketTime(market)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,

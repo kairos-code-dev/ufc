@@ -80,4 +80,18 @@ object YahooApiUrls {
      * 예: $EARNINGS_CALENDAR?symbol=AAPL&offset=0&size=25
      */
     const val EARNINGS_CALENDAR = "https://finance.yahoo.com/calendar/earnings"
+
+    /**
+     * 시장 요약 엔드포인트
+     * 특정 시장의 주요 지수 정보를 반환
+     * 예: $MARKET_SUMMARY?market=us
+     */
+    const val MARKET_SUMMARY = "$QUERY1/v6/finance/quote/marketSummary"
+
+    /**
+     * 시장 시간 엔드포인트
+     * 특정 시장의 거래 시간 및 현재 상태를 반환
+     * 예: $MARKET_TIME?market=us
+     */
+    const val MARKET_TIME = "$QUERY1/v6/finance/markettime"
 }
