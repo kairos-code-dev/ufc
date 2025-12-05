@@ -17,7 +17,9 @@ import com.ulalax.ufc.domain.model.earnings.*
 import com.ulalax.ufc.domain.model.lookup.*
 import com.ulalax.ufc.domain.model.market.*
 import com.ulalax.ufc.domain.model.options.*
+import com.ulalax.ufc.domain.model.realtime.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteApiResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketTimeResponse
@@ -1672,6 +1674,364 @@ class YahooClient internal constructor(
             lastTradeDate = response.lastTradeDate,
             impliedVolatility = response.impliedVolatility,
             inTheMoney = response.inTheMoney
+        )
+    }
+
+    /**
+     * Quote API를 호출하여 실시간 시장 데이터를 조회합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL")
+     * @return QuoteData
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun quote(symbol: String): QuoteData {
+        logger.debug("Calling Yahoo Finance Quote API: symbol={}", symbol)
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청
+        val response = httpClient.get(YahooApiUrls.QUOTE) {
+            parameter("symbols", symbol)
+            parameter("formatted", "false")
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Quote API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("symbol" to symbol)
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val quoteResponse = json.decodeFromString<QuoteApiResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (quoteResponse.quoteResponse.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Quote API 에러: ${quoteResponse.quoteResponse.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인
+        if (quoteResponse.quoteResponse.result.isNullOrEmpty()) {
+            throw ApiException(
+                errorCode = ErrorCode.INVALID_SYMBOL,
+                message = "Quote 데이터를 찾을 수 없습니다: $symbol",
+                metadata = mapOf("symbol" to symbol)
+            )
+        }
+
+        // QuoteResult를 QuoteData로 변환
+        return convertToQuoteData(quoteResponse.quoteResponse.result.first())
+    }
+
+    /**
+     * Quote API를 호출하여 여러 심볼의 실시간 시장 데이터를 조회합니다.
+     *
+     * @param symbols 조회할 심볼 목록 (예: listOf("AAPL", "GOOGL", "MSFT"))
+     * @return List<QuoteData>
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun quote(symbols: List<String>): List<QuoteData> {
+        if (symbols.isEmpty()) {
+            return emptyList()
+        }
+
+        logger.debug("Calling Yahoo Finance Quote API: symbols={}", symbols)
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // API 요청 (쉼표로 구분된 심볼들)
+        val response = httpClient.get(YahooApiUrls.QUOTE) {
+            parameter("symbols", symbols.joinToString(","))
+            parameter("formatted", "false")
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Quote API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("symbols" to symbols.joinToString(","))
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val quoteResponse = json.decodeFromString<QuoteApiResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (quoteResponse.quoteResponse.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Quote API 에러: ${quoteResponse.quoteResponse.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "symbols" to symbols.joinToString(","),
+                    "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인 및 변환 (다중 심볼의 경우 성공한 것만 반환)
+        val results = quoteResponse.quoteResponse.result ?: emptyList()
+
+        // 일부 심볼이 실패한 경우 경고 로그
+        if (results.size < symbols.size) {
+            val foundSymbols = results.map { it.symbol }.toSet()
+            val missingSymbols = symbols.filterNot { it in foundSymbols }
+            logger.warn("일부 심볼의 데이터를 찾을 수 없습니다: {}", missingSymbols)
+        }
+
+        return results.map { convertToQuoteData(it) }
+    }
+
+    /**
+     * Internal QuoteResult를 public QuoteData로 변환합니다.
+     *
+     * @param result 내부 API 응답 결과
+     * @return QuoteData
+     */
+    private fun convertToQuoteData(
+        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteResult
+    ): QuoteData {
+        // Identification
+        val identification = QuoteIdentification(
+            symbol = result.symbol,
+            longName = result.longName,
+            shortName = result.shortName,
+            exchange = result.exchange,
+            timezoneName = result.exchangeTimezoneName,
+            timezoneShortName = result.exchangeTimezoneShortName,
+            quoteType = result.quoteType,
+            currency = result.currency,
+            market = result.market
+        )
+
+        // Pricing
+        val pricing = QuotePricing(
+            price = result.regularMarketPrice,
+            open = result.regularMarketOpen,
+            dayHigh = result.regularMarketDayHigh,
+            dayLow = result.regularMarketDayLow,
+            volume = result.regularMarketVolume,
+            previousClose = result.regularMarketPreviousClose,
+            change = result.regularMarketChange,
+            changePercent = result.regularMarketChangePercent,
+            marketTime = result.regularMarketTime?.let { Instant.ofEpochSecond(it) }
+        )
+
+        // Extended Hours
+        val extendedHours = if (
+            result.preMarketPrice != null || result.postMarketPrice != null
+        ) {
+            QuoteExtendedHours(
+                preMarketPrice = result.preMarketPrice,
+                preMarketChange = result.preMarketChange,
+                preMarketChangePercent = result.preMarketChangePercent,
+                preMarketTime = result.preMarketTime?.let { Instant.ofEpochSecond(it) },
+                postMarketPrice = result.postMarketPrice,
+                postMarketChange = result.postMarketChange,
+                postMarketChangePercent = result.postMarketChangePercent,
+                postMarketTime = result.postMarketTime?.let { Instant.ofEpochSecond(it) }
+            )
+        } else null
+
+        // 52-Week
+        val fiftyTwoWeek = if (
+            result.fiftyTwoWeekHigh != null || result.fiftyTwoWeekLow != null
+        ) {
+            QuoteFiftyTwoWeek(
+                high = result.fiftyTwoWeekHigh,
+                low = result.fiftyTwoWeekLow,
+                highChange = result.fiftyTwoWeekHighChange,
+                lowChange = result.fiftyTwoWeekLowChange,
+                highChangePercent = result.fiftyTwoWeekHighChangePercent,
+                lowChangePercent = result.fiftyTwoWeekLowChangePercent,
+                range = result.fiftyTwoWeekRange
+            )
+        } else null
+
+        // Moving Averages
+        val movingAverages = if (
+            result.fiftyDayAverage != null || result.twoHundredDayAverage != null
+        ) {
+            QuoteMovingAverages(
+                fiftyDayAverage = result.fiftyDayAverage,
+                fiftyDayChange = result.fiftyDayAverageChange,
+                fiftyDayChangePercent = result.fiftyDayAverageChangePercent,
+                twoHundredDayAverage = result.twoHundredDayAverage,
+                twoHundredDayChange = result.twoHundredDayAverageChange,
+                twoHundredDayChangePercent = result.twoHundredDayAverageChangePercent
+            )
+        } else null
+
+        // Volumes
+        val volumes = if (
+            result.averageDailyVolume3Month != null || result.averageDailyVolume10Day != null
+        ) {
+            QuoteVolumes(
+                averageDailyVolume3Month = result.averageDailyVolume3Month,
+                averageDailyVolume10Day = result.averageDailyVolume10Day
+            )
+        } else null
+
+        // Market Cap
+        val marketCap = if (
+            result.marketCap != null || result.sharesOutstanding != null
+        ) {
+            QuoteMarketCap(
+                marketCap = result.marketCap,
+                sharesOutstanding = result.sharesOutstanding
+            )
+        } else null
+
+        // Dividends
+        val dividends = if (
+            result.dividendRate != null || result.dividendYield != null ||
+            result.dividendDate != null || result.exDividendDate != null ||
+            result.trailingAnnualDividendRate != null || result.trailingAnnualDividendYield != null
+        ) {
+            QuoteDividends(
+                annualRate = result.dividendRate,
+                yield = result.dividendYield,
+                dividendDate = result.dividendDate?.let {
+                    Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
+                },
+                exDividendDate = result.exDividendDate?.let {
+                    Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
+                },
+                trailingRate = result.trailingAnnualDividendRate,
+                trailingYield = result.trailingAnnualDividendYield
+            )
+        } else null
+
+        // Financial Ratios
+        val financialRatios = if (
+            result.trailingPE != null || result.forwardPE != null ||
+            result.priceToBook != null || result.priceToSales != null ||
+            result.bookValue != null || result.earningsQuarterlyGrowth != null
+        ) {
+            QuoteFinancialRatios(
+                trailingPE = result.trailingPE,
+                forwardPE = result.forwardPE,
+                priceToBook = result.priceToBook,
+                priceToSales = result.priceToSales,
+                bookValue = result.bookValue,
+                earningsQuarterlyGrowth = result.earningsQuarterlyGrowth
+            )
+        } else null
+
+        // Earnings
+        val earnings = if (
+            result.epsTrailingTwelveMonths != null || result.epsForward != null ||
+            result.epsCurrentYear != null || result.earningsTimestamp != null ||
+            result.earningsTimestampStart != null || result.earningsTimestampEnd != null
+        ) {
+            QuoteEarnings(
+                epsTrailingTwelveMonths = result.epsTrailingTwelveMonths,
+                epsForward = result.epsForward,
+                epsCurrentYear = result.epsCurrentYear,
+                earningsTimestamp = result.earningsTimestamp?.let { Instant.ofEpochSecond(it) },
+                earningsTimestampStart = result.earningsTimestampStart?.let { Instant.ofEpochSecond(it) },
+                earningsTimestampEnd = result.earningsTimestampEnd?.let { Instant.ofEpochSecond(it) }
+            )
+        } else null
+
+        // Revenue
+        val revenue = if (
+            result.totalRevenue != null || result.revenuePerShare != null ||
+            result.returnOnAssets != null || result.returnOnEquity != null ||
+            result.profitMargins != null || result.grossMargins != null
+        ) {
+            QuoteRevenue(
+                totalRevenue = result.totalRevenue,
+                revenuePerShare = result.revenuePerShare,
+                returnOnAssets = result.returnOnAssets,
+                returnOnEquity = result.returnOnEquity,
+                profitMargins = result.profitMargins,
+                grossMargins = result.grossMargins
+            )
+        } else null
+
+        // Financial Health
+        val financialHealth = if (
+            result.totalCash != null || result.totalCashPerShare != null ||
+            result.totalDebt != null || result.debtToEquity != null ||
+            result.currentRatio != null || result.quickRatio != null
+        ) {
+            QuoteFinancialHealth(
+                totalCash = result.totalCash,
+                totalCashPerShare = result.totalCashPerShare,
+                totalDebt = result.totalDebt,
+                debtToEquity = result.debtToEquity,
+                currentRatio = result.currentRatio,
+                quickRatio = result.quickRatio
+            )
+        } else null
+
+        // Growth Rates
+        val growthRates = if (
+            result.revenueGrowth != null || result.earningsGrowth != null
+        ) {
+            QuoteGrowthRates(
+                revenueGrowth = result.revenueGrowth,
+                earningsGrowth = result.earningsGrowth
+            )
+        } else null
+
+        // Analyst Ratings
+        val analystRatings = if (
+            result.targetHighPrice != null || result.targetLowPrice != null ||
+            result.targetMeanPrice != null || result.targetMedianPrice != null ||
+            result.recommendationMean != null || result.recommendationKey != null ||
+            result.numberOfAnalystOpinions != null
+        ) {
+            QuoteAnalystRatings(
+                targetHighPrice = result.targetHighPrice,
+                targetLowPrice = result.targetLowPrice,
+                targetMeanPrice = result.targetMeanPrice,
+                targetMedianPrice = result.targetMedianPrice,
+                recommendationMean = result.recommendationMean,
+                recommendationKey = result.recommendationKey,
+                numberOfAnalystOpinions = result.numberOfAnalystOpinions
+            )
+        } else null
+
+        return QuoteData(
+            identification = identification,
+            pricing = pricing,
+            extendedHours = extendedHours,
+            fiftyTwoWeek = fiftyTwoWeek,
+            movingAverages = movingAverages,
+            volumes = volumes,
+            marketCap = marketCap,
+            dividends = dividends,
+            financialRatios = financialRatios,
+            earnings = earnings,
+            revenue = revenue,
+            financialHealth = financialHealth,
+            growthRates = growthRates,
+            analystRatings = analystRatings
         )
     }
 

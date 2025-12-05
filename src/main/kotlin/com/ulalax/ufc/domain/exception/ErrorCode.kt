@@ -25,6 +25,7 @@ enum class ErrorCode(
 
     // 4000번대: 데이터 오류
     DATA_NOT_FOUND(4001, "요청한 데이터를 찾을 수 없습니다.", false),
+    INVALID_SYMBOL(4002, "유효하지 않은 심볼입니다.", false),
 
     // 5000번대: 파싱 오류
     JSON_PARSING_ERROR(5001, "JSON 파싱 중 오류가 발생했습니다.", false),

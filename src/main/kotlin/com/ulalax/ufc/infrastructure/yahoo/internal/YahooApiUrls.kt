@@ -38,6 +38,12 @@ object YahooApiUrls {
     const val CHART = "$QUERY2/v8/finance/chart"
 
     /**
+     * 실시간 주식 시세 엔드포인트
+     * 예: $QUOTE?symbols=AAPL,GOOGL&formatted=false
+     */
+    const val QUOTE = "$QUERY1/v7/finance/quote"
+
+    /**
      * 주식 요약 정보 엔드포인트
      * 예: $QUOTE_SUMMARY?symbols=AAPL&modules=price,summaryDetail
      */
