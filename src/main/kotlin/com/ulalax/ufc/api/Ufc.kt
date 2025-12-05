@@ -24,12 +24,14 @@ import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
 import com.ulalax.ufc.domain.model.security.IsinSearchResult
 import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.UfcException
+import com.ulalax.ufc.infrastructure.yahoo.streaming.StreamingClient
 import java.time.LocalDate
 
 class Ufc private constructor(
     val yahoo: YahooClient,
     val fred: FredClient?,
-    val businessInsider: BusinessInsiderClient
+    val businessInsider: BusinessInsiderClient,
+    val streaming: StreamingClient
 ) : AutoCloseable {
 
     // 직접 접근 - Yahoo
@@ -98,20 +100,23 @@ class Ufc private constructor(
         yahoo.close()
         fred?.close()
         businessInsider.close()
+        streaming.close()
     }
 
     companion object {
         suspend fun create(): Ufc {
             val yahoo = YahooClient.create()
             val bi = BusinessInsiderClient.create()
-            return Ufc(yahoo, null, bi)
+            val streaming = StreamingClient.create()
+            return Ufc(yahoo, null, bi, streaming)
         }
 
         suspend fun create(config: UfcConfig): Ufc {
             val yahoo = YahooClient.create(config.yahooConfig)
             val fred = config.fredApiKey?.let { FredClient.create(it, config.fredConfig) }
             val bi = BusinessInsiderClient.create(config.businessInsiderConfig)
-            return Ufc(yahoo, fred, bi)
+            val streaming = StreamingClient.create(config.streamingConfig)
+            return Ufc(yahoo, fred, bi, streaming)
         }
     }
 }
