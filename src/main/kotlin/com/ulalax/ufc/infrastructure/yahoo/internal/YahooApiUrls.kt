@@ -68,10 +68,17 @@ object YahooApiUrls {
     const val LOOKUP = "$QUERY1/v1/finance/lookup"
 
     /**
-     * 주식 스크리너 엔드포인트
+     * 주식 스크리너 엔드포인트 (Custom Query)
      * 특정 조건에 맞는 주식 목록을 반환
      */
     const val SCREENER = "$QUERY1/v1/finance/screener"
+
+    /**
+     * 사전 정의된 스크리너 엔드포인트 (Predefined Query)
+     * Yahoo Finance에서 제공하는 인기 스크리너 조회
+     * 예: $SCREENER_PREDEFINED?scrIds=day_gainers&count=25
+     */
+    const val SCREENER_PREDEFINED = "$QUERY1/v1/finance/screener/predefined/saved"
 
     /**
      * Fundamentals Timeseries 엔드포인트

@@ -15,6 +15,7 @@ import com.ulalax.ufc.domain.model.market.MarketSummaryResult
 import com.ulalax.ufc.domain.model.market.MarketTimeResult
 import com.ulalax.ufc.domain.model.options.OptionsData
 import com.ulalax.ufc.domain.model.realtime.QuoteData
+import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -63,6 +64,18 @@ class Ufc private constructor(
 
     suspend fun options(symbol: String, expirationDate: Long? = null): OptionsData =
         yahoo.options(symbol, expirationDate)
+
+    suspend fun screener(query: ScreenerQuery, sortField: ScreenerSortField = ScreenerSortField.TICKER,
+                         sortAsc: Boolean = false, size: Int = 100, offset: Int = 0) =
+        yahoo.screener(query, sortField, sortAsc, size, offset)
+
+    suspend fun screener(predefinedId: String, count: Int = 25,
+                         sortField: ScreenerSortField? = null, sortAsc: Boolean? = null) =
+        yahoo.screener(predefinedId, count, sortField, sortAsc)
+
+    suspend fun screener(predefined: PredefinedScreener, count: Int = 25,
+                         sortField: ScreenerSortField? = null, sortAsc: Boolean? = null) =
+        yahoo.screener(predefined, count, sortField, sortAsc)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,
