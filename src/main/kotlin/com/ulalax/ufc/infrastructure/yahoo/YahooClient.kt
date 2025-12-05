@@ -8,14 +8,18 @@ import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
 import com.ulalax.ufc.infrastructure.yahoo.internal.YahooApiUrls
 import com.ulalax.ufc.infrastructure.yahoo.internal.auth.YahooAuthenticator
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.ChartDataResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.FundamentalsTimeseriesResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteSummaryResponse
 import com.ulalax.ufc.domain.model.chart.*
+import com.ulalax.ufc.domain.model.fundamentals.*
 import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.earnings.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTableRow
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -927,6 +931,181 @@ class YahooClient internal constructor(
             trimmed.isEmpty() || trimmed == "-" -> null
             else -> trimmed.toDoubleOrNull()
         }
+    }
+
+    /**
+     * Fundamentals Timeseries API를 호출하여 재무제표 시계열 데이터를 조회합니다.
+     *
+     * Yahoo Finance의 재무제표 항목별 시계열 데이터를 조회합니다.
+     * 손익계산서, 대차대조표, 현금흐름표의 각 항목에 대한 연간, 분기별, Trailing 데이터를 제공합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL")
+     * @param types 조회할 재무 항목 타입 목록
+     * @param startDate 조회 시작 날짜 (기본값: 5년 전)
+     * @param endDate 조회 종료 날짜 (기본값: 오늘)
+     * @return FundamentalsTimeseriesResult 타입별 시계열 데이터
+     * @throws IllegalArgumentException symbol이 공백이거나 types가 빈 리스트인 경우
+     * @throws ApiException API 호출 실패 시
+     *
+     * ## 사용 예시
+     * ```kotlin
+     * // 연간 매출과 분기별 순이익 조회
+     * val result = yahooClient.fundamentalsTimeseries(
+     *     "AAPL",
+     *     listOf(
+     *         FundamentalsType.ANNUAL_TOTAL_REVENUE,
+     *         FundamentalsType.QUARTERLY_NET_INCOME
+     *     )
+     * )
+     *
+     * // 특정 기간 데이터 조회
+     * val result = yahooClient.fundamentalsTimeseries(
+     *     "AAPL",
+     *     listOf(FundamentalsType.TRAILING_EPS),
+     *     startDate = LocalDate.of(2020, 1, 1),
+     *     endDate = LocalDate.of(2023, 12, 31)
+     * )
+     * ```
+     */
+    suspend fun fundamentalsTimeseries(
+        symbol: String,
+        types: List<FundamentalsType>,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null
+    ): FundamentalsTimeseriesResult {
+        // 입력 검증
+        require(symbol.isNotBlank()) { "symbol은 공백일 수 없습니다" }
+        require(types.isNotEmpty()) { "types는 빈 리스트일 수 없습니다" }
+        if (startDate != null && endDate != null) {
+            require(!startDate.isAfter(endDate)) { "startDate는 endDate보다 이전이어야 합니다" }
+        }
+
+        logger.debug(
+            "Calling Yahoo Finance Fundamentals Timeseries API: symbol={}, types={}, startDate={}, endDate={}",
+            symbol, types.map { it.apiValue }, startDate, endDate
+        )
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // 날짜를 Unix timestamp로 변환
+        val period1 = startDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
+            ?: LocalDate.now().minusYears(5).atStartOfDay(ZoneOffset.UTC).toEpochSecond()
+        val period2 = endDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
+            ?: LocalDate.now().atStartOfDay(ZoneOffset.UTC).toEpochSecond()
+
+        // API 요청
+        val response = httpClient.get("${YahooApiUrls.FUNDAMENTALS_TIMESERIES}/$symbol") {
+            parameter("symbol", symbol)
+            parameter("type", types.joinToString(",") { it.apiValue })
+            parameter("period1", period1)
+            parameter("period2", period2)
+            parameter("crumb", crumb)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Fundamentals Timeseries API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "types" to types.joinToString(",") { it.apiValue }
+                )
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val timeseriesResponse = json.decodeFromString<FundamentalsTimeseriesResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (timeseriesResponse.timeseries.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Fundamentals Timeseries API 에러: ${timeseriesResponse.timeseries.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "errorCode" to (timeseriesResponse.timeseries.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과가 없는 경우 빈 결과 반환
+        if (timeseriesResponse.timeseries.result.isNullOrEmpty()) {
+            logger.warn("No fundamentals timeseries data found for symbol: {}", symbol)
+            return FundamentalsTimeseriesResult.empty(symbol)
+        }
+
+        // Internal Response를 Domain Model로 변환
+        return convertToFundamentalsTimeseriesResult(symbol, timeseriesResponse.timeseries.result, types)
+    }
+
+    /**
+     * Internal TimeseriesResult를 public FundamentalsTimeseriesResult로 변환합니다.
+     *
+     * @param symbol 조회한 심볼
+     * @param results 내부 API 응답 결과 리스트
+     * @param requestedTypes 요청한 타입 목록
+     * @return FundamentalsTimeseriesResult
+     */
+    private fun convertToFundamentalsTimeseriesResult(
+        symbol: String,
+        results: List<com.ulalax.ufc.infrastructure.yahoo.internal.response.TimeseriesResult>,
+        requestedTypes: List<FundamentalsType>
+    ): FundamentalsTimeseriesResult {
+        val dataMap = mutableMapOf<FundamentalsType, List<TimeseriesDataPoint>>()
+
+        // 각 result를 순회하며 동적 필드에서 데이터 추출
+        for (result in results) {
+            for ((fieldName, dataPoints) in result.dataFields) {
+                // fieldName을 FundamentalsType으로 변환
+                val fundamentalsType = FundamentalsType.fromApiValue(fieldName)
+                if (fundamentalsType == null) {
+                    logger.warn("Unknown fundamentals type from API: {}", fieldName)
+                    continue
+                }
+
+                // DataPoint를 TimeseriesDataPoint로 변환
+                val timeseriesDataPoints = dataPoints.mapNotNull { dataPoint ->
+                    val asOfDateStr = dataPoint.asOfDate
+                    if (asOfDateStr == null) {
+                        logger.warn("asOfDate is null for type: {}", fieldName)
+                        return@mapNotNull null
+                    }
+
+                    try {
+                        val asOfDate = LocalDate.parse(asOfDateStr)
+                        val periodType = dataPoint.periodType ?: "UNKNOWN"
+                        val value = dataPoint.reportedValue?.doubleValue
+                        val currencyCode = dataPoint.currencyCode ?: "USD"
+
+                        TimeseriesDataPoint(
+                            asOfDate = asOfDate,
+                            periodType = periodType,
+                            value = value,
+                            currencyCode = currencyCode
+                        )
+                    } catch (e: Exception) {
+                        logger.warn("Failed to parse data point for type {}: {}", fieldName, e.message)
+                        null
+                    }
+                }.sorted() // asOfDate 기준 정렬
+
+                if (timeseriesDataPoints.isNotEmpty()) {
+                    dataMap[fundamentalsType] = timeseriesDataPoints
+                }
+            }
+        }
+
+        return FundamentalsTimeseriesResult(
+            symbol = symbol,
+            data = dataMap
+        )
     }
 
     /**
