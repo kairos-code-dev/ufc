@@ -3,6 +3,7 @@ package com.ulalax.ufc.infrastructure.yahoo
 import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.domain.exception.DataParsingException
 import com.ulalax.ufc.domain.exception.ErrorCode
+import com.ulalax.ufc.domain.exception.ValidationException
 import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
 import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
 import com.ulalax.ufc.infrastructure.yahoo.internal.YahooApiUrls
@@ -20,7 +21,11 @@ import com.ulalax.ufc.domain.model.options.*
 import com.ulalax.ufc.domain.model.realtime.*
 import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.domain.model.search.*
+import com.ulalax.ufc.domain.model.visualization.*
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.VisualizationResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationRequest
+import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationQuery
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.SearchApiResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.request.ScreenerRequest
@@ -2509,6 +2514,144 @@ class YahooClient internal constructor(
         } ?: emptyList()
 
         return NewsThumbnail(resolutions = resolutions)
+    }
+
+    /**
+     * Visualization API를 호출하여 실적 발표 일정을 조회합니다.
+     *
+     * @param symbol 조회할 심볼 (예: "AAPL")
+     * @param limit 반환할 결과 수 (1-100, 기본값: 12)
+     * @return EarningsCalendar
+     * @throws ValidationException 파라미터 검증 실패 시
+     * @throws ApiException API 호출 실패 시
+     */
+    suspend fun visualization(
+        symbol: String,
+        limit: Int = 12
+    ): EarningsCalendar {
+        logger.debug("Calling Yahoo Finance Visualization API: symbol={}, limit={}", symbol, limit)
+
+        // 파라미터 검증
+        if (limit !in 1..100) {
+            throw ValidationException(
+                errorCode = ErrorCode.INVALID_PARAMETER,
+                message = "limit는 1-100 범위여야 합니다: $limit",
+                field = "limit",
+                metadata = mapOf("limit" to limit.toString())
+            )
+        }
+
+        // Rate Limit 적용
+        rateLimiter.acquire()
+
+        // CRUMB 토큰 획득
+        val crumb = authenticator.getCrumb()
+
+        // 요청 본문 생성
+        val requestBody = VisualizationRequest(
+            size = limit,
+            query = VisualizationQuery(
+                operator = "eq",
+                operands = listOf("ticker", symbol)
+            ),
+            sortField = "startdatetime",
+            sortType = "DESC",
+            entityIdType = "earnings",
+            includeFields = listOf(
+                "startdatetime",
+                "timeZoneShortName",
+                "epsestimate",
+                "epsactual",
+                "epssurprisepct",
+                "eventtype"
+            )
+        )
+
+        // API 요청
+        val response = httpClient.post(YahooApiUrls.VISUALIZATION) {
+            contentType(ContentType.Application.Json)
+            parameter("crumb", crumb)
+            setBody(requestBody)
+        }
+
+        // HTTP 상태 코드 확인
+        if (!response.status.isSuccess()) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Visualization API 요청 실패: HTTP ${response.status.value}",
+                statusCode = response.status.value,
+                metadata = mapOf("symbol" to symbol, "limit" to limit.toString())
+            )
+        }
+
+        // 응답 파싱
+        val responseBody = response.body<String>()
+        val visualizationResponse = json.decodeFromString<VisualizationResponse>(responseBody)
+
+        // 에러 응답 확인
+        if (visualizationResponse.finance.error != null) {
+            throw ApiException(
+                errorCode = ErrorCode.EXTERNAL_API_ERROR,
+                message = "Visualization API 에러: ${visualizationResponse.finance.error?.description ?: "Unknown error"}",
+                metadata = mapOf(
+                    "symbol" to symbol,
+                    "errorCode" to (visualizationResponse.finance.error?.code ?: "UNKNOWN")
+                )
+            )
+        }
+
+        // 결과 확인 및 변환
+        val documents = visualizationResponse.finance.result?.firstOrNull()?.documents
+        if (documents.isNullOrEmpty()) {
+            // 빈 결과는 에러가 아니라 빈 목록 반환
+            return EarningsCalendar(
+                symbol = symbol,
+                earningsDates = emptyList()
+            )
+        }
+
+        val document = documents.first()
+        val earningsDates = document.rows.mapNotNull { row ->
+            try {
+                // 각 row는 [startdatetime, timeZoneShortName, epsestimate, epsactual, epssurprisepct, eventtype] 순서
+                val startDatetimeStr = (row.getOrNull(0) as? JsonPrimitive)?.content
+                val timezoneShortName = (row.getOrNull(1) as? JsonPrimitive)?.content
+                val epsEstimate = (row.getOrNull(2) as? JsonPrimitive)?.double
+                val epsActual = (row.getOrNull(3) as? JsonPrimitive)?.double
+                val epsSurprisePct = (row.getOrNull(4) as? JsonPrimitive)?.double
+                val eventTypeCode = (row.getOrNull(5) as? JsonPrimitive)?.int
+
+                // startdatetime과 eventtype은 필수
+                if (startDatetimeStr == null || eventTypeCode == null) {
+                    return@mapNotNull null
+                }
+
+                // ISO 8601 파싱하여 epoch seconds로 변환
+                val earningsDate = Instant.parse(startDatetimeStr).epochSecond
+
+                // 0.0 값은 null로 처리
+                val finalEpsEstimate = if (epsEstimate == 0.0) null else epsEstimate
+                val finalEpsActual = if (epsActual == 0.0) null else epsActual
+                val finalEpsSurprisePct = if (epsSurprisePct == 0.0) null else epsSurprisePct
+
+                EarningsDate(
+                    earningsDate = earningsDate,
+                    timezoneShortName = timezoneShortName,
+                    epsEstimate = finalEpsEstimate,
+                    epsActual = finalEpsActual,
+                    surprisePercent = finalEpsSurprisePct,
+                    eventType = EarningsEventType.fromCode(eventTypeCode)
+                )
+            } catch (e: Exception) {
+                logger.warn("Failed to parse earnings date row: $row", e)
+                null
+            }
+        }
+
+        return EarningsCalendar(
+            symbol = symbol,
+            earningsDates = earningsDates
+        )
     }
 
     /**

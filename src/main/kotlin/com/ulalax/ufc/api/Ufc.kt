@@ -17,6 +17,7 @@ import com.ulalax.ufc.domain.model.options.OptionsData
 import com.ulalax.ufc.domain.model.realtime.QuoteData
 import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.domain.model.search.SearchResponse
+import com.ulalax.ufc.domain.model.visualization.EarningsCalendar
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -80,6 +81,9 @@ class Ufc private constructor(
 
     suspend fun search(query: String, quotesCount: Int = 8, newsCount: Int = 8, enableFuzzyQuery: Boolean = false): SearchResponse =
         yahoo.search(query, quotesCount, newsCount, enableFuzzyQuery)
+
+    suspend fun visualization(symbol: String, limit: Int = 12): EarningsCalendar =
+        yahoo.visualization(symbol, limit)
 
     // 직접 접근 - FRED
     suspend fun series(seriesId: String, startDate: LocalDate? = null,

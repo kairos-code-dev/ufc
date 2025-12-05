@@ -114,4 +114,11 @@ object YahooApiUrls {
      * 예: $OPTIONS/AAPL?crumb=xxx&date=1704326400
      */
     const val OPTIONS = "$QUERY2/v7/finance/options"
+
+    /**
+     * Visualization 엔드포인트
+     * 실적 발표 일정 등의 이벤트 데이터를 반환
+     * POST 요청으로 호출
+     */
+    const val VISUALIZATION = "$QUERY1/v1/finance/visualization"
 }
