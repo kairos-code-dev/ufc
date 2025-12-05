@@ -14,6 +14,7 @@ import com.ulalax.ufc.domain.model.market.MarketCode
 import com.ulalax.ufc.domain.model.market.MarketSummaryResult
 import com.ulalax.ufc.domain.model.market.MarketTimeResult
 import com.ulalax.ufc.domain.model.options.OptionsData
+import com.ulalax.ufc.domain.model.realtime.QuoteData
 import com.ulalax.ufc.infrastructure.fred.FredClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
@@ -29,6 +30,10 @@ class Ufc private constructor(
 ) : AutoCloseable {
 
     // 직접 접근 - Yahoo
+    suspend fun quote(symbol: String): QuoteData = yahoo.quote(symbol)
+
+    suspend fun quote(symbols: List<String>): List<QuoteData> = yahoo.quote(symbols)
+
     suspend fun quoteSummary(symbol: String, vararg modules: QuoteSummaryModule): QuoteSummaryModuleResult =
         yahoo.quoteSummary(symbol, *modules)
 
