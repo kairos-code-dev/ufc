@@ -1,4 +1,4 @@
-# UFC (Unified Finance Client)
+# UFC (US Free Financial Data Collector)
 
 [![CI](https://github.com/kairos-code-dev/ufc/actions/workflows/ci.yml/badge.svg)](https://github.com/kairos-code-dev/ufc/actions/workflows/ci.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
