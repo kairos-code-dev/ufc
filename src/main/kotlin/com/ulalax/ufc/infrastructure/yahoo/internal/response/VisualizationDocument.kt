@@ -14,5 +14,5 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 internal data class VisualizationDocument(
     val columns: List<VisualizationColumn>,
-    val rows: List<List<JsonElement>>
+    val rows: List<List<JsonElement>>,
 )

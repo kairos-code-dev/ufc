@@ -13,7 +13,7 @@ package com.ulalax.ufc.infrastructure.yahoo.internal.auth
 data class AuthResult(
     val crumb: String,
     val strategy: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 ) {
     /**
      * 인증 결과의 유효성을 검증합니다.
@@ -25,9 +25,9 @@ data class AuthResult(
      * @return 인증이 유효하면 true, 만료되었으면 false
      */
     fun isValid(): Boolean {
-        val ONE_HOUR_IN_MILLIS = 60 * 60 * 1000L
+        val oneHourInMillis = 60 * 60 * 1000L
         val elapsedTime = System.currentTimeMillis() - timestamp
-        return elapsedTime < ONE_HOUR_IN_MILLIS
+        return elapsedTime < oneHourInMillis
     }
 
     /**
@@ -39,6 +39,6 @@ data class AuthResult(
         val elapsedSeconds = (System.currentTimeMillis() - timestamp) / 1000
         val isValidStr = if (isValid()) "유효" else "만료됨"
         return "AuthResult(strategy='$strategy', crumb_length=${crumb.length}, " +
-                "elapsed_sec=$elapsedSeconds, status='$isValidStr')"
+            "elapsed_sec=$elapsedSeconds, status='$isValidStr')"
     }
 }

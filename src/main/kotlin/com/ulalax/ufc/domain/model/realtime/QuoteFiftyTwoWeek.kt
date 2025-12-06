@@ -18,5 +18,5 @@ data class QuoteFiftyTwoWeek(
     val lowChange: Double? = null,
     val highChangePercent: Double? = null,
     val lowChangePercent: Double? = null,
-    val range: String? = null
+    val range: String? = null,
 )

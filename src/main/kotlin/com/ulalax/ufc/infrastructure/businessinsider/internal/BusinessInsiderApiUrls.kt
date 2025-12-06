@@ -21,6 +21,8 @@ internal object BusinessInsiderApiUrls {
      * @param maxResults 최대 결과 수 (기본값: 10)
      * @return 검색 API URL
      */
-    fun searchUrl(query: String, maxResults: Int = 10): String =
-        "$SUGGEST_API?max_results=$maxResults&query=$query"
+    fun searchUrl(
+        query: String,
+        maxResults: Int = 10,
+    ): String = "$SUGGEST_API?max_results=$maxResults&query=$query"
 }

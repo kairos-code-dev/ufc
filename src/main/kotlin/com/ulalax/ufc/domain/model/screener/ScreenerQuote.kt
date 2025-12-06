@@ -30,5 +30,5 @@ data class ScreenerQuote(
     val regularMarketChange: Double? = null,
     val regularMarketChangePercent: Double? = null,
     val regularMarketVolume: Long? = null,
-    val additionalFields: Map<String, Any?> = emptyMap()
+    val additionalFields: Map<String, Any?> = emptyMap(),
 )

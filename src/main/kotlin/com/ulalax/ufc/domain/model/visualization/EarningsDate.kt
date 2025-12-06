@@ -16,5 +16,5 @@ data class EarningsDate(
     val epsEstimate: Double? = null,
     val epsActual: Double? = null,
     val surprisePercent: Double? = null,
-    val eventType: EarningsEventType
+    val eventType: EarningsEventType,
 )

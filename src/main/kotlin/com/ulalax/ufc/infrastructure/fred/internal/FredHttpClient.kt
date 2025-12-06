@@ -4,12 +4,12 @@ import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.RateLimitException
 import com.ulalax.ufc.domain.exception.ValidationException
-import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
-import com.ulalax.ufc.infrastructure.fred.FredClientConfig
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.domain.model.series.FredObservation
 import com.ulalax.ufc.domain.model.series.FredSeries
 import com.ulalax.ufc.domain.model.series.FredSeriesInfo
+import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
+import com.ulalax.ufc.infrastructure.fred.FredClientConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -39,37 +39,41 @@ import java.time.format.DateTimeFormatter
 internal class FredHttpClient(
     private val apiKey: String,
     private val config: FredClientConfig,
-    private val rateLimiter: RateLimiter
+    private val rateLimiter: RateLimiter,
 ) : AutoCloseable {
-
     private val logger = LoggerFactory.getLogger(FredHttpClient::class.java)
 
-    private val httpClient: HttpClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-                coerceInputValues = true
-            })
-        }
+    private val httpClient: HttpClient =
+        HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                        isLenient = true
+                        coerceInputValues = true
+                    },
+                )
+            }
 
-        install(HttpTimeout) {
-            connectTimeoutMillis = config.connectTimeoutMs
-            requestTimeoutMillis = config.requestTimeoutMs
-        }
+            install(HttpTimeout) {
+                connectTimeoutMillis = config.connectTimeoutMs
+                requestTimeoutMillis = config.requestTimeoutMs
+            }
 
-        if (config.enableLogging) {
-            install(Logging) {
-                logger = object : Logger {
-                    private val log = LoggerFactory.getLogger("FredHttpClient")
-                    override fun log(message: String) {
-                        log.debug(message)
-                    }
+            if (config.enableLogging) {
+                install(Logging) {
+                    logger =
+                        object : Logger {
+                            private val log = LoggerFactory.getLogger("FredHttpClient")
+
+                            override fun log(message: String) {
+                                log.debug(message)
+                            }
+                        }
+                    level = LogLevel.INFO
                 }
-                level = LogLevel.INFO
             }
         }
-    }
 
     init {
         require(apiKey.isNotBlank()) { "FRED API Key는 빈 문자열이 될 수 없습니다" }
@@ -90,13 +94,13 @@ internal class FredHttpClient(
         seriesId: String,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null,
-        frequency: DataFrequency? = null
+        frequency: DataFrequency? = null,
     ): FredSeries {
         if (seriesId.isBlank()) {
             throw ValidationException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "seriesId는 빈 문자열이 될 수 없습니다",
-                field = "seriesId"
+                field = "seriesId",
             )
         }
 
@@ -111,7 +115,7 @@ internal class FredHttpClient(
             title = seriesInfo.title,
             frequency = seriesInfo.frequency,
             units = seriesInfo.units,
-            observations = observations
+            observations = observations,
         )
     }
 
@@ -126,7 +130,7 @@ internal class FredHttpClient(
             throw ValidationException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "seriesId는 빈 문자열이 될 수 없습니다",
-                field = "seriesId"
+                field = "seriesId",
             )
         }
 
@@ -135,22 +139,24 @@ internal class FredHttpClient(
         // Rate Limit 적용
         rateLimiter.acquire()
 
-        val response = httpClient.get(FredApiUrls.SERIES) {
-            parameter("series_id", seriesId)
-            parameter("api_key", apiKey)
-            parameter("file_type", "json")
-        }
+        val response =
+            httpClient.get(FredApiUrls.SERIES) {
+                parameter("series_id", seriesId)
+                parameter("api_key", apiKey)
+                parameter("file_type", "json")
+            }
 
         return when (response.status) {
             HttpStatusCode.OK -> {
                 val fredResponse = response.body<FredSeriesResponse>()
-                val series = fredResponse.seriess.firstOrNull()
-                    ?: throw ApiException(
-                        errorCode = ErrorCode.DATA_NOT_FOUND,
-                        message = "시계열 정보를 찾을 수 없습니다: $seriesId",
-                        statusCode = response.status.value,
-                        metadata = mapOf("seriesId" to seriesId)
-                    )
+                val series =
+                    fredResponse.seriess.firstOrNull()
+                        ?: throw ApiException(
+                            errorCode = ErrorCode.DATA_NOT_FOUND,
+                            message = "시계열 정보를 찾을 수 없습니다: $seriesId",
+                            statusCode = response.status.value,
+                            metadata = mapOf("seriesId" to seriesId),
+                        )
 
                 FredSeriesInfo(
                     id = series.id,
@@ -158,35 +164,35 @@ internal class FredHttpClient(
                     frequency = series.frequency,
                     units = series.units,
                     seasonalAdjustment = series.seasonalAdjustment,
-                    lastUpdated = series.lastUpdated
+                    lastUpdated = series.lastUpdated,
                 )
             }
             HttpStatusCode.BadRequest -> throw ValidationException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "잘못된 파라미터입니다. seriesId: $seriesId",
-                field = "seriesId"
+                field = "seriesId",
             )
             HttpStatusCode.Unauthorized -> throw ApiException(
                 errorCode = ErrorCode.AUTHENTICATION_FAILED,
                 message = "FRED API Key 인증 실패. API Key를 확인하세요.",
-                statusCode = response.status.value
+                statusCode = response.status.value,
             )
             HttpStatusCode.NotFound -> throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "시계열을 찾을 수 없습니다. seriesId: $seriesId",
                 statusCode = response.status.value,
-                metadata = mapOf("seriesId" to seriesId)
+                metadata = mapOf("seriesId" to seriesId),
             )
             HttpStatusCode.TooManyRequests -> throw RateLimitException(
                 errorCode = ErrorCode.RATE_LIMIT_EXCEEDED,
                 message = "FRED API Rate Limit 초과 (120 calls/minute)",
-                metadata = mapOf("seriesId" to seriesId, "rateLimit" to "120 calls/minute")
+                metadata = mapOf("seriesId" to seriesId, "rateLimit" to "120 calls/minute"),
             )
             else -> throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "FRED API 요청 실패. status: ${response.status}",
                 statusCode = response.status.value,
-                metadata = mapOf("seriesId" to seriesId)
+                metadata = mapOf("seriesId" to seriesId),
             )
         }
     }
@@ -204,23 +210,28 @@ internal class FredHttpClient(
         seriesId: String,
         startDate: LocalDate?,
         endDate: LocalDate?,
-        frequency: DataFrequency?
+        frequency: DataFrequency?,
     ): List<FredObservation> {
-        logger.debug("Fetching FRED series observations: seriesId={}, startDate={}, endDate={}",
-            seriesId, startDate, endDate)
+        logger.debug(
+            "Fetching FRED series observations: seriesId={}, startDate={}, endDate={}",
+            seriesId,
+            startDate,
+            endDate,
+        )
 
         // Rate Limit 적용
         rateLimiter.acquire()
 
-        val response = httpClient.get(FredApiUrls.SERIES_OBSERVATIONS) {
-            parameter("series_id", seriesId)
-            parameter("api_key", apiKey)
-            parameter("file_type", "json")
+        val response =
+            httpClient.get(FredApiUrls.SERIES_OBSERVATIONS) {
+                parameter("series_id", seriesId)
+                parameter("api_key", apiKey)
+                parameter("file_type", "json")
 
-            startDate?.let { parameter("observation_start", it.format(DateTimeFormatter.ISO_DATE)) }
-            endDate?.let { parameter("observation_end", it.format(DateTimeFormatter.ISO_DATE)) }
-            frequency?.let { parameter("frequency", it.value) }
-        }
+                startDate?.let { parameter("observation_start", it.format(DateTimeFormatter.ISO_DATE)) }
+                endDate?.let { parameter("observation_end", it.format(DateTimeFormatter.ISO_DATE)) }
+                frequency?.let { parameter("frequency", it.value) }
+            }
 
         return when (response.status) {
             HttpStatusCode.OK -> {
@@ -228,36 +239,36 @@ internal class FredHttpClient(
                 fredResponse.observations.map { obs ->
                     FredObservation(
                         date = LocalDate.parse(obs.date, DateTimeFormatter.ISO_DATE),
-                        value = if (obs.value == ".") null else obs.value.toDoubleOrNull()
+                        value = if (obs.value == ".") null else obs.value.toDoubleOrNull(),
                     )
                 }
             }
             HttpStatusCode.BadRequest -> throw ValidationException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "잘못된 파라미터입니다. seriesId: $seriesId",
-                field = "seriesId"
+                field = "seriesId",
             )
             HttpStatusCode.Unauthorized -> throw ApiException(
                 errorCode = ErrorCode.AUTHENTICATION_FAILED,
                 message = "FRED API Key 인증 실패. API Key를 확인하세요.",
-                statusCode = response.status.value
+                statusCode = response.status.value,
             )
             HttpStatusCode.NotFound -> throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "시계열을 찾을 수 없습니다. seriesId: $seriesId",
                 statusCode = response.status.value,
-                metadata = mapOf("seriesId" to seriesId)
+                metadata = mapOf("seriesId" to seriesId),
             )
             HttpStatusCode.TooManyRequests -> throw RateLimitException(
                 errorCode = ErrorCode.RATE_LIMIT_EXCEEDED,
                 message = "FRED API Rate Limit 초과 (120 calls/minute)",
-                metadata = mapOf("seriesId" to seriesId, "rateLimit" to "120 calls/minute")
+                metadata = mapOf("seriesId" to seriesId, "rateLimit" to "120 calls/minute"),
             )
             else -> throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "FRED API 요청 실패. status: ${response.status}",
                 statusCode = response.status.value,
-                metadata = mapOf("seriesId" to seriesId)
+                metadata = mapOf("seriesId" to seriesId),
             )
         }
     }

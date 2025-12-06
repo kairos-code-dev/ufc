@@ -20,5 +20,5 @@ data class UnderlyingQuote(
     val regularMarketChange: Double? = null,
     val regularMarketChangePercent: Double? = null,
     val regularMarketVolume: Long? = null,
-    val regularMarketTime: Long? = null
+    val regularMarketTime: Long? = null,
 )

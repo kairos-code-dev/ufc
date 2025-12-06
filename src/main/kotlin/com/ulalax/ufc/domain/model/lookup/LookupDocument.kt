@@ -30,5 +30,5 @@ data class LookupDocument(
     val sector: String? = null,
     val sectorDisplay: String? = null,
     val score: Double? = null,
-    val isYahooFinance: Boolean? = null
+    val isYahooFinance: Boolean? = null,
 )

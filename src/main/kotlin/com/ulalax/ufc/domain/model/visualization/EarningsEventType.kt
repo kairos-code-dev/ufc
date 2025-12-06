@@ -7,7 +7,9 @@ package com.ulalax.ufc.domain.model.visualization
  *
  * @property code Yahoo API에서 사용하는 이벤트 코드
  */
-enum class EarningsEventType(val code: Int) {
+enum class EarningsEventType(
+    val code: Int,
+) {
     /**
      * 실적 전화 회의 (Earnings Call)
      */
@@ -26,7 +28,8 @@ enum class EarningsEventType(val code: Int) {
     /**
      * 알 수 없는 이벤트 타입
      */
-    UNKNOWN(-1);
+    UNKNOWN(-1),
+    ;
 
     companion object {
         /**
@@ -35,8 +38,6 @@ enum class EarningsEventType(val code: Int) {
          * @param code 이벤트 코드
          * @return 해당하는 EarningsEventType, 찾을 수 없으면 UNKNOWN
          */
-        fun fromCode(code: Int): EarningsEventType {
-            return entries.find { it.code == code } ?: UNKNOWN
-        }
+        fun fromCode(code: Int): EarningsEventType = entries.find { it.code == code } ?: UNKNOWN
     }
 }

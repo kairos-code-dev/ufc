@@ -20,5 +20,5 @@ data class SearchNews(
     val publishTime: Long,
     val type: String?,
     val thumbnail: NewsThumbnail?,
-    val relatedTickers: List<String>
+    val relatedTickers: List<String>,
 )

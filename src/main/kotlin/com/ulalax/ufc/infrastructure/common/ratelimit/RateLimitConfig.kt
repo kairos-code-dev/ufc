@@ -38,7 +38,7 @@ data class RateLimitConfig(
     val capacity: Int = 50,
     val refillRate: Int = 50,
     val enabled: Boolean = true,
-    val waitTimeoutMillis: Long = 60000L
+    val waitTimeoutMillis: Long = 60000L,
 ) {
     init {
         require(capacity > 0) { "capacity은 0보다 커야 합니다. (현재: $capacity)" }
@@ -72,7 +72,7 @@ data class RateLimitConfig(
 data class RateLimitingSettings(
     val yahoo: RateLimitConfig = yahooDefault(),
     val fred: RateLimitConfig = fredDefault(),
-    val businessInsider: RateLimitConfig = businessInsiderDefault()
+    val businessInsider: RateLimitConfig = businessInsiderDefault(),
 ) {
     companion object {
         /**
@@ -93,10 +93,11 @@ data class RateLimitingSettings(
         /**
          * Rate Limiting 비활성화 설정
          */
-        fun unlimited() = RateLimitingSettings(
-            yahoo = RateLimitConfig(enabled = false),
-            fred = RateLimitConfig(enabled = false),
-            businessInsider = RateLimitConfig(enabled = false)
-        )
+        fun unlimited() =
+            RateLimitingSettings(
+                yahoo = RateLimitConfig(enabled = false),
+                fred = RateLimitConfig(enabled = false),
+                businessInsider = RateLimitConfig(enabled = false),
+            )
     }
 }

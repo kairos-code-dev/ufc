@@ -18,7 +18,9 @@ package com.ulalax.ufc.domain.model.quote
  *
  * @property apiValue The module identifier used by the Yahoo Finance API
  */
-enum class QuoteSummaryModule(val apiValue: String) {
+enum class QuoteSummaryModule(
+    val apiValue: String,
+) {
     /**
      * Basic price information
      *
@@ -269,7 +271,8 @@ enum class QuoteSummaryModule(val apiValue: String) {
      *
      * Includes NAV information for ETFs and mutual funds.
      */
-    NET_SHARE_PURCHASE_ACTIVITY("netSharePurchaseActivity");
+    NET_SHARE_PURCHASE_ACTIVITY("netSharePurchaseActivity"),
+    ;
 
     companion object {
         /**
@@ -278,26 +281,22 @@ enum class QuoteSummaryModule(val apiValue: String) {
          * @param apiValue Yahoo Finance API module identifier
          * @return The corresponding QuoteSummaryModule or null
          */
-        fun fromApiValue(apiValue: String): QuoteSummaryModule? {
-            return entries.find { it.apiValue == apiValue }
-        }
+        fun fromApiValue(apiValue: String): QuoteSummaryModule? = entries.find { it.apiValue == apiValue }
 
         /**
          * Returns a Set of all modules.
          *
          * @return A Set of all QuoteSummaryModules
          */
-        fun allModules(): Set<QuoteSummaryModule> {
-            return entries.toSet()
-        }
+        fun allModules(): Set<QuoteSummaryModule> = entries.toSet()
 
         /**
          * Returns a Set of modules commonly used for stocks (EQUITY).
          *
          * @return A Set of key modules for stocks
          */
-        fun stockModules(): Set<QuoteSummaryModule> {
-            return setOf(
+        fun stockModules(): Set<QuoteSummaryModule> =
+            setOf(
                 PRICE,
                 SUMMARY_DETAIL,
                 ASSET_PROFILE,
@@ -308,25 +307,23 @@ enum class QuoteSummaryModule(val apiValue: String) {
                 EARNINGS_HISTORY,
                 RECOMMENDATION_TREND,
                 MAJOR_HOLDERS,
-                INSIDER_TRANSACTIONS
+                INSIDER_TRANSACTIONS,
             )
-        }
 
         /**
          * Returns a Set of modules commonly used for ETFs and funds.
          *
          * @return A Set of key modules for funds
          */
-        fun fundModules(): Set<QuoteSummaryModule> {
-            return setOf(
+        fun fundModules(): Set<QuoteSummaryModule> =
+            setOf(
                 PRICE,
                 SUMMARY_DETAIL,
                 QUOTE_TYPE,
                 TOP_HOLDINGS,
                 FUND_PROFILE,
-                FUND_PERFORMANCE
+                FUND_PERFORMANCE,
             )
-        }
     }
 }
 
@@ -342,6 +339,4 @@ fun QuoteSummaryModule.toApiValue(): String = apiValue
  *
  * @return Comma-separated module string
  */
-fun Set<QuoteSummaryModule>.toApiValue(): String {
-    return joinToString(",") { it.apiValue }
-}
+fun Set<QuoteSummaryModule>.toApiValue(): String = joinToString(",") { it.apiValue }

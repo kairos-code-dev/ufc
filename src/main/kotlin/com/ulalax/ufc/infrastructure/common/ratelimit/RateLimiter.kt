@@ -76,7 +76,7 @@ data class RateLimiterStatus(
     val capacity: Int,
     val refillRate: Int,
     val isEnabled: Boolean,
-    val estimatedWaitTimeMs: Long
+    val estimatedWaitTimeMs: Long,
 ) {
     /**
      * 사용률을 백분율로 반환합니다.
@@ -84,11 +84,12 @@ data class RateLimiterStatus(
      * @return 사용률 (0.0 ~ 100.0)
      */
     val utilizationPercent: Double
-        get() = if (capacity > 0) {
-            ((capacity - availableTokens) * 100.0) / capacity
-        } else {
-            0.0
-        }
+        get() =
+            if (capacity > 0) {
+                ((capacity - availableTokens) * 100.0) / capacity
+            } else {
+                0.0
+            }
 
     /**
      * 토큰이 사용 가능한지 여부를 반환합니다.

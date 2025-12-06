@@ -1,10 +1,10 @@
 package com.ulalax.ufc.infrastructure.fred
 
-import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
-import com.ulalax.ufc.infrastructure.fred.internal.FredHttpClient
 import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.domain.model.series.FredSeries
 import com.ulalax.ufc.domain.model.series.FredSeriesInfo
+import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
+import com.ulalax.ufc.infrastructure.fred.internal.FredHttpClient
 import java.time.LocalDate
 
 /**
@@ -51,9 +51,8 @@ import java.time.LocalDate
  */
 class FredClient private constructor(
     private val httpClient: FredHttpClient,
-    private val config: FredClientConfig
+    private val config: FredClientConfig,
 ) : AutoCloseable {
-
     /**
      * Fetches FRED time series data.
      *
@@ -72,10 +71,8 @@ class FredClient private constructor(
         seriesId: String,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null,
-        frequency: DataFrequency? = null
-    ): FredSeries {
-        return httpClient.fetchSeries(seriesId, startDate, endDate, frequency)
-    }
+        frequency: DataFrequency? = null,
+    ): FredSeries = httpClient.fetchSeries(seriesId, startDate, endDate, frequency)
 
     /**
      * Fetches FRED series metadata only.
@@ -89,9 +86,7 @@ class FredClient private constructor(
      * @throws NoSuchElementException if the series cannot be found
      * @throws IllegalStateException if API authentication fails or rate limit is exceeded
      */
-    suspend fun seriesInfo(seriesId: String): FredSeriesInfo {
-        return httpClient.fetchSeriesInfo(seriesId)
-    }
+    suspend fun seriesInfo(seriesId: String): FredSeriesInfo = httpClient.fetchSeriesInfo(seriesId)
 
     /**
      * Closes the client and releases resources.
@@ -113,9 +108,7 @@ class FredClient private constructor(
          * @return A new FredClient instance
          * @throws IllegalArgumentException if apiKey is blank
          */
-        fun create(apiKey: String): FredClient {
-            return create(apiKey, FredClientConfig())
-        }
+        fun create(apiKey: String): FredClient = create(apiKey, FredClientConfig())
 
         /**
          * Creates a FredClient instance with custom configuration.
@@ -128,7 +121,10 @@ class FredClient private constructor(
          * @return A new FredClient instance
          * @throws IllegalArgumentException if apiKey is blank
          */
-        fun create(apiKey: String, config: FredClientConfig): FredClient {
+        fun create(
+            apiKey: String,
+            config: FredClientConfig,
+        ): FredClient {
             require(apiKey.isNotBlank()) { "FRED API Key는 빈 문자열이 될 수 없습니다" }
 
             // GlobalRateLimiters에서 공유 Rate Limiter 획득

@@ -4,44 +4,37 @@ import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.domain.exception.DataParsingException
 import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.ValidationException
-import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
-import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
-import com.ulalax.ufc.infrastructure.yahoo.internal.YahooApiUrls
-import com.ulalax.ufc.infrastructure.yahoo.internal.auth.YahooAuthenticator
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.ChartDataResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.FundamentalsTimeseriesResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteSummaryResponse
 import com.ulalax.ufc.domain.model.chart.*
-import com.ulalax.ufc.domain.model.fundamentals.*
-import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.earnings.*
+import com.ulalax.ufc.domain.model.fundamentals.*
 import com.ulalax.ufc.domain.model.lookup.*
 import com.ulalax.ufc.domain.model.market.*
 import com.ulalax.ufc.domain.model.options.*
+import com.ulalax.ufc.domain.model.quote.*
 import com.ulalax.ufc.domain.model.realtime.*
 import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.domain.model.search.*
 import com.ulalax.ufc.domain.model.visualization.*
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.VisualizationResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationRequest
-import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationQuery
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.SearchApiResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerResponse
+import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
+import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
+import com.ulalax.ufc.infrastructure.yahoo.internal.YahooApiUrls
+import com.ulalax.ufc.infrastructure.yahoo.internal.auth.YahooAuthenticator
 import com.ulalax.ufc.infrastructure.yahoo.internal.request.ScreenerRequest
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteApiResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
-import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketTimeResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationQuery
+import com.ulalax.ufc.infrastructure.yahoo.internal.request.VisualizationRequest
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.ChartDataResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsCalendarHtmlResponse
 import com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTableRow
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.FundamentalsTimeseriesResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketSummaryResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.MarketTimeResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteApiResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteSummaryResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.SearchApiResponse
+import com.ulalax.ufc.infrastructure.yahoo.internal.response.VisualizationResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -52,17 +45,24 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
-import io.ktor.client.request.post
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.HttpHeaders
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.*
 import org.slf4j.LoggerFactory
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  * Yahoo Finance API Client
@@ -84,17 +84,17 @@ import org.slf4j.LoggerFactory
 class YahooClient internal constructor(
     private val httpClient: HttpClient,
     private val authenticator: YahooAuthenticator,
-    private val rateLimiter: RateLimiter
+    private val rateLimiter: RateLimiter,
 ) : AutoCloseable {
-
     companion object {
         private val logger = LoggerFactory.getLogger(YahooClient::class.java)
 
-        private val json = Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            coerceInputValues = true
-        }
+        private val json =
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+                coerceInputValues = true
+            }
 
         /**
          * Creates a new YahooClient instance with the specified configuration.
@@ -106,35 +106,39 @@ class YahooClient internal constructor(
             // GlobalRateLimiters에서 공유 Rate Limiter 획득
             val rateLimiter = GlobalRateLimiters.getYahooLimiter(config.rateLimitConfig)
 
-            val httpClient = HttpClient(CIO) {
-                // 기본 헤더 설정 (Yahoo Finance API 요구사항)
-                defaultRequest {
-                    header(HttpHeaders.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-                    header(HttpHeaders.Accept, "application/json, text/plain, */*")
-                    header(HttpHeaders.AcceptLanguage, "en-US,en;q=0.9")
-                }
+            val httpClient =
+                HttpClient(CIO) {
+                    // 기본 헤더 설정 (Yahoo Finance API 요구사항)
+                    defaultRequest {
+                        header(
+                            HttpHeaders.UserAgent,
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                        )
+                        header(HttpHeaders.Accept, "application/json, text/plain, */*")
+                        header(HttpHeaders.AcceptLanguage, "en-US,en;q=0.9")
+                    }
 
-                // 쿠키 자동 관리
-                install(HttpCookies)
+                    // 쿠키 자동 관리
+                    install(HttpCookies)
 
-                // JSON 직렬화
-                install(ContentNegotiation) {
-                    json(json)
-                }
+                    // JSON 직렬화
+                    install(ContentNegotiation) {
+                        json(json)
+                    }
 
-                // 타임아웃 설정
-                install(HttpTimeout) {
-                    connectTimeoutMillis = config.connectTimeoutMs
-                    requestTimeoutMillis = config.requestTimeoutMs
-                }
+                    // 타임아웃 설정
+                    install(HttpTimeout) {
+                        connectTimeoutMillis = config.connectTimeoutMs
+                        requestTimeoutMillis = config.requestTimeoutMs
+                    }
 
-                // 로깅 설정 (개발 시 유용)
-                if (config.enableLogging) {
-                    install(Logging) {
-                        level = LogLevel.INFO
+                    // 로깅 설정 (개발 시 유용)
+                    if (config.enableLogging) {
+                        install(Logging) {
+                            level = LogLevel.INFO
+                        }
                     }
                 }
-            }
 
             val authenticator = YahooAuthenticator(httpClient)
 
@@ -152,10 +156,8 @@ class YahooClient internal constructor(
      */
     suspend fun quoteSummary(
         symbol: String,
-        vararg modules: QuoteSummaryModule
-    ): QuoteSummaryModuleResult {
-        return quoteSummary(symbol, modules.toSet())
-    }
+        vararg modules: QuoteSummaryModule,
+    ): QuoteSummaryModuleResult = quoteSummary(symbol, modules.toSet())
 
     /**
      * Fetches quote summary data for a given symbol from the Yahoo Finance QuoteSummary API.
@@ -167,7 +169,7 @@ class YahooClient internal constructor(
      */
     suspend fun quoteSummary(
         symbol: String,
-        modules: Set<QuoteSummaryModule>
+        modules: Set<QuoteSummaryModule>,
     ): QuoteSummaryModuleResult {
         logger.debug("Calling Yahoo Finance QuoteSummary API: symbol={}, modules={}", symbol, modules)
 
@@ -178,10 +180,11 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get("${YahooApiUrls.QUOTE_SUMMARY}/$symbol") {
-            parameter("modules", modules.joinToString(",") { it.apiValue })
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get("${YahooApiUrls.QUOTE_SUMMARY}/$symbol") {
+                parameter("modules", modules.joinToString(",") { it.apiValue })
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -189,7 +192,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "QuoteSummary API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("symbol" to symbol, "modules" to modules.joinToString(",") { it.apiValue })
+                metadata = mapOf("symbol" to symbol, "modules" to modules.joinToString(",") { it.apiValue }),
             )
         }
 
@@ -201,8 +204,14 @@ class YahooClient internal constructor(
         if (quoteSummaryResponse.quoteSummary.error != null) {
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
-                message = "QuoteSummary API 에러: ${quoteSummaryResponse.quoteSummary.error?.description ?: "Unknown error"}",
-                metadata = mapOf("symbol" to symbol, "errorCode" to (quoteSummaryResponse.quoteSummary.error?.code ?: "UNKNOWN"))
+                message =
+                    "QuoteSummary API 에러: " +
+                        "${quoteSummaryResponse.quoteSummary.error?.description ?: "Unknown error"}",
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (quoteSummaryResponse.quoteSummary.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -211,14 +220,14 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "QuoteSummary 데이터를 찾을 수 없습니다: $symbol",
-                metadata = mapOf("symbol" to symbol)
+                metadata = mapOf("symbol" to symbol),
             )
         }
 
         // QuoteSummaryResult를 QuoteSummaryModuleResult로 변환
         return convertToQuoteSummaryModuleResult(
             quoteSummaryResponse.quoteSummary.result.first(),
-            modules
+            modules,
         )
     }
 
@@ -231,7 +240,7 @@ class YahooClient internal constructor(
      */
     private fun convertToQuoteSummaryModuleResult(
         result: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteSummaryResult,
-        requestedModules: Set<QuoteSummaryModule>
+        requestedModules: Set<QuoteSummaryModule>,
     ): QuoteSummaryModuleResult {
         val moduleMap = mutableMapOf<QuoteSummaryModule, Any?>()
 
@@ -241,29 +250,34 @@ class YahooClient internal constructor(
         result.assetProfile?.let { moduleMap[QuoteSummaryModule.ASSET_PROFILE] = convertAssetProfile(it) }
         result.summaryProfile?.let { moduleMap[QuoteSummaryModule.SUMMARY_PROFILE] = convertSummaryProfile(it) }
         result.quoteType?.let { moduleMap[QuoteSummaryModule.QUOTE_TYPE] = convertQuoteType(it) }
-        result.defaultKeyStatistics?.let { moduleMap[QuoteSummaryModule.DEFAULT_KEY_STATISTICS] = convertDefaultKeyStatistics(it) }
+        result.defaultKeyStatistics?.let {
+            moduleMap[QuoteSummaryModule.DEFAULT_KEY_STATISTICS] = convertDefaultKeyStatistics(it)
+        }
         result.financialData?.let { moduleMap[QuoteSummaryModule.FINANCIAL_DATA] = convertFinancialData(it) }
         result.earningsTrend?.let { moduleMap[QuoteSummaryModule.EARNINGS_TREND] = convertEarningsTrend(it) }
         result.earningsHistory?.let { moduleMap[QuoteSummaryModule.EARNINGS_HISTORY] = convertEarningsHistory(it) }
         result.earningsDates?.let { moduleMap[QuoteSummaryModule.EARNINGS_DATES] = convertEarningsDates(it) }
         result.majorHolders?.let { moduleMap[QuoteSummaryModule.MAJOR_HOLDERS] = convertMajorHolders(it) }
-        result.insiderTransactions?.let { moduleMap[QuoteSummaryModule.INSIDER_TRANSACTIONS] = convertInsiderTransactions(it) }
+        result.insiderTransactions?.let {
+            moduleMap[QuoteSummaryModule.INSIDER_TRANSACTIONS] =
+                convertInsiderTransactions(it)
+        }
         result.topHoldings?.let { moduleMap[QuoteSummaryModule.TOP_HOLDINGS] = convertTopHoldings(it) }
         result.fundProfile?.let { moduleMap[QuoteSummaryModule.FUND_PROFILE] = convertFundProfile(it) }
 
         return QuoteSummaryModuleResult(
             requestedModules = requestedModules,
-            modules = moduleMap
+            modules = moduleMap,
         )
     }
 
     // 변환 함수들 - internal response 타입을 public domain 타입으로 변환
-    private fun convertRawFormatted(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.RawFormatted): RawFormatted {
-        return RawFormatted(raw = internal.raw, fmt = internal.fmt)
-    }
+    private fun convertRawFormatted(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.RawFormatted,
+    ): RawFormatted = RawFormatted(raw = internal.raw, fmt = internal.fmt)
 
-    private fun convertPrice(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Price): Price {
-        return Price(
+    private fun convertPrice(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Price): Price =
+        Price(
             maxAge = internal.maxAge,
             regularMarketPrice = internal.regularMarketPrice?.let { convertRawFormatted(it) },
             currency = internal.currency,
@@ -279,12 +293,13 @@ class YahooClient internal constructor(
             regularMarketDayRange = internal.regularMarketDayRange,
             regularMarketPreviousClose = internal.regularMarketPreviousClose?.let { convertRawFormatted(it) },
             regularMarketChange = internal.regularMarketChange?.let { convertRawFormatted(it) },
-            regularMarketChangePercent = internal.regularMarketChangePercent?.let { convertRawFormatted(it) }
+            regularMarketChangePercent = internal.regularMarketChangePercent?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertSummaryDetail(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SummaryDetail): SummaryDetail {
-        return SummaryDetail(
+    private fun convertSummaryDetail(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SummaryDetail,
+    ): SummaryDetail =
+        SummaryDetail(
             maxAge = internal.maxAge,
             dividendRate = internal.dividendRate?.let { convertRawFormatted(it) },
             dividendYield = internal.dividendYield?.let { convertRawFormatted(it) },
@@ -304,12 +319,13 @@ class YahooClient internal constructor(
             forwardPE = internal.forwardPE?.let { convertRawFormatted(it) },
             priceToBook = internal.priceToBook?.let { convertRawFormatted(it) },
             fiftyTwoWeekHigh = internal.fiftyTwoWeekHigh?.let { convertRawFormatted(it) },
-            fiftyTwoWeekLow = internal.fiftyTwoWeekLow?.let { convertRawFormatted(it) }
+            fiftyTwoWeekLow = internal.fiftyTwoWeekLow?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertFinancialData(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FinancialData): FinancialData {
-        return FinancialData(
+    private fun convertFinancialData(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FinancialData,
+    ): FinancialData =
+        FinancialData(
             maxAge = internal.maxAge,
             operatingCashflow = internal.operatingCashflow?.let { convertRawFormatted(it) },
             freeCashflow = internal.freeCashflow?.let { convertRawFormatted(it) },
@@ -327,83 +343,88 @@ class YahooClient internal constructor(
             targetPriceLow = internal.targetPriceLow?.let { convertRawFormatted(it) },
             targetPriceMean = internal.targetPriceMean?.let { convertRawFormatted(it) },
             recommendationKey = internal.recommendationKey,
-            numberOfAnalysts = internal.numberOfAnalysts
+            numberOfAnalysts = internal.numberOfAnalysts,
         )
-    }
 
-    private fun convertEarningsTrendData(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTrendData): EarningsTrendData {
-        return EarningsTrendData(
+    private fun convertEarningsTrendData(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTrendData,
+    ): EarningsTrendData =
+        EarningsTrendData(
             maxAge = internal.maxAge,
             period = internal.period,
             endDate = internal.endDate,
             epsEstimate = internal.epsEstimate?.let { convertRawFormatted(it) },
             epsActual = internal.epsActual?.let { convertRawFormatted(it) },
             epsDifference = internal.epsDifference?.let { convertRawFormatted(it) },
-            surprisePercent = internal.surprisePercent?.let { convertRawFormatted(it) }
+            surprisePercent = internal.surprisePercent?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertEarningsTrend(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTrend): EarningsTrend {
-        return EarningsTrend(
+    private fun convertEarningsTrend(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsTrend,
+    ): EarningsTrend =
+        EarningsTrend(
             maxAge = internal.maxAge,
             trend = internal.trend?.map { convertEarningsTrendData(it) },
-            earningsHistory = internal.earningsHistory?.map { convertEarningsTrendData(it) }
+            earningsHistory = internal.earningsHistory?.map { convertEarningsTrendData(it) },
         )
-    }
 
-    private fun convertEarningsHistory(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsHistory): EarningsHistory {
-        return EarningsHistory(
+    private fun convertEarningsHistory(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsHistory,
+    ): EarningsHistory =
+        EarningsHistory(
             maxAge = internal.maxAge,
-            history = internal.history?.map { convertEarningsTrendData(it) }
+            history = internal.history?.map { convertEarningsTrendData(it) },
         )
-    }
 
-    private fun convertEarningsDates(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsDates): EarningsDates {
-        return EarningsDates(
+    private fun convertEarningsDates(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EarningsDates,
+    ): EarningsDates =
+        EarningsDates(
             maxAge = internal.maxAge,
             earningsDate = internal.earningsDate,
             earningsAverage = internal.earningsAverage?.let { convertRawFormatted(it) },
             earningsLow = internal.earningsLow?.let { convertRawFormatted(it) },
-            earningsHigh = internal.earningsHigh?.let { convertRawFormatted(it) }
+            earningsHigh = internal.earningsHigh?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertHolder(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Holder): Holder {
-        return Holder(
+    private fun convertHolder(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Holder): Holder =
+        Holder(
             maxAge = internal.maxAge,
             holder = internal.holder,
-            value = internal.value?.let { convertRawFormatted(it) }
+            value = internal.value?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertMajorHolders(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.MajorHolders): MajorHolders {
-        return MajorHolders(
+    private fun convertMajorHolders(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.MajorHolders,
+    ): MajorHolders =
+        MajorHolders(
             maxAge = internal.maxAge,
-            holders = internal.holders?.map { convertHolder(it) }
+            holders = internal.holders?.map { convertHolder(it) },
         )
-    }
 
-    private fun convertInsiderTransaction(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.InsiderTransaction): InsiderTransaction {
-        return InsiderTransaction(
+    private fun convertInsiderTransaction(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.InsiderTransaction,
+    ): InsiderTransaction =
+        InsiderTransaction(
             maxAge = internal.maxAge,
             filerName = internal.filerName,
             relationship = internal.relationship,
             transactionDate = internal.transactionDate?.let { convertRawFormatted(it) },
             transactionShares = internal.transactionShares?.let { convertRawFormatted(it) },
             transactionPrice = internal.transactionPrice?.let { convertRawFormatted(it) },
-            sharesOwned = internal.sharesOwned?.let { convertRawFormatted(it) }
+            sharesOwned = internal.sharesOwned?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertInsiderTransactions(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.InsiderTransactions): InsiderTransactions {
-        return InsiderTransactions(
+    private fun convertInsiderTransactions(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.InsiderTransactions,
+    ): InsiderTransactions =
+        InsiderTransactions(
             maxAge = internal.maxAge,
-            transactions = internal.transactions?.map { convertInsiderTransaction(it) }
+            transactions = internal.transactions?.map { convertInsiderTransaction(it) },
         )
-    }
 
-    private fun convertQuoteType(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteType): QuoteType {
-        return QuoteType(
+    private fun convertQuoteType(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteType): QuoteType =
+        QuoteType(
             exchange = internal.exchange,
             quoteType = internal.quoteType,
             symbol = internal.symbol,
@@ -411,12 +432,13 @@ class YahooClient internal constructor(
             longName = internal.longName,
             market = internal.market,
             sector = internal.sector,
-            industry = internal.industry
+            industry = internal.industry,
         )
-    }
 
-    private fun convertAssetProfile(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.AssetProfile): AssetProfile {
-        return AssetProfile(
+    private fun convertAssetProfile(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.AssetProfile,
+    ): AssetProfile =
+        AssetProfile(
             sector = internal.sector,
             industry = internal.industry,
             website = internal.website,
@@ -427,12 +449,13 @@ class YahooClient internal constructor(
             phone = internal.phone,
             state = internal.state,
             zip = internal.zip,
-            fullTimeEmployees = internal.fullTimeEmployees
+            fullTimeEmployees = internal.fullTimeEmployees,
         )
-    }
 
-    private fun convertSummaryProfile(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SummaryProfile): SummaryProfile {
-        return SummaryProfile(
+    private fun convertSummaryProfile(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SummaryProfile,
+    ): SummaryProfile =
+        SummaryProfile(
             sector = internal.sector,
             industry = internal.industry,
             website = internal.website,
@@ -441,78 +464,83 @@ class YahooClient internal constructor(
             state = internal.state,
             zip = internal.zip,
             country = internal.country,
-            phone = internal.phone
+            phone = internal.phone,
         )
-    }
 
-    private fun convertDefaultKeyStatistics(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.DefaultKeyStatistics): DefaultKeyStatistics {
-        return DefaultKeyStatistics(
+    private fun convertDefaultKeyStatistics(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.DefaultKeyStatistics,
+    ): DefaultKeyStatistics =
+        DefaultKeyStatistics(
             sharesOutstanding = internal.sharesOutstanding?.let { convertRawFormatted(it) },
             isin = internal.isin,
             cusip = internal.cusip,
-            maxAge = internal.maxAge
+            maxAge = internal.maxAge,
         )
-    }
 
-    private fun convertHolding(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Holding): Holding {
-        return Holding(
+    private fun convertHolding(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.Holding): Holding =
+        Holding(
             symbol = internal.symbol,
             name = internal.name,
-            holdingPercent = internal.holdingPercent?.let { convertRawFormatted(it) }
+            holdingPercent = internal.holdingPercent?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertEquityHoldings(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EquityHoldings): EquityHoldings {
-        return EquityHoldings(
+    private fun convertEquityHoldings(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.EquityHoldings,
+    ): EquityHoldings =
+        EquityHoldings(
             priceToEarnings = internal.priceToEarnings?.let { convertRawFormatted(it) },
             priceToBook = internal.priceToBook?.let { convertRawFormatted(it) },
             priceToSales = internal.priceToSales?.let { convertRawFormatted(it) },
             priceToCashflow = internal.priceToCashflow?.let { convertRawFormatted(it) },
             medianMarketCap = internal.medianMarketCap?.let { convertRawFormatted(it) },
-            threeYearEarningsGrowth = internal.threeYearEarningsGrowth?.let { convertRawFormatted(it) }
+            threeYearEarningsGrowth = internal.threeYearEarningsGrowth?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertBondHoldings(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.BondHoldings): BondHoldings {
-        return BondHoldings(
+    private fun convertBondHoldings(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.BondHoldings,
+    ): BondHoldings =
+        BondHoldings(
             duration = internal.duration?.let { convertRawFormatted(it) },
             maturity = internal.maturity?.let { convertRawFormatted(it) },
-            creditQuality = internal.creditQuality?.let { convertRawFormatted(it) }
+            creditQuality = internal.creditQuality?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertSectorWeighting(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SectorWeighting): SectorWeighting {
-        return SectorWeighting(
+    private fun convertSectorWeighting(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.SectorWeighting,
+    ): SectorWeighting =
+        SectorWeighting(
             sector = internal.sector,
-            weight = internal.weight?.let { convertRawFormatted(it) }
+            weight = internal.weight?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertTopHoldings(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.TopHoldings): TopHoldings {
-        return TopHoldings(
+    private fun convertTopHoldings(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.TopHoldings,
+    ): TopHoldings =
+        TopHoldings(
             holdings = internal.holdings?.map { convertHolding(it) },
             equityHoldings = internal.equityHoldings?.let { convertEquityHoldings(it) },
             bondHoldings = internal.bondHoldings?.let { convertBondHoldings(it) },
-            sectorWeightings = internal.sectorWeightings?.map { convertSectorWeighting(it) }
+            sectorWeightings = internal.sectorWeightings?.map { convertSectorWeighting(it) },
         )
-    }
 
-    private fun convertFeesExpenses(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FeesExpenses): FeesExpenses {
-        return FeesExpenses(
+    private fun convertFeesExpenses(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FeesExpenses,
+    ): FeesExpenses =
+        FeesExpenses(
             annualReportExpenseRatio = internal.annualReportExpenseRatio?.let { convertRawFormatted(it) },
             annualHoldingsTurnover = internal.annualHoldingsTurnover?.let { convertRawFormatted(it) },
-            totalNetAssets = internal.totalNetAssets?.let { convertRawFormatted(it) }
+            totalNetAssets = internal.totalNetAssets?.let { convertRawFormatted(it) },
         )
-    }
 
-    private fun convertFundProfile(internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FundProfile): FundProfile {
-        return FundProfile(
+    private fun convertFundProfile(
+        internal: com.ulalax.ufc.infrastructure.yahoo.internal.response.FundProfile,
+    ): FundProfile =
+        FundProfile(
             categoryName = internal.categoryName,
             family = internal.family,
             legalType = internal.legalType,
-            feesExpensesInvestment = internal.feesExpensesInvestment?.let { convertFeesExpenses(it) }
+            feesExpensesInvestment = internal.feesExpensesInvestment?.let { convertFeesExpenses(it) },
         )
-    }
 
     /**
      * Fetches historical chart data for a given symbol from the Yahoo Finance Chart API.
@@ -528,11 +556,14 @@ class YahooClient internal constructor(
         symbol: String,
         interval: Interval,
         period: Period,
-        vararg events: ChartEventType = emptyArray()
+        vararg events: ChartEventType = emptyArray(),
     ): ChartData {
         logger.debug(
             "Calling Yahoo Finance Chart API: symbol={}, interval={}, period={}, events={}",
-            symbol, interval.value, period.value, events.toList()
+            symbol,
+            interval.value,
+            period.value,
+            events.toList(),
         )
 
         // Rate Limit 적용
@@ -542,14 +573,15 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get("${YahooApiUrls.CHART}/$symbol") {
-            parameter("interval", interval.value)
-            parameter("range", period.value)
-            parameter("crumb", crumb)
-            if (events.isNotEmpty()) {
-                parameter("events", events.joinToString(",") { it.apiValue })
+        val response =
+            httpClient.get("${YahooApiUrls.CHART}/$symbol") {
+                parameter("interval", interval.value)
+                parameter("range", period.value)
+                parameter("crumb", crumb)
+                if (events.isNotEmpty()) {
+                    parameter("events", events.joinToString(",") { it.apiValue })
+                }
             }
-        }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -557,11 +589,12 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Chart API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "interval" to interval.value,
-                    "period" to period.value
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "interval" to interval.value,
+                        "period" to period.value,
+                    ),
             )
         }
 
@@ -574,10 +607,11 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Chart API 에러: ${chartResponse.chart.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "errorCode" to (chartResponse.chart.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (chartResponse.chart.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -586,7 +620,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "차트 데이터를 찾을 수 없습니다: $symbol",
-                metadata = mapOf("symbol" to symbol)
+                metadata = mapOf("symbol" to symbol),
             )
         }
 
@@ -604,82 +638,88 @@ class YahooClient internal constructor(
      */
     private fun convertToChartData(
         chartResult: com.ulalax.ufc.infrastructure.yahoo.internal.response.ChartResult,
-        requestedEvents: Set<ChartEventType>
+        requestedEvents: Set<ChartEventType>,
     ): ChartData {
         // 메타데이터 변환
-        val meta = chartResult.meta?.let {
-            ChartMeta(
-                symbol = it.symbol,
-                currency = it.currency,
-                currencySymbol = it.currencySymbol,
-                regularMarketPrice = it.regularMarketPrice,
-                exchange = it.exchange,
-                regularMarketDayHigh = it.regularMarketDayHigh,
-                regularMarketDayLow = it.regularMarketDayLow,
-                dataGranularity = it.dataGranularity,
-                range = it.range,
-                fiftyTwoWeekHigh = it.fiftyTwoWeekHigh,
-                fiftyTwoWeekLow = it.fiftyTwoWeekLow,
-                sharesOutstanding = it.sharesOutstanding,
-                marketCap = it.marketCap,
-                regularMarketVolume = it.regularMarketVolume,
-                validRanges = it.validRanges
+        val meta =
+            chartResult.meta?.let {
+                ChartMeta(
+                    symbol = it.symbol,
+                    currency = it.currency,
+                    currencySymbol = it.currencySymbol,
+                    regularMarketPrice = it.regularMarketPrice,
+                    exchange = it.exchange,
+                    regularMarketDayHigh = it.regularMarketDayHigh,
+                    regularMarketDayLow = it.regularMarketDayLow,
+                    dataGranularity = it.dataGranularity,
+                    range = it.range,
+                    fiftyTwoWeekHigh = it.fiftyTwoWeekHigh,
+                    fiftyTwoWeekLow = it.fiftyTwoWeekLow,
+                    sharesOutstanding = it.sharesOutstanding,
+                    marketCap = it.marketCap,
+                    regularMarketVolume = it.regularMarketVolume,
+                    validRanges = it.validRanges,
+                )
+            } ?: throw DataParsingException(
+                errorCode = ErrorCode.DATA_PARSING_ERROR,
+                message = "차트 메타데이터가 없습니다",
             )
-        } ?: throw DataParsingException(
-            errorCode = ErrorCode.DATA_PARSING_ERROR,
-            message = "차트 메타데이터가 없습니다"
-        )
 
         // OHLCV 데이터 변환
         val timestamps = chartResult.timestamp ?: emptyList()
         val quote = chartResult.indicators?.quote?.firstOrNull()
         val adjClose = chartResult.indicators?.adjclose?.firstOrNull()
 
-        val prices = timestamps.indices.mapNotNull { i ->
-            val timestamp = timestamps.getOrNull(i) ?: return@mapNotNull null
-            val open = quote?.open?.getOrNull(i) ?: return@mapNotNull null
-            val high = quote?.high?.getOrNull(i) ?: return@mapNotNull null
-            val low = quote?.low?.getOrNull(i) ?: return@mapNotNull null
-            val close = quote?.close?.getOrNull(i) ?: return@mapNotNull null
-            val volume = quote?.volume?.getOrNull(i) ?: return@mapNotNull null
-            val adj = adjClose?.adjclose?.getOrNull(i)
+        val prices =
+            timestamps.indices.mapNotNull { i ->
+                val timestamp = timestamps.getOrNull(i) ?: return@mapNotNull null
+                val open = quote?.open?.getOrNull(i) ?: return@mapNotNull null
+                val high = quote?.high?.getOrNull(i) ?: return@mapNotNull null
+                val low = quote?.low?.getOrNull(i) ?: return@mapNotNull null
+                val close = quote?.close?.getOrNull(i) ?: return@mapNotNull null
+                val volume = quote?.volume?.getOrNull(i) ?: return@mapNotNull null
+                val adj = adjClose?.adjclose?.getOrNull(i)
 
-            OHLCV(
-                timestamp = timestamp,
-                open = open,
-                high = high,
-                low = low,
-                close = close,
-                adjClose = adj,
-                volume = volume
-            )
-        }
+                OHLCV(
+                    timestamp = timestamp,
+                    open = open,
+                    high = high,
+                    low = low,
+                    close = close,
+                    adjClose = adj,
+                    volume = volume,
+                )
+            }
 
         // 이벤트 데이터 변환
-        val events = chartResult.events?.let { eventsResponse ->
-            ChartEvents(
-                dividends = eventsResponse.dividends?.mapValues { (_, v) ->
-                    DividendEvent(amount = v.amount, date = v.date)
-                },
-                splits = eventsResponse.splits?.mapValues { (_, v) ->
-                    SplitEvent(
-                        date = v.date,
-                        numerator = v.numerator,
-                        denominator = v.denominator,
-                        splitRatio = v.splitRatio
-                    )
-                },
-                capitalGains = eventsResponse.capitalGains?.mapValues { (_, v) ->
-                    CapitalGainEvent(amount = v.amount, date = v.date)
-                }
-            )
-        }
+        val events =
+            chartResult.events?.let { eventsResponse ->
+                ChartEvents(
+                    dividends =
+                        eventsResponse.dividends?.mapValues { (_, v) ->
+                            DividendEvent(amount = v.amount, date = v.date)
+                        },
+                    splits =
+                        eventsResponse.splits?.mapValues { (_, v) ->
+                            SplitEvent(
+                                date = v.date,
+                                numerator = v.numerator,
+                                denominator = v.denominator,
+                                splitRatio = v.splitRatio,
+                            )
+                        },
+                    capitalGains =
+                        eventsResponse.capitalGains?.mapValues { (_, v) ->
+                            CapitalGainEvent(amount = v.amount, date = v.date)
+                        },
+                )
+            }
 
         return ChartData(
             requestedEvents = requestedEvents,
             meta = meta,
             prices = prices,
-            events = events
+            events = events,
         )
     }
 
@@ -699,7 +739,7 @@ class YahooClient internal constructor(
     suspend fun earningsCalendar(
         symbol: String,
         limit: Int = 12,
-        offset: Int = 0
+        offset: Int = 0,
     ): EarningsCalendar {
         // 파라미터 검증
         require(symbol.isNotBlank()) { "Symbol must not be blank" }
@@ -712,18 +752,20 @@ class YahooClient internal constructor(
         rateLimiter.acquire()
 
         // Yahoo Finance의 size 파라미터 계산
-        val size = when {
-            limit <= 25 -> 25
-            limit <= 50 -> 50
-            else -> 100
-        }
+        val size =
+            when {
+                limit <= 25 -> 25
+                limit <= 50 -> 50
+                else -> 100
+            }
 
         // HTML 요청
-        val response = httpClient.get(YahooApiUrls.EARNINGS_CALENDAR) {
-            parameter("symbol", symbol)
-            parameter("offset", offset)
-            parameter("size", size)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.EARNINGS_CALENDAR) {
+                parameter("symbol", symbol)
+                parameter("offset", offset)
+                parameter("size", size)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -731,7 +773,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Earnings Calendar API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("symbol" to symbol, "offset" to offset, "size" to size)
+                metadata = mapOf("symbol" to symbol, "offset" to offset, "size" to size),
             )
         }
 
@@ -740,24 +782,34 @@ class YahooClient internal constructor(
         val htmlResponse = parseEarningsCalendarHtml(html)
 
         // 데이터 변환 (limit 적용)
-        val events = htmlResponse.rows
-            .take(limit)
-            .mapNotNull { row -> convertToEarningsEvent(row) }
+        val events =
+            htmlResponse.rows
+                .take(limit)
+                .mapNotNull { row -> convertToEarningsEvent(row) }
 
         // 50% 이상 파싱 실패 시 예외 발생
-        val successRate = if (htmlResponse.rows.isEmpty()) 1.0
-                         else events.size.toDouble() / htmlResponse.rows.take(limit).size.toDouble()
+        val successRate =
+            if (htmlResponse.rows.isEmpty()) {
+                1.0
+            } else {
+                events.size.toDouble() /
+                    htmlResponse.rows
+                        .take(limit)
+                        .size
+                        .toDouble()
+            }
 
         if (successRate < 0.5) {
             logger.warn("Earnings Calendar 파싱 성공률 낮음: ${successRate * 100}%")
             throw DataParsingException(
                 errorCode = ErrorCode.DATA_PARSING_ERROR,
                 message = "Earnings Calendar 파싱 실패율이 50%를 초과했습니다 (성공률: ${successRate * 100}%)",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "totalRows" to htmlResponse.rows.size,
-                    "parsedRows" to events.size
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "totalRows" to htmlResponse.rows.size,
+                        "parsedRows" to events.size,
+                    ),
             )
         }
 
@@ -766,7 +818,7 @@ class YahooClient internal constructor(
             events = events,
             requestedLimit = limit,
             requestedOffset = offset,
-            actualCount = events.size
+            actualCount = events.size,
         )
     }
 
@@ -815,8 +867,8 @@ class YahooClient internal constructor(
                                 earningsDateRaw = earningsDateRaw,
                                 epsEstimateRaw = epsEstimateRaw,
                                 reportedEpsRaw = reportedEpsRaw,
-                                surprisePercentRaw = surprisePercentRaw
-                            )
+                                surprisePercentRaw = surprisePercentRaw,
+                            ),
                         )
                     }
                 } catch (e: Exception) {
@@ -835,8 +887,8 @@ class YahooClient internal constructor(
      * @param html HTML 문자열
      * @return 정제된 텍스트
      */
-    private fun cleanHtml(html: String): String {
-        return html
+    private fun cleanHtml(html: String): String =
+        html
             .replace(Regex("<[^>]*>"), "") // HTML 태그 제거
             .replace("&nbsp;", " ")
             .replace("&amp;", "&")
@@ -845,7 +897,6 @@ class YahooClient internal constructor(
             .replace("&quot;", "\"")
             .replace("&#39;", "'")
             .trim()
-    }
 
     /**
      * EarningsTableRow를 EarningsEvent로 변환합니다.
@@ -853,8 +904,8 @@ class YahooClient internal constructor(
      * @param row HTML 파싱 결과
      * @return EarningsEvent, 파싱 실패 시 null
      */
-    private fun convertToEarningsEvent(row: EarningsTableRow): EarningsEvent? {
-        return try {
+    private fun convertToEarningsEvent(row: EarningsTableRow): EarningsEvent? =
+        try {
             // 날짜 파싱
             val (earningsDate, timeZone) = parseEarningsDate(row.earningsDateRaw)
 
@@ -868,13 +919,12 @@ class YahooClient internal constructor(
                 timeZone = timeZone,
                 epsEstimate = epsEstimate,
                 reportedEps = reportedEps,
-                surprisePercent = surprisePercent
+                surprisePercent = surprisePercent,
             )
         } catch (e: Exception) {
             logger.warn("Failed to convert earnings event: ${e.message}, row=$row")
             null
         }
-    }
 
     /**
      * Earnings Date 문자열을 파싱하여 Instant와 TimeZone을 반환합니다.
@@ -898,11 +948,12 @@ class YahooClient internal constructor(
         val localDateTime = LocalDateTime.parse(dateWithoutTz, formatter)
 
         // ZonedDateTime으로 변환 (IANA TimeZone 적용)
-        val zoneId = if (ianaTimeZone != null) {
-            java.time.ZoneId.of(ianaTimeZone)
-        } else {
-            java.time.ZoneId.of("UTC")
-        }
+        val zoneId =
+            if (ianaTimeZone != null) {
+                java.time.ZoneId.of(ianaTimeZone)
+            } else {
+                java.time.ZoneId.of("UTC")
+            }
         val zonedDateTime = ZonedDateTime.of(localDateTime, zoneId)
 
         // Instant로 변환
@@ -917,15 +968,14 @@ class YahooClient internal constructor(
      * @param abbr 타임존 약어 (예: "EDT", "PST")
      * @return IANA 타임존 (예: "America/New_York"), 매핑 실패 시 null
      */
-    private fun mapTimeZone(abbr: String): String? {
-        return when (abbr.uppercase()) {
+    private fun mapTimeZone(abbr: String): String? =
+        when (abbr.uppercase()) {
             "EDT", "EST" -> "America/New_York"
             "PDT", "PST" -> "America/Los_Angeles"
             "CDT", "CST" -> "America/Chicago"
             "MDT", "MST" -> "America/Denver"
             else -> null
         }
-    }
 
     /**
      * 문자열을 Double로 파싱합니다.
@@ -996,7 +1046,7 @@ class YahooClient internal constructor(
         symbol: String,
         types: List<FundamentalsType>,
         startDate: LocalDate? = null,
-        endDate: LocalDate? = null
+        endDate: LocalDate? = null,
     ): FundamentalsTimeseriesResult {
         // 입력 검증
         require(symbol.isNotBlank()) { "symbol은 공백일 수 없습니다" }
@@ -1007,7 +1057,10 @@ class YahooClient internal constructor(
 
         logger.debug(
             "Calling Yahoo Finance Fundamentals Timeseries API: symbol={}, types={}, startDate={}, endDate={}",
-            symbol, types.map { it.apiValue }, startDate, endDate
+            symbol,
+            types.map { it.apiValue },
+            startDate,
+            endDate,
         )
 
         // Rate Limit 적용
@@ -1017,19 +1070,26 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // 날짜를 Unix timestamp로 변환
-        val period1 = startDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
-            ?: LocalDate.now().minusYears(5).atStartOfDay(ZoneOffset.UTC).toEpochSecond()
-        val period2 = endDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
-            ?: LocalDate.now().atStartOfDay(ZoneOffset.UTC).toEpochSecond()
+        val period1 =
+            startDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
+                ?: LocalDate
+                    .now()
+                    .minusYears(5)
+                    .atStartOfDay(ZoneOffset.UTC)
+                    .toEpochSecond()
+        val period2 =
+            endDate?.atStartOfDay(ZoneOffset.UTC)?.toEpochSecond()
+                ?: LocalDate.now().atStartOfDay(ZoneOffset.UTC).toEpochSecond()
 
         // API 요청
-        val response = httpClient.get("${YahooApiUrls.FUNDAMENTALS_TIMESERIES}/$symbol") {
-            parameter("symbol", symbol)
-            parameter("type", types.joinToString(",") { it.apiValue })
-            parameter("period1", period1)
-            parameter("period2", period2)
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get("${YahooApiUrls.FUNDAMENTALS_TIMESERIES}/$symbol") {
+                parameter("symbol", symbol)
+                parameter("type", types.joinToString(",") { it.apiValue })
+                parameter("period1", period1)
+                parameter("period2", period2)
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1037,10 +1097,11 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Fundamentals Timeseries API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "types" to types.joinToString(",") { it.apiValue }
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "types" to types.joinToString(",") { it.apiValue },
+                    ),
             )
         }
 
@@ -1052,11 +1113,14 @@ class YahooClient internal constructor(
         if (timeseriesResponse.timeseries.error != null) {
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
-                message = "Fundamentals Timeseries API 에러: ${timeseriesResponse.timeseries.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "errorCode" to (timeseriesResponse.timeseries.error?.code ?: "UNKNOWN")
-                )
+                message =
+                    "Fundamentals Timeseries API 에러: " +
+                        "${timeseriesResponse.timeseries.error?.description ?: "Unknown error"}",
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (timeseriesResponse.timeseries.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1081,7 +1145,7 @@ class YahooClient internal constructor(
     private fun convertToFundamentalsTimeseriesResult(
         symbol: String,
         results: List<com.ulalax.ufc.infrastructure.yahoo.internal.response.TimeseriesResult>,
-        requestedTypes: List<FundamentalsType>
+        requestedTypes: List<FundamentalsType>,
     ): FundamentalsTimeseriesResult {
         val dataMap = mutableMapOf<FundamentalsType, List<TimeseriesDataPoint>>()
 
@@ -1096,30 +1160,32 @@ class YahooClient internal constructor(
                 }
 
                 // DataPoint를 TimeseriesDataPoint로 변환
-                val timeseriesDataPoints = dataPoints.mapNotNull { dataPoint ->
-                    val asOfDateStr = dataPoint.asOfDate
-                    if (asOfDateStr == null) {
-                        logger.warn("asOfDate is null for type: {}", fieldName)
-                        return@mapNotNull null
-                    }
+                val timeseriesDataPoints =
+                    dataPoints
+                        .mapNotNull { dataPoint ->
+                            val asOfDateStr = dataPoint.asOfDate
+                            if (asOfDateStr == null) {
+                                logger.warn("asOfDate is null for type: {}", fieldName)
+                                return@mapNotNull null
+                            }
 
-                    try {
-                        val asOfDate = LocalDate.parse(asOfDateStr)
-                        val periodType = dataPoint.periodType ?: "UNKNOWN"
-                        val value = dataPoint.reportedValue?.doubleValue
-                        val currencyCode = dataPoint.currencyCode ?: "USD"
+                            try {
+                                val asOfDate = LocalDate.parse(asOfDateStr)
+                                val periodType = dataPoint.periodType ?: "UNKNOWN"
+                                val value = dataPoint.reportedValue?.doubleValue
+                                val currencyCode = dataPoint.currencyCode ?: "USD"
 
-                        TimeseriesDataPoint(
-                            asOfDate = asOfDate,
-                            periodType = periodType,
-                            value = value,
-                            currencyCode = currencyCode
-                        )
-                    } catch (e: Exception) {
-                        logger.warn("Failed to parse data point for type {}: {}", fieldName, e.message)
-                        null
-                    }
-                }.sorted() // asOfDate 기준 정렬
+                                TimeseriesDataPoint(
+                                    asOfDate = asOfDate,
+                                    periodType = periodType,
+                                    value = value,
+                                    currencyCode = currencyCode,
+                                )
+                            } catch (e: Exception) {
+                                logger.warn("Failed to parse data point for type {}: {}", fieldName, e.message)
+                                null
+                            }
+                        }.sorted() // asOfDate 기준 정렬
 
                 if (timeseriesDataPoints.isNotEmpty()) {
                     dataMap[fundamentalsType] = timeseriesDataPoints
@@ -1129,7 +1195,7 @@ class YahooClient internal constructor(
 
         return FundamentalsTimeseriesResult(
             symbol = symbol,
-            data = dataMap
+            data = dataMap,
         )
     }
 
@@ -1145,7 +1211,7 @@ class YahooClient internal constructor(
     suspend fun lookup(
         query: String,
         type: LookupType = LookupType.ALL,
-        count: Int = 25
+        count: Int = 25,
     ): LookupResult {
         // 파라미터 검증
         val trimmedQuery = query.trim()
@@ -1153,7 +1219,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "검색어는 빈 문자열일 수 없습니다",
-                metadata = mapOf("query" to query)
+                metadata = mapOf("query" to query),
             )
         }
 
@@ -1161,13 +1227,15 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "count는 1-100 범위여야 합니다",
-                metadata = mapOf("count" to count)
+                metadata = mapOf("count" to count),
             )
         }
 
         logger.debug(
             "Calling Yahoo Finance Lookup API: query={}, type={}, count={}",
-            trimmedQuery, type.apiValue, count
+            trimmedQuery,
+            type.apiValue,
+            count,
         )
 
         // Rate Limit 적용
@@ -1177,12 +1245,13 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get(YahooApiUrls.LOOKUP) {
-            parameter("query", trimmedQuery)
-            parameter("type", type.apiValue)
-            parameter("count", count)
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.LOOKUP) {
+                parameter("query", trimmedQuery)
+                parameter("type", type.apiValue)
+                parameter("count", count)
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1190,11 +1259,12 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Lookup API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf(
-                    "query" to trimmedQuery,
-                    "type" to type.apiValue,
-                    "count" to count
-                )
+                metadata =
+                    mapOf(
+                        "query" to trimmedQuery,
+                        "type" to type.apiValue,
+                        "count" to count,
+                    ),
             )
         }
 
@@ -1207,10 +1277,11 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Lookup API 에러: ${lookupResponse.finance.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "query" to trimmedQuery,
-                    "errorCode" to (lookupResponse.finance.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "query" to trimmedQuery,
+                        "errorCode" to (lookupResponse.finance.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1223,7 +1294,7 @@ class YahooClient internal constructor(
                 count = 0,
                 start = 0,
                 total = 0,
-                documents = emptyList()
+                documents = emptyList(),
             )
         }
 
@@ -1242,34 +1313,35 @@ class YahooClient internal constructor(
     private fun convertToLookupResult(
         resultResponse: com.ulalax.ufc.infrastructure.yahoo.internal.response.LookupResultResponse,
         query: String,
-        type: LookupType
+        type: LookupType,
     ): LookupResult {
-        val documents = resultResponse.documents?.mapNotNull { doc ->
-            // symbol은 필수 필드
-            val symbol = doc.symbol
-            // name은 shortName 또는 name 필드에서 가져옴
-            val name = doc.shortName ?: doc.name
+        val documents =
+            resultResponse.documents?.mapNotNull { doc ->
+                // symbol은 필수 필드
+                val symbol = doc.symbol
+                // name은 shortName 또는 name 필드에서 가져옴
+                val name = doc.shortName ?: doc.name
 
-            if (symbol.isNullOrBlank() || name.isNullOrBlank()) {
-                logger.warn("Skipping document with missing symbol or name: {}", doc)
-                return@mapNotNull null
-            }
+                if (symbol.isNullOrBlank() || name.isNullOrBlank()) {
+                    logger.warn("Skipping document with missing symbol or name: {}", doc)
+                    return@mapNotNull null
+                }
 
-            LookupDocument(
-                symbol = symbol,
-                name = name,
-                exchange = doc.exchange ?: doc.exch,
-                exchangeDisplay = doc.exchDisp,
-                typeCode = doc.quoteType ?: doc.type,
-                typeDisplay = doc.typeDisp,
-                industry = doc.industry,
-                industryDisplay = doc.industryName ?: doc.industryDisp,
-                sector = doc.sector,
-                sectorDisplay = doc.sectorDisp,
-                score = doc.rank?.toDouble() ?: doc.score,
-                isYahooFinance = doc.isYahooFinance
-            )
-        } ?: emptyList()
+                LookupDocument(
+                    symbol = symbol,
+                    name = name,
+                    exchange = doc.exchange ?: doc.exch,
+                    exchangeDisplay = doc.exchDisp,
+                    typeCode = doc.quoteType ?: doc.type,
+                    typeDisplay = doc.typeDisp,
+                    industry = doc.industry,
+                    industryDisplay = doc.industryName ?: doc.industryDisp,
+                    sector = doc.sector,
+                    sectorDisplay = doc.sectorDisp,
+                    score = doc.rank?.toDouble() ?: doc.score,
+                    isYahooFinance = doc.isYahooFinance,
+                )
+            } ?: emptyList()
 
         return LookupResult(
             query = query,
@@ -1277,7 +1349,7 @@ class YahooClient internal constructor(
             count = documents.size, // 실제 반환된 documents 개수
             start = resultResponse.start ?: 0,
             total = resultResponse.total ?: documents.size,
-            documents = documents
+            documents = documents,
         )
     }
 
@@ -1298,10 +1370,11 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get(YahooApiUrls.MARKET_SUMMARY) {
-            parameter("market", market.code)
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.MARKET_SUMMARY) {
+                parameter("market", market.code)
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1309,31 +1382,35 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Market Summary API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("market" to market.code)
+                metadata = mapOf("market" to market.code),
             )
         }
 
         // 응답 파싱
         val responseBody = response.body<String>()
-        val marketSummaryResponse = try {
-            json.decodeFromString<MarketSummaryResponse>(responseBody)
-        } catch (e: Exception) {
-            throw DataParsingException(
-                errorCode = ErrorCode.DATA_PARSING_ERROR,
-                message = "Market Summary 응답 파싱 실패: ${e.message}",
-                metadata = mapOf("market" to market.code)
-            )
-        }
+        val marketSummaryResponse =
+            try {
+                json.decodeFromString<MarketSummaryResponse>(responseBody)
+            } catch (e: Exception) {
+                throw DataParsingException(
+                    errorCode = ErrorCode.DATA_PARSING_ERROR,
+                    message = "Market Summary 응답 파싱 실패: ${e.message}",
+                    metadata = mapOf("market" to market.code),
+                )
+            }
 
         // 에러 응답 확인
         if (marketSummaryResponse.marketSummaryResponse.error != null) {
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
-                message = "Market Summary API 에러: ${marketSummaryResponse.marketSummaryResponse.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "market" to market.code,
-                    "errorCode" to (marketSummaryResponse.marketSummaryResponse.error?.code ?: "UNKNOWN")
-                )
+                message =
+                    "Market Summary API 에러: " +
+                        "${marketSummaryResponse.marketSummaryResponse.error?.description ?: "Unknown error"}",
+                metadata =
+                    mapOf(
+                        "market" to market.code,
+                        "errorCode" to (marketSummaryResponse.marketSummaryResponse.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1343,38 +1420,40 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "Market Summary 데이터를 찾을 수 없습니다: ${market.code}",
-                metadata = mapOf("market" to market.code)
+                metadata = mapOf("market" to market.code),
             )
         }
 
         // Domain 모델로 변환
-        val items = result.map { item ->
-            MarketSummaryItem(
-                exchange = item.exchange,
-                symbol = item.symbol,
-                shortName = item.shortName,
-                regularMarketPrice = item.regularMarketPriceValue,
-                regularMarketChange = item.regularMarketChangeValue,
-                regularMarketChangePercent = item.regularMarketChangePercentValue,
-                regularMarketTime = item.regularMarketTimeLong?.let {
-                    if (it > 0) Instant.ofEpochSecond(it) else null
-                },
-                regularMarketDayHigh = item.regularMarketDayHighValue,
-                regularMarketDayLow = item.regularMarketDayLowValue,
-                regularMarketVolume = item.regularMarketVolumeValue,
-                regularMarketPreviousClose = item.regularMarketPreviousCloseValue,
-                currency = item.currency,
-                marketState = MarketState.fromValue(item.marketState),
-                quoteType = item.quoteType,
-                timezoneName = item.exchangeTimezoneName,
-                timezoneShortName = item.exchangeTimezoneShortName,
-                gmtOffsetMillis = item.gmtOffSetMillisecondsValue
-            )
-        }
+        val items =
+            result.map { item ->
+                MarketSummaryItem(
+                    exchange = item.exchange,
+                    symbol = item.symbol,
+                    shortName = item.shortName,
+                    regularMarketPrice = item.regularMarketPriceValue,
+                    regularMarketChange = item.regularMarketChangeValue,
+                    regularMarketChangePercent = item.regularMarketChangePercentValue,
+                    regularMarketTime =
+                        item.regularMarketTimeLong?.let {
+                            if (it > 0) Instant.ofEpochSecond(it) else null
+                        },
+                    regularMarketDayHigh = item.regularMarketDayHighValue,
+                    regularMarketDayLow = item.regularMarketDayLowValue,
+                    regularMarketVolume = item.regularMarketVolumeValue,
+                    regularMarketPreviousClose = item.regularMarketPreviousCloseValue,
+                    currency = item.currency,
+                    marketState = MarketState.fromValue(item.marketState),
+                    quoteType = item.quoteType,
+                    timezoneName = item.exchangeTimezoneName,
+                    timezoneShortName = item.exchangeTimezoneShortName,
+                    gmtOffsetMillis = item.gmtOffSetMillisecondsValue,
+                )
+            }
 
         return MarketSummaryResult(
             market = market,
-            items = items
+            items = items,
         )
     }
 
@@ -1395,10 +1474,11 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get(YahooApiUrls.MARKET_TIME) {
-            parameter("market", market.code)
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.MARKET_TIME) {
+                parameter("market", market.code)
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1406,31 +1486,33 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Market Time API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("market" to market.code)
+                metadata = mapOf("market" to market.code),
             )
         }
 
         // 응답 파싱
         val responseBody = response.body<String>()
-        val marketTimeResponse = try {
-            json.decodeFromString<MarketTimeResponse>(responseBody)
-        } catch (e: Exception) {
-            throw DataParsingException(
-                errorCode = ErrorCode.DATA_PARSING_ERROR,
-                message = "Market Time 응답 파싱 실패: ${e.message}",
-                metadata = mapOf("market" to market.code)
-            )
-        }
+        val marketTimeResponse =
+            try {
+                json.decodeFromString<MarketTimeResponse>(responseBody)
+            } catch (e: Exception) {
+                throw DataParsingException(
+                    errorCode = ErrorCode.DATA_PARSING_ERROR,
+                    message = "Market Time 응답 파싱 실패: ${e.message}",
+                    metadata = mapOf("market" to market.code),
+                )
+            }
 
         // 에러 응답 확인
         if (marketTimeResponse.finance.error != null) {
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Market Time API 에러: ${marketTimeResponse.finance.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "market" to market.code,
-                    "errorCode" to (marketTimeResponse.finance.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "market" to market.code,
+                        "errorCode" to (marketTimeResponse.finance.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1440,26 +1522,31 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "Market Time 데이터를 찾을 수 없습니다: ${market.code}",
-                metadata = mapOf("market" to market.code)
+                metadata = mapOf("market" to market.code),
             )
         }
 
         val item = marketTimes.first().marketTime.first()
 
         // 필수 필드 확인
-        if (item.exchange == null || item.market == null || item.marketState == null ||
-            item.open == null || item.close == null) {
+        if (item.exchange == null ||
+            item.market == null ||
+            item.marketState == null ||
+            item.open == null ||
+            item.close == null
+        ) {
             throw DataParsingException(
                 errorCode = ErrorCode.DATA_PARSING_ERROR,
                 message = "Market Time 필수 정보가 누락되었습니다",
-                metadata = mapOf(
-                    "market" to market.code,
-                    "hasExchange" to (item.exchange != null).toString(),
-                    "hasMarket" to (item.market != null).toString(),
-                    "hasMarketState" to (item.marketState != null).toString(),
-                    "hasOpen" to (item.open != null).toString(),
-                    "hasClose" to (item.close != null).toString()
-                )
+                metadata =
+                    mapOf(
+                        "market" to market.code,
+                        "hasExchange" to (item.exchange != null).toString(),
+                        "hasMarket" to (item.market != null).toString(),
+                        "hasMarketState" to (item.marketState != null).toString(),
+                        "hasOpen" to (item.open != null).toString(),
+                        "hasClose" to (item.close != null).toString(),
+                    ),
             )
         }
 
@@ -1468,7 +1555,7 @@ class YahooClient internal constructor(
             throw DataParsingException(
                 errorCode = ErrorCode.DATA_PARSING_ERROR,
                 message = "타임존 정보가 없습니다",
-                metadata = mapOf("market" to market.code)
+                metadata = mapOf("market" to market.code),
             )
         }
 
@@ -1479,27 +1566,30 @@ class YahooClient internal constructor(
             throw DataParsingException(
                 errorCode = ErrorCode.DATA_PARSING_ERROR,
                 message = "타임존 필수 정보가 누락되었습니다",
-                metadata = mapOf(
-                    "market" to market.code,
-                    "hasShort" to (timezoneInfo.short != null).toString(),
-                    "hasName" to (timezoneInfo.name != null).toString(),
-                    "hasGmtOffset" to (timezoneInfo.gmtoffset != null).toString()
-                )
+                metadata =
+                    mapOf(
+                        "market" to market.code,
+                        "hasShort" to (timezoneInfo.short != null).toString(),
+                        "hasName" to (timezoneInfo.name != null).toString(),
+                        "hasGmtOffset" to (timezoneInfo.gmtoffset != null).toString(),
+                    ),
             )
         }
 
         // ISO 8601 문자열을 Instant로 변환
-        fun parseInstant(isoString: String, fieldName: String): Instant {
-            return try {
+        fun parseInstant(
+            isoString: String,
+            fieldName: String,
+        ): Instant =
+            try {
                 Instant.parse(isoString)
             } catch (e: Exception) {
                 throw DataParsingException(
                     errorCode = ErrorCode.DATA_PARSING_ERROR,
                     message = "시간 정보 파싱 실패: $fieldName",
-                    metadata = mapOf("market" to market.code, "value" to isoString)
+                    metadata = mapOf("market" to market.code, "value" to isoString),
                 )
             }
-        }
 
         // Domain 모델로 변환
         return MarketTimeResult(
@@ -1509,24 +1599,27 @@ class YahooClient internal constructor(
             marketState = MarketState.fromValue(item.marketState),
             open = parseInstant(item.open, "open"),
             close = parseInstant(item.close, "close"),
-            preMarket = item.preMarket?.let {
-                TradingHours(
-                    start = parseInstant(it.start, "preMarket.start"),
-                    end = parseInstant(it.end, "preMarket.end")
-                )
-            },
-            postMarket = item.postMarket?.let {
-                TradingHours(
-                    start = parseInstant(it.start, "postMarket.start"),
-                    end = parseInstant(it.end, "postMarket.end")
-                )
-            },
-            timezone = MarketTimezone(
-                shortName = timezoneInfo.short,
-                ianaName = timezoneInfo.name,
-                gmtOffsetMillis = timezoneInfo.gmtoffset
-            ),
-            currentTime = item.time?.let { parseInstant(it, "time") }
+            preMarket =
+                item.preMarket?.let {
+                    TradingHours(
+                        start = parseInstant(it.start, "preMarket.start"),
+                        end = parseInstant(it.end, "preMarket.end"),
+                    )
+                },
+            postMarket =
+                item.postMarket?.let {
+                    TradingHours(
+                        start = parseInstant(it.start, "postMarket.start"),
+                        end = parseInstant(it.end, "postMarket.end"),
+                    )
+                },
+            timezone =
+                MarketTimezone(
+                    shortName = timezoneInfo.short,
+                    ianaName = timezoneInfo.name,
+                    gmtOffsetMillis = timezoneInfo.gmtoffset,
+                ),
+            currentTime = item.time?.let { parseInstant(it, "time") },
         )
     }
 
@@ -1540,11 +1633,12 @@ class YahooClient internal constructor(
      */
     suspend fun options(
         symbol: String,
-        expirationDate: Long? = null
+        expirationDate: Long? = null,
     ): OptionsData {
         logger.debug(
             "Calling Yahoo Finance Options API: symbol={}, expirationDate={}",
-            symbol, expirationDate
+            symbol,
+            expirationDate,
         )
 
         // Rate Limit 적용
@@ -1554,10 +1648,11 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get("${YahooApiUrls.OPTIONS}/$symbol") {
-            parameter("crumb", crumb)
-            expirationDate?.let { parameter("date", it) }
-        }
+        val response =
+            httpClient.get("${YahooApiUrls.OPTIONS}/$symbol") {
+                parameter("crumb", crumb)
+                expirationDate?.let { parameter("date", it) }
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1565,10 +1660,11 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Options API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "expirationDate" to (expirationDate?.toString() ?: "null")
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "expirationDate" to (expirationDate?.toString() ?: "null"),
+                    ),
             )
         }
 
@@ -1581,10 +1677,11 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Options API 에러: ${optionsResponse.optionChain.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "errorCode" to (optionsResponse.optionChain.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (optionsResponse.optionChain.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1593,7 +1690,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "옵션 데이터를 찾을 수 없습니다: $symbol",
-                metadata = mapOf("symbol" to symbol)
+                metadata = mapOf("symbol" to symbol),
             )
         }
 
@@ -1609,23 +1706,24 @@ class YahooClient internal constructor(
      * @return OptionsData
      */
     private fun convertToOptionsData(
-        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResult
+        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsResult,
     ): OptionsData {
         // 기초 자산 정보 변환
         val underlyingQuote = result.quote?.let { convertUnderlyingQuote(it) }
 
         // 옵션 체인 변환 (첫 번째 만기일의 옵션)
-        val optionsChain = if (result.options.isNotEmpty()) {
-            convertOptionsChain(result.options.first())
-        } else {
-            // 옵션 데이터가 없는 경우 빈 체인 반환
-            OptionsChain(
-                expirationDate = result.expirationDates.firstOrNull() ?: 0L,
-                hasMiniOptions = result.hasMiniOptions,
-                calls = emptyList(),
-                puts = emptyList()
-            )
-        }
+        val optionsChain =
+            if (result.options.isNotEmpty()) {
+                convertOptionsChain(result.options.first())
+            } else {
+                // 옵션 데이터가 없는 경우 빈 체인 반환
+                OptionsChain(
+                    expirationDate = result.expirationDates.firstOrNull() ?: 0L,
+                    hasMiniOptions = result.hasMiniOptions,
+                    calls = emptyList(),
+                    puts = emptyList(),
+                )
+            }
 
         return OptionsData(
             underlyingSymbol = result.underlyingSymbol,
@@ -1633,7 +1731,7 @@ class YahooClient internal constructor(
             strikes = result.strikes,
             hasMiniOptions = result.hasMiniOptions,
             underlyingQuote = underlyingQuote,
-            optionsChain = optionsChain
+            optionsChain = optionsChain,
         )
     }
 
@@ -1641,40 +1739,38 @@ class YahooClient internal constructor(
      * Internal UnderlyingQuoteResponse를 public UnderlyingQuote로 변환합니다.
      */
     private fun convertUnderlyingQuote(
-        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.UnderlyingQuoteResponse
-    ): UnderlyingQuote {
-        return UnderlyingQuote(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.UnderlyingQuoteResponse,
+    ): UnderlyingQuote =
+        UnderlyingQuote(
             symbol = response.symbol,
             shortName = response.shortName,
             regularMarketPrice = response.regularMarketPrice,
             regularMarketChange = response.regularMarketChange,
             regularMarketChangePercent = response.regularMarketChangePercent,
             regularMarketVolume = response.regularMarketVolume,
-            regularMarketTime = response.regularMarketTime
+            regularMarketTime = response.regularMarketTime,
         )
-    }
 
     /**
      * Internal OptionsChainResponse를 public OptionsChain으로 변환합니다.
      */
     private fun convertOptionsChain(
-        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsChainResponse
-    ): OptionsChain {
-        return OptionsChain(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionsChainResponse,
+    ): OptionsChain =
+        OptionsChain(
             expirationDate = response.expirationDate,
             hasMiniOptions = response.hasMiniOptions,
             calls = response.calls.map { convertOptionContract(it) },
-            puts = response.puts.map { convertOptionContract(it) }
+            puts = response.puts.map { convertOptionContract(it) },
         )
-    }
 
     /**
      * Internal OptionContractResponse를 public OptionContract로 변환합니다.
      */
     private fun convertOptionContract(
-        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionContractResponse
-    ): OptionContract {
-        return OptionContract(
+        response: com.ulalax.ufc.infrastructure.yahoo.internal.response.OptionContractResponse,
+    ): OptionContract =
+        OptionContract(
             contractSymbol = response.contractSymbol,
             strike = response.strike,
             currency = response.currency,
@@ -1689,9 +1785,8 @@ class YahooClient internal constructor(
             expiration = response.expiration,
             lastTradeDate = response.lastTradeDate,
             impliedVolatility = response.impliedVolatility,
-            inTheMoney = response.inTheMoney
+            inTheMoney = response.inTheMoney,
         )
-    }
 
     /**
      * Fetches real-time market data for a single symbol from the Yahoo Finance Quote API.
@@ -1710,11 +1805,12 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get(YahooApiUrls.QUOTE) {
-            parameter("symbols", symbol)
-            parameter("formatted", "false")
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.QUOTE) {
+                parameter("symbols", symbol)
+                parameter("formatted", "false")
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1722,7 +1818,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Quote API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("symbol" to symbol)
+                metadata = mapOf("symbol" to symbol),
             )
         }
 
@@ -1735,10 +1831,11 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Quote API 에러: ${quoteResponse.quoteResponse.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1747,7 +1844,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.INVALID_SYMBOL,
                 message = "Quote 데이터를 찾을 수 없습니다: $symbol",
-                metadata = mapOf("symbol" to symbol)
+                metadata = mapOf("symbol" to symbol),
             )
         }
 
@@ -1776,11 +1873,12 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청 (쉼표로 구분된 심볼들)
-        val response = httpClient.get(YahooApiUrls.QUOTE) {
-            parameter("symbols", symbols.joinToString(","))
-            parameter("formatted", "false")
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.QUOTE) {
+                parameter("symbols", symbols.joinToString(","))
+                parameter("formatted", "false")
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -1788,7 +1886,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Quote API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("symbols" to symbols.joinToString(","))
+                metadata = mapOf("symbols" to symbols.joinToString(",")),
             )
         }
 
@@ -1801,10 +1899,11 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Quote API 에러: ${quoteResponse.quoteResponse.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbols" to symbols.joinToString(","),
-                    "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN")
-                )
+                metadata =
+                    mapOf(
+                        "symbols" to symbols.joinToString(","),
+                        "errorCode" to (quoteResponse.quoteResponse.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
@@ -1828,210 +1927,268 @@ class YahooClient internal constructor(
      * @return QuoteData
      */
     private fun convertToQuoteData(
-        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteResult
+        result: com.ulalax.ufc.infrastructure.yahoo.internal.response.QuoteResult,
     ): QuoteData {
         // Identification
-        val identification = QuoteIdentification(
-            symbol = result.symbol,
-            longName = result.longName,
-            shortName = result.shortName,
-            exchange = result.exchange,
-            timezoneName = result.exchangeTimezoneName,
-            timezoneShortName = result.exchangeTimezoneShortName,
-            quoteType = result.quoteType,
-            currency = result.currency,
-            market = result.market
-        )
+        val identification =
+            QuoteIdentification(
+                symbol = result.symbol,
+                longName = result.longName,
+                shortName = result.shortName,
+                exchange = result.exchange,
+                timezoneName = result.exchangeTimezoneName,
+                timezoneShortName = result.exchangeTimezoneShortName,
+                quoteType = result.quoteType,
+                currency = result.currency,
+                market = result.market,
+            )
 
         // Pricing
-        val pricing = QuotePricing(
-            price = result.regularMarketPrice,
-            open = result.regularMarketOpen,
-            dayHigh = result.regularMarketDayHigh,
-            dayLow = result.regularMarketDayLow,
-            volume = result.regularMarketVolume,
-            previousClose = result.regularMarketPreviousClose,
-            change = result.regularMarketChange,
-            changePercent = result.regularMarketChangePercent,
-            marketTime = result.regularMarketTime?.let { Instant.ofEpochSecond(it) }
-        )
+        val pricing =
+            QuotePricing(
+                price = result.regularMarketPrice,
+                open = result.regularMarketOpen,
+                dayHigh = result.regularMarketDayHigh,
+                dayLow = result.regularMarketDayLow,
+                volume = result.regularMarketVolume,
+                previousClose = result.regularMarketPreviousClose,
+                change = result.regularMarketChange,
+                changePercent = result.regularMarketChangePercent,
+                marketTime = result.regularMarketTime?.let { Instant.ofEpochSecond(it) },
+            )
 
         // Extended Hours
-        val extendedHours = if (
-            result.preMarketPrice != null || result.postMarketPrice != null
-        ) {
-            QuoteExtendedHours(
-                preMarketPrice = result.preMarketPrice,
-                preMarketChange = result.preMarketChange,
-                preMarketChangePercent = result.preMarketChangePercent,
-                preMarketTime = result.preMarketTime?.let { Instant.ofEpochSecond(it) },
-                postMarketPrice = result.postMarketPrice,
-                postMarketChange = result.postMarketChange,
-                postMarketChangePercent = result.postMarketChangePercent,
-                postMarketTime = result.postMarketTime?.let { Instant.ofEpochSecond(it) }
-            )
-        } else null
+        val extendedHours =
+            if (
+                result.preMarketPrice != null || result.postMarketPrice != null
+            ) {
+                QuoteExtendedHours(
+                    preMarketPrice = result.preMarketPrice,
+                    preMarketChange = result.preMarketChange,
+                    preMarketChangePercent = result.preMarketChangePercent,
+                    preMarketTime = result.preMarketTime?.let { Instant.ofEpochSecond(it) },
+                    postMarketPrice = result.postMarketPrice,
+                    postMarketChange = result.postMarketChange,
+                    postMarketChangePercent = result.postMarketChangePercent,
+                    postMarketTime = result.postMarketTime?.let { Instant.ofEpochSecond(it) },
+                )
+            } else {
+                null
+            }
 
         // 52-Week
-        val fiftyTwoWeek = if (
-            result.fiftyTwoWeekHigh != null || result.fiftyTwoWeekLow != null
-        ) {
-            QuoteFiftyTwoWeek(
-                high = result.fiftyTwoWeekHigh,
-                low = result.fiftyTwoWeekLow,
-                highChange = result.fiftyTwoWeekHighChange,
-                lowChange = result.fiftyTwoWeekLowChange,
-                highChangePercent = result.fiftyTwoWeekHighChangePercent,
-                lowChangePercent = result.fiftyTwoWeekLowChangePercent,
-                range = result.fiftyTwoWeekRange
-            )
-        } else null
+        val fiftyTwoWeek =
+            if (
+                result.fiftyTwoWeekHigh != null || result.fiftyTwoWeekLow != null
+            ) {
+                QuoteFiftyTwoWeek(
+                    high = result.fiftyTwoWeekHigh,
+                    low = result.fiftyTwoWeekLow,
+                    highChange = result.fiftyTwoWeekHighChange,
+                    lowChange = result.fiftyTwoWeekLowChange,
+                    highChangePercent = result.fiftyTwoWeekHighChangePercent,
+                    lowChangePercent = result.fiftyTwoWeekLowChangePercent,
+                    range = result.fiftyTwoWeekRange,
+                )
+            } else {
+                null
+            }
 
         // Moving Averages
-        val movingAverages = if (
-            result.fiftyDayAverage != null || result.twoHundredDayAverage != null
-        ) {
-            QuoteMovingAverages(
-                fiftyDayAverage = result.fiftyDayAverage,
-                fiftyDayChange = result.fiftyDayAverageChange,
-                fiftyDayChangePercent = result.fiftyDayAverageChangePercent,
-                twoHundredDayAverage = result.twoHundredDayAverage,
-                twoHundredDayChange = result.twoHundredDayAverageChange,
-                twoHundredDayChangePercent = result.twoHundredDayAverageChangePercent
-            )
-        } else null
+        val movingAverages =
+            if (
+                result.fiftyDayAverage != null || result.twoHundredDayAverage != null
+            ) {
+                QuoteMovingAverages(
+                    fiftyDayAverage = result.fiftyDayAverage,
+                    fiftyDayChange = result.fiftyDayAverageChange,
+                    fiftyDayChangePercent = result.fiftyDayAverageChangePercent,
+                    twoHundredDayAverage = result.twoHundredDayAverage,
+                    twoHundredDayChange = result.twoHundredDayAverageChange,
+                    twoHundredDayChangePercent = result.twoHundredDayAverageChangePercent,
+                )
+            } else {
+                null
+            }
 
         // Volumes
-        val volumes = if (
-            result.averageDailyVolume3Month != null || result.averageDailyVolume10Day != null
-        ) {
-            QuoteVolumes(
-                averageDailyVolume3Month = result.averageDailyVolume3Month,
-                averageDailyVolume10Day = result.averageDailyVolume10Day
-            )
-        } else null
+        val volumes =
+            if (
+                result.averageDailyVolume3Month != null || result.averageDailyVolume10Day != null
+            ) {
+                QuoteVolumes(
+                    averageDailyVolume3Month = result.averageDailyVolume3Month,
+                    averageDailyVolume10Day = result.averageDailyVolume10Day,
+                )
+            } else {
+                null
+            }
 
         // Market Cap
-        val marketCap = if (
-            result.marketCap != null || result.sharesOutstanding != null
-        ) {
-            QuoteMarketCap(
-                marketCap = result.marketCap,
-                sharesOutstanding = result.sharesOutstanding
-            )
-        } else null
+        val marketCap =
+            if (
+                result.marketCap != null || result.sharesOutstanding != null
+            ) {
+                QuoteMarketCap(
+                    marketCap = result.marketCap,
+                    sharesOutstanding = result.sharesOutstanding,
+                )
+            } else {
+                null
+            }
 
         // Dividends
-        val dividends = if (
-            result.dividendRate != null || result.dividendYield != null ||
-            result.dividendDate != null || result.exDividendDate != null ||
-            result.trailingAnnualDividendRate != null || result.trailingAnnualDividendYield != null
-        ) {
-            QuoteDividends(
-                annualRate = result.dividendRate,
-                yield = result.dividendYield,
-                dividendDate = result.dividendDate?.let {
-                    Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
-                },
-                exDividendDate = result.exDividendDate?.let {
-                    Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
-                },
-                trailingRate = result.trailingAnnualDividendRate,
-                trailingYield = result.trailingAnnualDividendYield
-            )
-        } else null
+        val dividends =
+            if (
+                result.dividendRate != null ||
+                result.dividendYield != null ||
+                result.dividendDate != null ||
+                result.exDividendDate != null ||
+                result.trailingAnnualDividendRate != null ||
+                result.trailingAnnualDividendYield != null
+            ) {
+                QuoteDividends(
+                    annualRate = result.dividendRate,
+                    yield = result.dividendYield,
+                    dividendDate =
+                        result.dividendDate?.let {
+                            Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
+                        },
+                    exDividendDate =
+                        result.exDividendDate?.let {
+                            Instant.ofEpochSecond(it).atZone(ZoneOffset.UTC).toLocalDate()
+                        },
+                    trailingRate = result.trailingAnnualDividendRate,
+                    trailingYield = result.trailingAnnualDividendYield,
+                )
+            } else {
+                null
+            }
 
         // Financial Ratios
-        val financialRatios = if (
-            result.trailingPE != null || result.forwardPE != null ||
-            result.priceToBook != null || result.priceToSales != null ||
-            result.bookValue != null || result.earningsQuarterlyGrowth != null
-        ) {
-            QuoteFinancialRatios(
-                trailingPE = result.trailingPE,
-                forwardPE = result.forwardPE,
-                priceToBook = result.priceToBook,
-                priceToSales = result.priceToSales,
-                bookValue = result.bookValue,
-                earningsQuarterlyGrowth = result.earningsQuarterlyGrowth
-            )
-        } else null
+        val financialRatios =
+            if (
+                result.trailingPE != null ||
+                result.forwardPE != null ||
+                result.priceToBook != null ||
+                result.priceToSales != null ||
+                result.bookValue != null ||
+                result.earningsQuarterlyGrowth != null
+            ) {
+                QuoteFinancialRatios(
+                    trailingPE = result.trailingPE,
+                    forwardPE = result.forwardPE,
+                    priceToBook = result.priceToBook,
+                    priceToSales = result.priceToSales,
+                    bookValue = result.bookValue,
+                    earningsQuarterlyGrowth = result.earningsQuarterlyGrowth,
+                )
+            } else {
+                null
+            }
 
         // Earnings
-        val earnings = if (
-            result.epsTrailingTwelveMonths != null || result.epsForward != null ||
-            result.epsCurrentYear != null || result.earningsTimestamp != null ||
-            result.earningsTimestampStart != null || result.earningsTimestampEnd != null
-        ) {
-            QuoteEarnings(
-                epsTrailingTwelveMonths = result.epsTrailingTwelveMonths,
-                epsForward = result.epsForward,
-                epsCurrentYear = result.epsCurrentYear,
-                earningsTimestamp = result.earningsTimestamp?.let { Instant.ofEpochSecond(it) },
-                earningsTimestampStart = result.earningsTimestampStart?.let { Instant.ofEpochSecond(it) },
-                earningsTimestampEnd = result.earningsTimestampEnd?.let { Instant.ofEpochSecond(it) }
-            )
-        } else null
+        val earnings =
+            if (
+                result.epsTrailingTwelveMonths != null ||
+                result.epsForward != null ||
+                result.epsCurrentYear != null ||
+                result.earningsTimestamp != null ||
+                result.earningsTimestampStart != null ||
+                result.earningsTimestampEnd != null
+            ) {
+                QuoteEarnings(
+                    epsTrailingTwelveMonths = result.epsTrailingTwelveMonths,
+                    epsForward = result.epsForward,
+                    epsCurrentYear = result.epsCurrentYear,
+                    earningsTimestamp = result.earningsTimestamp?.let { Instant.ofEpochSecond(it) },
+                    earningsTimestampStart = result.earningsTimestampStart?.let { Instant.ofEpochSecond(it) },
+                    earningsTimestampEnd = result.earningsTimestampEnd?.let { Instant.ofEpochSecond(it) },
+                )
+            } else {
+                null
+            }
 
         // Revenue
-        val revenue = if (
-            result.totalRevenue != null || result.revenuePerShare != null ||
-            result.returnOnAssets != null || result.returnOnEquity != null ||
-            result.profitMargins != null || result.grossMargins != null
-        ) {
-            QuoteRevenue(
-                totalRevenue = result.totalRevenue,
-                revenuePerShare = result.revenuePerShare,
-                returnOnAssets = result.returnOnAssets,
-                returnOnEquity = result.returnOnEquity,
-                profitMargins = result.profitMargins,
-                grossMargins = result.grossMargins
-            )
-        } else null
+        val revenue =
+            if (
+                result.totalRevenue != null ||
+                result.revenuePerShare != null ||
+                result.returnOnAssets != null ||
+                result.returnOnEquity != null ||
+                result.profitMargins != null ||
+                result.grossMargins != null
+            ) {
+                QuoteRevenue(
+                    totalRevenue = result.totalRevenue,
+                    revenuePerShare = result.revenuePerShare,
+                    returnOnAssets = result.returnOnAssets,
+                    returnOnEquity = result.returnOnEquity,
+                    profitMargins = result.profitMargins,
+                    grossMargins = result.grossMargins,
+                )
+            } else {
+                null
+            }
 
         // Financial Health
-        val financialHealth = if (
-            result.totalCash != null || result.totalCashPerShare != null ||
-            result.totalDebt != null || result.debtToEquity != null ||
-            result.currentRatio != null || result.quickRatio != null
-        ) {
-            QuoteFinancialHealth(
-                totalCash = result.totalCash,
-                totalCashPerShare = result.totalCashPerShare,
-                totalDebt = result.totalDebt,
-                debtToEquity = result.debtToEquity,
-                currentRatio = result.currentRatio,
-                quickRatio = result.quickRatio
-            )
-        } else null
+        val financialHealth =
+            if (
+                result.totalCash != null ||
+                result.totalCashPerShare != null ||
+                result.totalDebt != null ||
+                result.debtToEquity != null ||
+                result.currentRatio != null ||
+                result.quickRatio != null
+            ) {
+                QuoteFinancialHealth(
+                    totalCash = result.totalCash,
+                    totalCashPerShare = result.totalCashPerShare,
+                    totalDebt = result.totalDebt,
+                    debtToEquity = result.debtToEquity,
+                    currentRatio = result.currentRatio,
+                    quickRatio = result.quickRatio,
+                )
+            } else {
+                null
+            }
 
         // Growth Rates
-        val growthRates = if (
-            result.revenueGrowth != null || result.earningsGrowth != null
-        ) {
-            QuoteGrowthRates(
-                revenueGrowth = result.revenueGrowth,
-                earningsGrowth = result.earningsGrowth
-            )
-        } else null
+        val growthRates =
+            if (
+                result.revenueGrowth != null || result.earningsGrowth != null
+            ) {
+                QuoteGrowthRates(
+                    revenueGrowth = result.revenueGrowth,
+                    earningsGrowth = result.earningsGrowth,
+                )
+            } else {
+                null
+            }
 
         // Analyst Ratings
-        val analystRatings = if (
-            result.targetHighPrice != null || result.targetLowPrice != null ||
-            result.targetMeanPrice != null || result.targetMedianPrice != null ||
-            result.recommendationMean != null || result.recommendationKey != null ||
-            result.numberOfAnalystOpinions != null
-        ) {
-            QuoteAnalystRatings(
-                targetHighPrice = result.targetHighPrice,
-                targetLowPrice = result.targetLowPrice,
-                targetMeanPrice = result.targetMeanPrice,
-                targetMedianPrice = result.targetMedianPrice,
-                recommendationMean = result.recommendationMean,
-                recommendationKey = result.recommendationKey,
-                numberOfAnalystOpinions = result.numberOfAnalystOpinions
-            )
-        } else null
+        val analystRatings =
+            if (
+                result.targetHighPrice != null ||
+                result.targetLowPrice != null ||
+                result.targetMeanPrice != null ||
+                result.targetMedianPrice != null ||
+                result.recommendationMean != null ||
+                result.recommendationKey != null ||
+                result.numberOfAnalystOpinions != null
+            ) {
+                QuoteAnalystRatings(
+                    targetHighPrice = result.targetHighPrice,
+                    targetLowPrice = result.targetLowPrice,
+                    targetMeanPrice = result.targetMeanPrice,
+                    targetMedianPrice = result.targetMedianPrice,
+                    recommendationMean = result.recommendationMean,
+                    recommendationKey = result.recommendationKey,
+                    numberOfAnalystOpinions = result.numberOfAnalystOpinions,
+                )
+            } else {
+                null
+            }
 
         return QuoteData(
             identification = identification,
@@ -2047,7 +2204,7 @@ class YahooClient internal constructor(
             revenue = revenue,
             financialHealth = financialHealth,
             growthRates = growthRates,
-            analystRatings = analystRatings
+            analystRatings = analystRatings,
         )
     }
 
@@ -2067,11 +2224,14 @@ class YahooClient internal constructor(
         sortField: ScreenerSortField = ScreenerSortField.TICKER,
         sortAsc: Boolean = false,
         size: Int = 100,
-        offset: Int = 0
+        offset: Int = 0,
     ): ScreenerResult {
         logger.debug(
             "Calling Yahoo Finance Screener API (Custom): quoteType={}, sortField={}, size={}, offset={}",
-            query.quoteType, sortField.apiValue, size, offset
+            query.quoteType,
+            sortField.apiValue,
+            size,
+            offset,
         )
 
         // 파라미터 검증
@@ -2091,21 +2251,23 @@ class YahooClient internal constructor(
         val queryMap = query.toRequestBody()
         val queryJson = convertMapToJsonElement(queryMap)
 
-        val requestBody = ScreenerRequest(
-            query = queryJson,
-            quoteType = query.quoteType,
-            sortField = sortField.apiValue,
-            sortType = if (sortAsc) "ASC" else "DESC",
-            size = size,
-            offset = offset
-        )
+        val requestBody =
+            ScreenerRequest(
+                query = queryJson,
+                quoteType = query.quoteType,
+                sortField = sortField.apiValue,
+                sortType = if (sortAsc) "ASC" else "DESC",
+                size = size,
+                offset = offset,
+            )
 
         // API 요청 (POST)
-        val response = httpClient.post(YahooApiUrls.SCREENER) {
-            parameter("crumb", crumb)
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
+        val response =
+            httpClient.post(YahooApiUrls.SCREENER) {
+                parameter("crumb", crumb)
+                contentType(ContentType.Application.Json)
+                setBody(requestBody)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -2113,10 +2275,11 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Screener API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf(
-                    "quoteType" to query.quoteType,
-                    "sortField" to sortField.apiValue
-                )
+                metadata =
+                    mapOf(
+                        "quoteType" to query.quoteType,
+                        "sortField" to sortField.apiValue,
+                    ),
             )
         }
 
@@ -2129,7 +2292,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Screener API 에러: ${screenerResponse.finance.error.description}",
-                metadata = mapOf("errorCode" to screenerResponse.finance.error.code)
+                metadata = mapOf("errorCode" to screenerResponse.finance.error.code),
             )
         }
 
@@ -2138,7 +2301,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "Screener 결과를 찾을 수 없습니다",
-                metadata = mapOf("quoteType" to query.quoteType)
+                metadata = mapOf("quoteType" to query.quoteType),
             )
         }
 
@@ -2160,11 +2323,12 @@ class YahooClient internal constructor(
         predefinedId: String,
         count: Int = 25,
         sortField: ScreenerSortField? = null,
-        sortAsc: Boolean? = null
+        sortAsc: Boolean? = null,
     ): ScreenerResult {
         logger.debug(
             "Calling Yahoo Finance Screener API (Predefined): scrIds={}, count={}",
-            predefinedId, count
+            predefinedId,
+            count,
         )
 
         // 파라미터 검증
@@ -2177,17 +2341,18 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청 (GET)
-        val response = httpClient.get(YahooApiUrls.SCREENER_PREDEFINED) {
-            parameter("scrIds", predefinedId)
-            parameter("count", count)
-            parameter("crumb", crumb)
-            if (sortField != null) {
-                parameter("sortField", sortField.apiValue)
+        val response =
+            httpClient.get(YahooApiUrls.SCREENER_PREDEFINED) {
+                parameter("scrIds", predefinedId)
+                parameter("count", count)
+                parameter("crumb", crumb)
+                if (sortField != null) {
+                    parameter("sortField", sortField.apiValue)
+                }
+                if (sortAsc != null) {
+                    parameter("sortType", if (sortAsc) "ASC" else "DESC")
+                }
             }
-            if (sortAsc != null) {
-                parameter("sortType", if (sortAsc) "ASC" else "DESC")
-            }
-        }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -2195,7 +2360,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Screener API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("predefinedId" to predefinedId)
+                metadata = mapOf("predefinedId" to predefinedId),
             )
         }
 
@@ -2208,7 +2373,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Screener API 에러: ${screenerResponse.finance.error.description}",
-                metadata = mapOf("errorCode" to screenerResponse.finance.error.code)
+                metadata = mapOf("errorCode" to screenerResponse.finance.error.code),
             )
         }
 
@@ -2217,7 +2382,7 @@ class YahooClient internal constructor(
             throw ApiException(
                 errorCode = ErrorCode.DATA_NOT_FOUND,
                 message = "Screener 결과를 찾을 수 없습니다",
-                metadata = mapOf("predefinedId" to predefinedId)
+                metadata = mapOf("predefinedId" to predefinedId),
             )
         }
 
@@ -2239,15 +2404,14 @@ class YahooClient internal constructor(
         predefined: PredefinedScreener,
         count: Int = 25,
         sortField: ScreenerSortField? = null,
-        sortAsc: Boolean? = null
-    ): ScreenerResult {
-        return screener(
+        sortAsc: Boolean? = null,
+    ): ScreenerResult =
+        screener(
             predefinedId = predefined.apiId,
             count = count,
             sortField = sortField ?: predefined.defaultSortField,
-            sortAsc = sortAsc ?: predefined.defaultSortAsc
+            sortAsc = sortAsc ?: predefined.defaultSortAsc,
         )
-    }
 
     /**
      * Internal ScreenerApiResult를 public ScreenerResult로 변환합니다.
@@ -2256,16 +2420,17 @@ class YahooClient internal constructor(
      * @return ScreenerResult
      */
     private fun convertToScreenerResult(
-        apiResult: com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerApiResult
+        apiResult: com.ulalax.ufc.infrastructure.yahoo.internal.response.ScreenerApiResult,
     ): ScreenerResult {
-        val quotes = apiResult.quotes.mapNotNull { quoteMap ->
-            try {
-                convertToScreenerQuote(quoteMap)
-            } catch (e: Exception) {
-                logger.warn("Failed to parse screener quote: ${e.message}")
-                null
+        val quotes =
+            apiResult.quotes.mapNotNull { quoteMap ->
+                try {
+                    convertToScreenerQuote(quoteMap)
+                } catch (e: Exception) {
+                    logger.warn("Failed to parse screener quote: ${e.message}")
+                    null
+                }
             }
-        }
 
         return ScreenerResult(
             id = apiResult.id,
@@ -2274,7 +2439,7 @@ class YahooClient internal constructor(
             count = apiResult.count,
             total = apiResult.total,
             start = apiResult.start,
-            quotes = quotes
+            quotes = quotes,
         )
     }
 
@@ -2284,8 +2449,8 @@ class YahooClient internal constructor(
      * @param map 변환할 Map
      * @return JsonElement
      */
-    private fun convertMapToJsonElement(map: Map<String, Any>): JsonElement {
-        return buildJsonObject {
+    private fun convertMapToJsonElement(map: Map<String, Any>): JsonElement =
+        buildJsonObject {
             map.forEach { (key, value) ->
                 when (value) {
                     is String -> put(key, value)
@@ -2309,7 +2474,6 @@ class YahooClient internal constructor(
                 }
             }
         }
-    }
 
     /**
      * Internal quote Map을 public ScreenerQuote로 변환합니다.
@@ -2319,11 +2483,12 @@ class YahooClient internal constructor(
      */
     private fun convertToScreenerQuote(quoteMap: Map<String, JsonElement>): ScreenerQuote {
         // symbol은 필수
-        val symbol = quoteMap["symbol"]?.jsonPrimitive?.content
-            ?: throw DataParsingException(
-                errorCode = ErrorCode.DATA_PARSING_ERROR,
-                message = "symbol 필드가 없습니다"
-            )
+        val symbol =
+            quoteMap["symbol"]?.jsonPrimitive?.content
+                ?: throw DataParsingException(
+                    errorCode = ErrorCode.DATA_PARSING_ERROR,
+                    message = "symbol 필드가 없습니다",
+                )
 
         // 표준 필드 추출
         val shortName = quoteMap["shortname"]?.jsonPrimitive?.contentOrNull
@@ -2341,25 +2506,38 @@ class YahooClient internal constructor(
         val regularMarketVolume = quoteMap["regularMarketVolume"]?.jsonPrimitive?.longOrNull
 
         // 나머지는 additionalFields에 저장
-        val standardFields = setOf(
-            "symbol", "shortname", "longname", "quoteType", "sector", "industry", "exchange",
-            "marketCap", "regularMarketPrice", "regularMarketChange", "regularMarketChangePercent", "regularMarketVolume"
-        )
+        val standardFields =
+            setOf(
+                "symbol",
+                "shortname",
+                "longname",
+                "quoteType",
+                "sector",
+                "industry",
+                "exchange",
+                "marketCap",
+                "regularMarketPrice",
+                "regularMarketChange",
+                "regularMarketChangePercent",
+                "regularMarketVolume",
+            )
 
-        val additionalFields = quoteMap
-            .filterKeys { it !in standardFields }
-            .mapValues { (_, value) ->
-                when (value) {
-                    is JsonNull -> null
-                    is JsonPrimitive -> when {
-                        value.isString -> value.content
-                        else -> value.longOrNull ?: value.doubleOrNull ?: value.booleanOrNull
+        val additionalFields =
+            quoteMap
+                .filterKeys { it !in standardFields }
+                .mapValues { (_, value) ->
+                    when (value) {
+                        is JsonNull -> null
+                        is JsonPrimitive ->
+                            when {
+                                value.isString -> value.content
+                                else -> value.longOrNull ?: value.doubleOrNull ?: value.booleanOrNull
+                            }
+                        is JsonArray -> value.toString()
+                        is JsonObject -> value.toString()
+                        else -> null
                     }
-                    is JsonArray -> value.toString()
-                    is JsonObject -> value.toString()
-                    else -> null
                 }
-            }
 
         return ScreenerQuote(
             symbol = symbol,
@@ -2374,7 +2552,7 @@ class YahooClient internal constructor(
             regularMarketChange = regularMarketChange,
             regularMarketChangePercent = regularMarketChangePercent,
             regularMarketVolume = regularMarketVolume,
-            additionalFields = additionalFields
+            additionalFields = additionalFields,
         )
     }
 
@@ -2392,7 +2570,7 @@ class YahooClient internal constructor(
         query: String,
         quotesCount: Int = 8,
         newsCount: Int = 8,
-        enableFuzzyQuery: Boolean = false
+        enableFuzzyQuery: Boolean = false,
     ): SearchResponse {
         // 파라미터 검증
         require(query.isNotBlank()) { "검색어는 비어있을 수 없습니다" }
@@ -2402,7 +2580,10 @@ class YahooClient internal constructor(
 
         logger.debug(
             "Calling Yahoo Finance Search API: query={}, quotesCount={}, newsCount={}, enableFuzzyQuery={}",
-            query, quotesCount, newsCount, enableFuzzyQuery
+            query,
+            quotesCount,
+            newsCount,
+            enableFuzzyQuery,
         )
 
         // Rate Limit 적용
@@ -2412,15 +2593,16 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // API 요청
-        val response = httpClient.get(YahooApiUrls.SEARCH) {
-            parameter("q", query)
-            parameter("quotesCount", quotesCount)
-            parameter("newsCount", newsCount)
-            parameter("enableFuzzyQuery", enableFuzzyQuery)
-            parameter("quotesQueryId", "tss_match_phrase_query")
-            parameter("newsQueryId", "news_cie_vespa")
-            parameter("crumb", crumb)
-        }
+        val response =
+            httpClient.get(YahooApiUrls.SEARCH) {
+                parameter("q", query)
+                parameter("quotesCount", quotesCount)
+                parameter("newsCount", newsCount)
+                parameter("enableFuzzyQuery", enableFuzzyQuery)
+                parameter("quotesQueryId", "tss_match_phrase_query")
+                parameter("newsQueryId", "news_cie_vespa")
+                parameter("crumb", crumb)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -2428,7 +2610,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Search API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("query" to query)
+                metadata = mapOf("query" to query),
             )
         }
 
@@ -2449,51 +2631,53 @@ class YahooClient internal constructor(
      */
     private fun convertToSearchResponse(
         query: String,
-        response: SearchApiResponse
+        response: SearchApiResponse,
     ): SearchResponse {
         // quotes 변환 (필수 필드 누락 시 제외)
-        val quotes = response.quotes?.mapNotNull { quoteResult ->
-            // 필수 필드 확인
-            val symbol = quoteResult.symbol?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-            val quoteType = quoteResult.quoteType?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+        val quotes =
+            response.quotes?.mapNotNull { quoteResult ->
+                // 필수 필드 확인
+                val symbol = quoteResult.symbol?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val quoteType = quoteResult.quoteType?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 
-            SearchQuote(
-                symbol = symbol,
-                shortName = quoteResult.shortname?.takeIf { it.isNotBlank() },
-                longName = quoteResult.longname?.takeIf { it.isNotBlank() },
-                quoteType = quoteType,
-                exchange = quoteResult.exchange?.takeIf { it.isNotBlank() },
-                exchangeDisplay = quoteResult.exchDisp?.takeIf { it.isNotBlank() },
-                sector = quoteResult.sector?.takeIf { it.isNotBlank() },
-                industry = quoteResult.industry?.takeIf { it.isNotBlank() },
-                score = quoteResult.score ?: 0.0
-            )
-        } ?: emptyList()
+                SearchQuote(
+                    symbol = symbol,
+                    shortName = quoteResult.shortname?.takeIf { it.isNotBlank() },
+                    longName = quoteResult.longname?.takeIf { it.isNotBlank() },
+                    quoteType = quoteType,
+                    exchange = quoteResult.exchange?.takeIf { it.isNotBlank() },
+                    exchangeDisplay = quoteResult.exchDisp?.takeIf { it.isNotBlank() },
+                    sector = quoteResult.sector?.takeIf { it.isNotBlank() },
+                    industry = quoteResult.industry?.takeIf { it.isNotBlank() },
+                    score = quoteResult.score ?: 0.0,
+                )
+            } ?: emptyList()
 
         // news 변환 (필수 필드 누락 시 제외)
-        val news = response.news?.mapNotNull { newsResult ->
-            // 필수 필드 확인
-            val uuid = newsResult.uuid?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-            val title = newsResult.title?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-            val link = newsResult.link?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+        val news =
+            response.news?.mapNotNull { newsResult ->
+                // 필수 필드 확인
+                val uuid = newsResult.uuid?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val title = newsResult.title?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val link = newsResult.link?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 
-            SearchNews(
-                uuid = uuid,
-                title = title,
-                publisher = newsResult.publisher?.takeIf { it.isNotBlank() },
-                link = link,
-                publishTime = newsResult.providerPublishTime ?: 0L,
-                type = newsResult.type?.takeIf { it.isNotBlank() },
-                thumbnail = newsResult.thumbnail?.let { convertNewsThumbnail(it) },
-                relatedTickers = newsResult.relatedTickers ?: emptyList()
-            )
-        } ?: emptyList()
+                SearchNews(
+                    uuid = uuid,
+                    title = title,
+                    publisher = newsResult.publisher?.takeIf { it.isNotBlank() },
+                    link = link,
+                    publishTime = newsResult.providerPublishTime ?: 0L,
+                    type = newsResult.type?.takeIf { it.isNotBlank() },
+                    thumbnail = newsResult.thumbnail?.let { convertNewsThumbnail(it) },
+                    relatedTickers = newsResult.relatedTickers ?: emptyList(),
+                )
+            } ?: emptyList()
 
         return SearchResponse(
             query = query,
             count = response.count ?: 0,
             quotes = quotes,
-            news = news
+            news = news,
         )
     }
 
@@ -2504,21 +2688,22 @@ class YahooClient internal constructor(
      * @return NewsThumbnail
      */
     private fun convertNewsThumbnail(
-        thumbnail: com.ulalax.ufc.infrastructure.yahoo.internal.response.NewsThumbnailResult
+        thumbnail: com.ulalax.ufc.infrastructure.yahoo.internal.response.NewsThumbnailResult,
     ): NewsThumbnail {
-        val resolutions = thumbnail.resolutions?.mapNotNull { resResult ->
-            val url = resResult.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
-            val width = resResult.width ?: return@mapNotNull null
-            val height = resResult.height ?: return@mapNotNull null
-            val tag = resResult.tag?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+        val resolutions =
+            thumbnail.resolutions?.mapNotNull { resResult ->
+                val url = resResult.url?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                val width = resResult.width ?: return@mapNotNull null
+                val height = resResult.height ?: return@mapNotNull null
+                val tag = resResult.tag?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
 
-            ThumbnailResolution(
-                url = url,
-                width = width,
-                height = height,
-                tag = tag
-            )
-        } ?: emptyList()
+                ThumbnailResolution(
+                    url = url,
+                    width = width,
+                    height = height,
+                    tag = tag,
+                )
+            } ?: emptyList()
 
         return NewsThumbnail(resolutions = resolutions)
     }
@@ -2534,7 +2719,7 @@ class YahooClient internal constructor(
      */
     suspend fun visualization(
         symbol: String,
-        limit: Int = 12
+        limit: Int = 12,
     ): VisualizationEarningsCalendar {
         logger.debug("Calling Yahoo Finance Visualization API: symbol={}, limit={}", symbol, limit)
 
@@ -2544,7 +2729,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "limit는 1-100 범위여야 합니다: $limit",
                 field = "limit",
-                metadata = mapOf("limit" to limit.toString())
+                metadata = mapOf("limit" to limit.toString()),
             )
         }
 
@@ -2555,31 +2740,35 @@ class YahooClient internal constructor(
         val crumb = authenticator.getCrumb()
 
         // 요청 본문 생성
-        val requestBody = VisualizationRequest(
-            size = limit,
-            query = VisualizationQuery(
-                operator = "eq",
-                operands = listOf("ticker", symbol)
-            ),
-            sortField = "startdatetime",
-            sortType = "DESC",
-            entityIdType = "earnings",
-            includeFields = listOf(
-                "startdatetime",
-                "timeZoneShortName",
-                "epsestimate",
-                "epsactual",
-                "epssurprisepct",
-                "eventtype"
+        val requestBody =
+            VisualizationRequest(
+                size = limit,
+                query =
+                    VisualizationQuery(
+                        operator = "eq",
+                        operands = listOf("ticker", symbol),
+                    ),
+                sortField = "startdatetime",
+                sortType = "DESC",
+                entityIdType = "earnings",
+                includeFields =
+                    listOf(
+                        "startdatetime",
+                        "timeZoneShortName",
+                        "epsestimate",
+                        "epsactual",
+                        "epssurprisepct",
+                        "eventtype",
+                    ),
             )
-        )
 
         // API 요청
-        val response = httpClient.post(YahooApiUrls.VISUALIZATION) {
-            contentType(ContentType.Application.Json)
-            parameter("crumb", crumb)
-            setBody(requestBody)
-        }
+        val response =
+            httpClient.post(YahooApiUrls.VISUALIZATION) {
+                contentType(ContentType.Application.Json)
+                parameter("crumb", crumb)
+                setBody(requestBody)
+            }
 
         // HTTP 상태 코드 확인
         if (!response.status.isSuccess()) {
@@ -2587,7 +2776,7 @@ class YahooClient internal constructor(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Visualization API 요청 실패: HTTP ${response.status.value}",
                 statusCode = response.status.value,
-                metadata = mapOf("symbol" to symbol, "limit" to limit.toString())
+                metadata = mapOf("symbol" to symbol, "limit" to limit.toString()),
             )
         }
 
@@ -2599,65 +2788,72 @@ class YahooClient internal constructor(
         if (visualizationResponse.finance.error != null) {
             throw ApiException(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
-                message = "Visualization API 에러: ${visualizationResponse.finance.error?.description ?: "Unknown error"}",
-                metadata = mapOf(
-                    "symbol" to symbol,
-                    "errorCode" to (visualizationResponse.finance.error?.code ?: "UNKNOWN")
-                )
+                message =
+                    "Visualization API 에러: " +
+                        "${visualizationResponse.finance.error?.description ?: "Unknown error"}",
+                metadata =
+                    mapOf(
+                        "symbol" to symbol,
+                        "errorCode" to (visualizationResponse.finance.error?.code ?: "UNKNOWN"),
+                    ),
             )
         }
 
         // 결과 확인 및 변환
-        val documents = visualizationResponse.finance.result?.firstOrNull()?.documents
+        val documents =
+            visualizationResponse.finance.result
+                ?.firstOrNull()
+                ?.documents
         if (documents.isNullOrEmpty()) {
             // 빈 결과는 에러가 아니라 빈 목록 반환
             return VisualizationEarningsCalendar(
                 symbol = symbol,
-                earningsDates = emptyList()
+                earningsDates = emptyList(),
             )
         }
 
         val document = documents.first()
-        val earningsDates = document.rows.mapNotNull { row ->
-            try {
-                // 각 row는 [startdatetime, timeZoneShortName, epsestimate, epsactual, epssurprisepct, eventtype] 순서
-                val startDatetimeStr = (row.getOrNull(0) as? JsonPrimitive)?.content
-                val timezoneShortName = (row.getOrNull(1) as? JsonPrimitive)?.content
-                val epsEstimate = (row.getOrNull(2) as? JsonPrimitive)?.double
-                val epsActual = (row.getOrNull(3) as? JsonPrimitive)?.double
-                val epsSurprisePct = (row.getOrNull(4) as? JsonPrimitive)?.double
-                val eventTypeCode = (row.getOrNull(5) as? JsonPrimitive)?.int
+        val earningsDates =
+            document.rows.mapNotNull { row ->
+                try {
+                    // 각 row는 [startdatetime, timeZoneShortName, epsestimate, epsactual, epssurprisepct, eventtype] 순서
+                    val startDatetimeStr = (row.getOrNull(0) as? JsonPrimitive)?.content
+                    val timezoneShortName = (row.getOrNull(1) as? JsonPrimitive)?.content
+                    val epsEstimate = (row.getOrNull(2) as? JsonPrimitive)?.double
+                    val epsActual = (row.getOrNull(3) as? JsonPrimitive)?.double
+                    val epsSurprisePct = (row.getOrNull(4) as? JsonPrimitive)?.double
+                    val eventTypeCode = (row.getOrNull(5) as? JsonPrimitive)?.int
 
-                // startdatetime과 eventtype은 필수
-                if (startDatetimeStr == null || eventTypeCode == null) {
-                    return@mapNotNull null
+                    // startdatetime과 eventtype은 필수
+                    if (startDatetimeStr == null || eventTypeCode == null) {
+                        return@mapNotNull null
+                    }
+
+                    // ISO 8601 파싱하여 epoch seconds로 변환
+                    val earningsDate = Instant.parse(startDatetimeStr).epochSecond
+
+                    // 0.0 값은 null로 처리
+                    val finalEpsEstimate = if (epsEstimate == 0.0) null else epsEstimate
+                    val finalEpsActual = if (epsActual == 0.0) null else epsActual
+                    val finalEpsSurprisePct = if (epsSurprisePct == 0.0) null else epsSurprisePct
+
+                    EarningsDate(
+                        earningsDate = earningsDate,
+                        timezoneShortName = timezoneShortName,
+                        epsEstimate = finalEpsEstimate,
+                        epsActual = finalEpsActual,
+                        surprisePercent = finalEpsSurprisePct,
+                        eventType = EarningsEventType.fromCode(eventTypeCode),
+                    )
+                } catch (e: Exception) {
+                    logger.warn("Failed to parse earnings date row: $row", e)
+                    null
                 }
-
-                // ISO 8601 파싱하여 epoch seconds로 변환
-                val earningsDate = Instant.parse(startDatetimeStr).epochSecond
-
-                // 0.0 값은 null로 처리
-                val finalEpsEstimate = if (epsEstimate == 0.0) null else epsEstimate
-                val finalEpsActual = if (epsActual == 0.0) null else epsActual
-                val finalEpsSurprisePct = if (epsSurprisePct == 0.0) null else epsSurprisePct
-
-                EarningsDate(
-                    earningsDate = earningsDate,
-                    timezoneShortName = timezoneShortName,
-                    epsEstimate = finalEpsEstimate,
-                    epsActual = finalEpsActual,
-                    surprisePercent = finalEpsSurprisePct,
-                    eventType = EarningsEventType.fromCode(eventTypeCode)
-                )
-            } catch (e: Exception) {
-                logger.warn("Failed to parse earnings date row: $row", e)
-                null
             }
-        }
 
         return VisualizationEarningsCalendar(
             symbol = symbol,
-            earningsDates = earningsDates
+            earningsDates = earningsDates,
         )
     }
 

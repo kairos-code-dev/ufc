@@ -25,5 +25,5 @@ data class StreamingPrice(
     val volume: Long,
     val bid: Double?,
     val ask: Double?,
-    val marketHours: MarketHours
+    val marketHours: MarketHours,
 )

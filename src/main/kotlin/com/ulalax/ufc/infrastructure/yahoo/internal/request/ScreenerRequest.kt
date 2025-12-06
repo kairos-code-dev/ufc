@@ -13,25 +13,18 @@ import kotlinx.serialization.json.JsonElement
 internal data class ScreenerRequest(
     @SerialName("query")
     val query: JsonElement,
-
     @SerialName("quoteType")
     val quoteType: String,
-
     @SerialName("sortField")
     val sortField: String,
-
     @SerialName("sortType")
     val sortType: String,
-
     @SerialName("size")
     val size: Int,
-
     @SerialName("offset")
     val offset: Int,
-
     @SerialName("userId")
     val userId: String = "",
-
     @SerialName("userIdType")
-    val userIdType: String = "guid"
+    val userIdType: String = "guid",
 )

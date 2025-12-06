@@ -35,5 +35,5 @@ data class QuoteData(
     val revenue: QuoteRevenue? = null,
     val financialHealth: QuoteFinancialHealth? = null,
     val growthRates: QuoteGrowthRates? = null,
-    val analystRatings: QuoteAnalystRatings? = null
+    val analystRatings: QuoteAnalystRatings? = null,
 )

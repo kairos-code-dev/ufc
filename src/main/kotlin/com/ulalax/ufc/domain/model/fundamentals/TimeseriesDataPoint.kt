@@ -34,16 +34,13 @@ data class TimeseriesDataPoint(
     val asOfDate: LocalDate,
     val periodType: String,
     val value: Double?,
-    val currencyCode: String
+    val currencyCode: String,
 ) : Comparable<TimeseriesDataPoint> {
-
     /**
      * asOfDate 기준으로 정렬합니다.
      *
      * @param other 비교 대상 데이터 포인트
      * @return 음수(이전), 0(동일), 양수(이후)
      */
-    override fun compareTo(other: TimeseriesDataPoint): Int {
-        return asOfDate.compareTo(other.asOfDate)
-    }
+    override fun compareTo(other: TimeseriesDataPoint): Int = asOfDate.compareTo(other.asOfDate)
 }

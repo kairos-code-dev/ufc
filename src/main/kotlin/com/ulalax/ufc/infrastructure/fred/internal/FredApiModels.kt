@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class FredSeriesResponse(
-    val seriess: List<FredSeriesDto>
+    val seriess: List<FredSeriesDto>,
 )
 
 /**
@@ -23,7 +23,7 @@ internal data class FredSeriesDto(
     @SerialName("seasonal_adjustment")
     val seasonalAdjustment: String,
     @SerialName("last_updated")
-    val lastUpdated: String
+    val lastUpdated: String,
 )
 
 /**
@@ -31,7 +31,7 @@ internal data class FredSeriesDto(
  */
 @Serializable
 internal data class FredObservationsResponse(
-    val observations: List<FredObservationDto>
+    val observations: List<FredObservationDto>,
 )
 
 /**
@@ -40,5 +40,5 @@ internal data class FredObservationsResponse(
 @Serializable
 internal data class FredObservationDto(
     val date: String,
-    val value: String
+    val value: String,
 )

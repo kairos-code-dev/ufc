@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class UnsubscribeMessage(
-    val unsubscribe: List<String>
+    val unsubscribe: List<String>,
 )

@@ -22,7 +22,6 @@ import java.util.Properties
  * ```
  */
 class FredApiKeyCondition : ExecutionCondition {
-
     override fun evaluateExecutionCondition(context: ExtensionContext): ConditionEvaluationResult {
         val apiKey = findFredApiKey()
 
@@ -30,7 +29,7 @@ class FredApiKeyCondition : ExecutionCondition {
             ConditionEvaluationResult.enabled("FRED_API_KEY found")
         } else {
             ConditionEvaluationResult.disabled(
-                "FRED_API_KEY not found. Set it via environment variable or local.properties"
+                "FRED_API_KEY not found. Set it via environment variable or local.properties",
             )
         }
     }

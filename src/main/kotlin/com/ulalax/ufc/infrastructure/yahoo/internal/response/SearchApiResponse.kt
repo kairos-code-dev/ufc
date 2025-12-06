@@ -16,18 +16,16 @@ internal data class SearchApiResponse(
      */
     @SerialName("count")
     val count: Int? = null,
-
     /**
      * 종목 검색 결과 리스트
      */
     @SerialName("quotes")
     val quotes: List<SearchQuoteResult>? = null,
-
     /**
      * 뉴스 검색 결과 리스트
      */
     @SerialName("news")
-    val news: List<NewsResult>? = null
+    val news: List<NewsResult>? = null,
 )
 
 /**
@@ -40,54 +38,46 @@ internal data class SearchQuoteResult(
      */
     @SerialName("symbol")
     val symbol: String? = null,
-
     /**
      * 짧은 이름
      */
     @SerialName("shortname")
     val shortname: String? = null,
-
     /**
      * 전체 이름
      */
     @SerialName("longname")
     val longname: String? = null,
-
     /**
      * 자산 유형 (EQUITY, ETF, MUTUALFUND 등)
      */
     @SerialName("quoteType")
     val quoteType: String? = null,
-
     /**
      * 거래소 코드 (NMS, NYQ 등)
      */
     @SerialName("exchange")
     val exchange: String? = null,
-
     /**
      * 거래소 표시명
      */
     @SerialName("exchDisp")
     val exchDisp: String? = null,
-
     /**
      * 섹터 (주식만 해당)
      */
     @SerialName("sector")
     val sector: String? = null,
-
     /**
      * 산업 (주식만 해당)
      */
     @SerialName("industry")
     val industry: String? = null,
-
     /**
      * 검색 관련도 점수
      */
     @SerialName("score")
-    val score: Double? = null
+    val score: Double? = null,
 )
 
 /**
@@ -100,48 +90,41 @@ internal data class NewsResult(
      */
     @SerialName("uuid")
     val uuid: String? = null,
-
     /**
      * 뉴스 제목
      */
     @SerialName("title")
     val title: String? = null,
-
     /**
      * 발행사
      */
     @SerialName("publisher")
     val publisher: String? = null,
-
     /**
      * 뉴스 링크 URL
      */
     @SerialName("link")
     val link: String? = null,
-
     /**
      * Unix 타임스탬프 (초 단위)
      */
     @SerialName("providerPublishTime")
     val providerPublishTime: Long? = null,
-
     /**
      * 뉴스 타입 (STORY, VIDEO 등)
      */
     @SerialName("type")
     val type: String? = null,
-
     /**
      * 썸네일 이미지
      */
     @SerialName("thumbnail")
     val thumbnail: NewsThumbnailResult? = null,
-
     /**
      * 관련 티커 심볼 리스트
      */
     @SerialName("relatedTickers")
-    val relatedTickers: List<String>? = null
+    val relatedTickers: List<String>? = null,
 )
 
 /**
@@ -153,7 +136,7 @@ internal data class NewsThumbnailResult(
      * 다양한 해상도의 이미지 URL 리스트
      */
     @SerialName("resolutions")
-    val resolutions: List<ThumbnailResolutionResult>? = null
+    val resolutions: List<ThumbnailResolutionResult>? = null,
 )
 
 /**
@@ -166,22 +149,19 @@ internal data class ThumbnailResolutionResult(
      */
     @SerialName("url")
     val url: String? = null,
-
     /**
      * 이미지 너비 (픽셀)
      */
     @SerialName("width")
     val width: Int? = null,
-
     /**
      * 이미지 높이 (픽셀)
      */
     @SerialName("height")
     val height: Int? = null,
-
     /**
      * 태그 (예: "140x140", "original")
      */
     @SerialName("tag")
-    val tag: String? = null
+    val tag: String? = null,
 )

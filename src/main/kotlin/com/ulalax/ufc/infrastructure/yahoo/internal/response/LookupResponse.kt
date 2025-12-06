@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class LookupResponse(
     @SerialName("finance")
-    val finance: LookupFinance
+    val finance: LookupFinance,
 )
 
 /**
@@ -22,9 +22,8 @@ internal data class LookupResponse(
 internal data class LookupFinance(
     @SerialName("result")
     val result: List<LookupResultResponse>? = null,
-
     @SerialName("error")
-    val error: LookupError? = null
+    val error: LookupError? = null,
 )
 
 /**
@@ -34,15 +33,12 @@ internal data class LookupFinance(
 internal data class LookupResultResponse(
     @SerialName("count")
     val count: Int? = null,
-
     @SerialName("start")
     val start: Int? = null,
-
     @SerialName("total")
     val total: Int? = null,
-
     @SerialName("documents")
-    val documents: List<LookupDocumentResponse>? = null
+    val documents: List<LookupDocumentResponse>? = null,
 )
 
 /**
@@ -52,58 +48,41 @@ internal data class LookupResultResponse(
 internal data class LookupDocumentResponse(
     @SerialName("symbol")
     val symbol: String? = null,
-
     @SerialName("shortName")
     val shortName: String? = null,
-
     @SerialName("exchange")
     val exchange: String? = null,
-
     @SerialName("quoteType")
     val quoteType: String? = null,
-
     @SerialName("industryName")
     val industryName: String? = null,
-
     @SerialName("rank")
     val rank: Int? = null,
-
     @SerialName("industryLink")
     val industryLink: String? = null,
-
     // 하위 호환성을 위해 유지 (사용되지 않을 수 있음)
     @SerialName("name")
     val name: String? = null,
-
     @SerialName("exch")
     val exch: String? = null,
-
     @SerialName("type")
     val type: String? = null,
-
     @SerialName("exchDisp")
     val exchDisp: String? = null,
-
     @SerialName("typeDisp")
     val typeDisp: String? = null,
-
     @SerialName("industry")
     val industry: String? = null,
-
     @SerialName("industryDisp")
     val industryDisp: String? = null,
-
     @SerialName("sector")
     val sector: String? = null,
-
     @SerialName("sectorDisp")
     val sectorDisp: String? = null,
-
     @SerialName("score")
     val score: Double? = null,
-
     @SerialName("isYahooFinance")
-    val isYahooFinance: Boolean? = null
+    val isYahooFinance: Boolean? = null,
 )
 
 /**
@@ -113,7 +92,6 @@ internal data class LookupDocumentResponse(
 internal data class LookupError(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )

@@ -17,7 +17,7 @@ data class ReconnectionConfig(
     val maxAttempts: Int = 5,
     val initialDelayMs: Long = 1000,
     val maxDelayMs: Long = 30000,
-    val backoffMultiplier: Double = 2.0
+    val backoffMultiplier: Double = 2.0,
 ) {
     init {
         require(maxAttempts > 0) { "maxAttempts must be positive" }

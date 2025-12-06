@@ -1,6 +1,5 @@
 package com.ulalax.ufc.domain.model.market
 
-import kotlinx.serialization.Serializable
 import java.time.Instant
 
 /**
@@ -43,5 +42,5 @@ data class MarketSummaryItem(
     val quoteType: String? = null,
     val timezoneName: String? = null,
     val timezoneShortName: String? = null,
-    val gmtOffsetMillis: Long? = null
+    val gmtOffsetMillis: Long? = null,
 )

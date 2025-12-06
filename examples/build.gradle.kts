@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("jvm") version "2.1.0"
     application
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.ulalax.ufc"
@@ -22,7 +23,7 @@ kotlin {
         jvmTarget = JvmTarget.JVM_21
         freeCompilerArgs.addAll(
             "-Xjsr305=strict",
-            "-opt-in=kotlin.ExperimentalCoroutinesApi"
+            "-opt-in=kotlin.ExperimentalCoroutinesApi",
         )
     }
 }
@@ -85,8 +86,9 @@ tasks.register<JavaExec>("runFredExample") {
     mainClass.set("com.ulalax.ufc.examples.FredExampleKt")
 
     // Load FRED API key from environment or local.properties
-    val fredApiKey = System.getenv("FRED_API_KEY")
-        ?: project.findProperty("fred.api.key")?.toString()
+    val fredApiKey =
+        System.getenv("FRED_API_KEY")
+            ?: project.findProperty("fred.api.key")?.toString()
     if (fredApiKey != null) {
         environment("FRED_API_KEY", fredApiKey)
     }

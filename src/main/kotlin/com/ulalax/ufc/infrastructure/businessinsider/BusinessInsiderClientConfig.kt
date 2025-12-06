@@ -15,5 +15,5 @@ data class BusinessInsiderClientConfig(
     val connectTimeoutMs: Long = 30_000,
     val requestTimeoutMs: Long = 60_000,
     val enableLogging: Boolean = false,
-    val rateLimitConfig: RateLimitConfig = RateLimitingSettings.businessInsiderDefault()
+    val rateLimitConfig: RateLimitConfig = RateLimitingSettings.businessInsiderDefault(),
 )

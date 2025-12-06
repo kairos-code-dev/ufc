@@ -24,5 +24,5 @@ data class QuotePricing(
     val previousClose: Double? = null,
     val change: Double? = null,
     val changePercent: Double? = null,
-    val marketTime: Instant? = null
+    val marketTime: Instant? = null,
 )

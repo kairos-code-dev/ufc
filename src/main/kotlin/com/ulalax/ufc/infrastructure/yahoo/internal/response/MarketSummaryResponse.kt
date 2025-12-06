@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.longOrNull
-import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
 
 /**
  * Yahoo Finance Market Summary API의 최상위 응답
@@ -24,7 +24,7 @@ import kotlinx.serialization.json.jsonObject
 @Serializable
 internal data class MarketSummaryResponse(
     @SerialName("marketSummaryResponse")
-    val marketSummaryResponse: MarketSummaryWrapper
+    val marketSummaryResponse: MarketSummaryWrapper,
 )
 
 /**
@@ -34,9 +34,8 @@ internal data class MarketSummaryResponse(
 internal data class MarketSummaryWrapper(
     @SerialName("result")
     val result: List<MarketSummaryItemResponse>? = null,
-
     @SerialName("error")
-    val error: ErrorResponse? = null
+    val error: ErrorResponse? = null,
 )
 
 /**
@@ -48,82 +47,70 @@ internal data class MarketSummaryWrapper(
 internal data class MarketSummaryItemResponse(
     @SerialName("exchange")
     val exchange: String,
-
     @SerialName("symbol")
     val symbol: String,
-
     @SerialName("shortName")
     val shortName: String,
-
     @SerialName("regularMarketPrice")
     val regularMarketPrice: JsonElement? = null,
-
     @SerialName("regularMarketChange")
     val regularMarketChange: JsonElement? = null,
-
     @SerialName("regularMarketChangePercent")
     val regularMarketChangePercent: JsonElement? = null,
-
     @SerialName("regularMarketTime")
     val regularMarketTime: JsonElement? = null,
-
     @SerialName("regularMarketDayHigh")
     val regularMarketDayHigh: JsonElement? = null,
-
     @SerialName("regularMarketDayLow")
     val regularMarketDayLow: JsonElement? = null,
-
     @SerialName("regularMarketVolume")
     val regularMarketVolume: JsonElement? = null,
-
     @SerialName("regularMarketPreviousClose")
     val regularMarketPreviousClose: JsonElement? = null,
-
     @SerialName("currency")
     val currency: String? = null,
-
     @SerialName("marketState")
     val marketState: String? = null,
-
     @SerialName("quoteType")
     val quoteType: String? = null,
-
     @SerialName("exchangeTimezoneName")
     val exchangeTimezoneName: String? = null,
-
     @SerialName("exchangeTimezoneShortName")
     val exchangeTimezoneShortName: String? = null,
-
     @SerialName("gmtOffSetMilliseconds")
-    val gmtOffSetMilliseconds: JsonElement? = null
+    val gmtOffSetMilliseconds: JsonElement? = null,
 ) {
     /** JsonElement에서 Double 값 추출 (raw 우선, 없으면 primitive) */
-    private fun JsonElement.extractDouble(): Double? {
-        return try {
+    private fun JsonElement.extractDouble(): Double? =
+        try {
             val obj = this.jsonPrimitive.content
             obj.toDoubleOrNull() ?: this.jsonPrimitive.doubleOrNull
         } catch (e: Exception) {
             try {
-                this.jsonObject["raw"]?.jsonPrimitive?.content?.toDoubleOrNull()
+                this.jsonObject["raw"]
+                    ?.jsonPrimitive
+                    ?.content
+                    ?.toDoubleOrNull()
             } catch (e2: Exception) {
                 null
             }
         }
-    }
 
     /** JsonElement에서 Long 값 추출 (raw 우선, 없으면 primitive) */
-    private fun JsonElement.extractLong(): Long? {
-        return try {
+    private fun JsonElement.extractLong(): Long? =
+        try {
             val obj = this.jsonPrimitive.content
             obj.toLongOrNull() ?: this.jsonPrimitive.longOrNull
         } catch (e: Exception) {
             try {
-                this.jsonObject["raw"]?.jsonPrimitive?.content?.toLongOrNull()
+                this.jsonObject["raw"]
+                    ?.jsonPrimitive
+                    ?.content
+                    ?.toLongOrNull()
             } catch (e2: Exception) {
                 null
             }
         }
-    }
 
     val regularMarketPriceValue: Double?
         get() = regularMarketPrice?.extractDouble()
@@ -160,7 +147,6 @@ internal data class MarketSummaryItemResponse(
 internal data class ErrorResponse(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )

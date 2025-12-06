@@ -18,5 +18,5 @@ data class QuoteDividends(
     val dividendDate: LocalDate? = null,
     val exDividendDate: LocalDate? = null,
     val trailingRate: Double? = null,
-    val trailingYield: Double? = null
+    val trailingYield: Double? = null,
 )

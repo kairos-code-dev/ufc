@@ -18,7 +18,7 @@ data class EarningsEvent(
     val timeZone: String?,
     val epsEstimate: Double?,
     val reportedEps: Double?,
-    val surprisePercent: Double?
+    val surprisePercent: Double?,
 ) {
     /**
      * 과거 실적인지 확인

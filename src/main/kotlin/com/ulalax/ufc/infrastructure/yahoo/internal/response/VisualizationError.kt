@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class VisualizationError(
     val code: String? = null,
-    val description: String? = null
+    val description: String? = null,
 )

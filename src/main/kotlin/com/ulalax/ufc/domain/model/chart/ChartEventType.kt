@@ -14,7 +14,9 @@ package com.ulalax.ufc.domain.model.chart
  *
  * @property apiValue API 요청시 사용되는 실제 값
  */
-enum class ChartEventType(val apiValue: String) {
+enum class ChartEventType(
+    val apiValue: String,
+) {
     /**
      * 배당금 이벤트
      *
@@ -34,5 +36,5 @@ enum class ChartEventType(val apiValue: String) {
      *
      * ETF 등에서 발생하는 자본 이득(Capital Gain) 내역을 조회합니다.
      */
-    CAPITAL_GAIN("capitalGain")
+    CAPITAL_GAIN("capitalGain"),
 }

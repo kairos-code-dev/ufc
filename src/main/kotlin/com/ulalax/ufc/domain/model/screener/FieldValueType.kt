@@ -11,5 +11,5 @@ enum class FieldValueType {
     STRING,
 
     /** 열거형 타입 (특정 값만 허용) */
-    ENUM
+    ENUM,
 }

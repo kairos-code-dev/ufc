@@ -7,7 +7,9 @@ package com.ulalax.ufc.domain.model.lookup
  *
  * @property apiValue Yahoo Finance API에 전달되는 실제 파라미터 값
  */
-enum class LookupType(val apiValue: String) {
+enum class LookupType(
+    val apiValue: String,
+) {
     /**
      * 모든 타입의 금융상품
      */
@@ -53,5 +55,5 @@ enum class LookupType(val apiValue: String) {
      * 암호화폐 (Cryptocurrency)
      * 예: BTC-USD, ETH-USD
      */
-    CRYPTOCURRENCY("cryptocurrency")
+    CRYPTOCURRENCY("cryptocurrency"),
 }

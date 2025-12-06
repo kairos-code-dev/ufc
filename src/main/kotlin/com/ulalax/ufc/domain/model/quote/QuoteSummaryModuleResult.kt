@@ -36,7 +36,7 @@ package com.ulalax.ufc.domain.model.quote
  */
 data class QuoteSummaryModuleResult(
     val requestedModules: Set<QuoteSummaryModule>,
-    val modules: Map<QuoteSummaryModule, Any?>
+    val modules: Map<QuoteSummaryModule, Any?>,
 ) {
     /**
      * 특정 모듈이 응답에 포함되어 있는지 확인합니다.
@@ -47,9 +47,7 @@ data class QuoteSummaryModuleResult(
      * @param module 확인할 모듈
      * @return 모듈 데이터가 존재하면 true, 그렇지 않으면 false
      */
-    fun hasModule(module: QuoteSummaryModule): Boolean {
-        return modules.containsKey(module) && modules[module] != null
-    }
+    fun hasModule(module: QuoteSummaryModule): Boolean = modules.containsKey(module) && modules[module] != null
 
     /**
      * 특정 모듈의 데이터를 타입 안전하게 가져옵니다.
@@ -77,18 +75,14 @@ data class QuoteSummaryModuleResult(
      *
      * @return 모든 요청 모듈의 데이터가 존재하면 true, 그렇지 않으면 false
      */
-    fun hasAllRequestedModules(): Boolean {
-        return requestedModules.all { hasModule(it) }
-    }
+    fun hasAllRequestedModules(): Boolean = requestedModules.all { hasModule(it) }
 
     /**
      * 응답에 포함된 모듈 목록을 반환합니다.
      *
      * @return 실제로 데이터가 존재하는 모듈의 Set
      */
-    fun getAvailableModules(): Set<QuoteSummaryModule> {
-        return modules.filterValues { it != null }.keys
-    }
+    fun getAvailableModules(): Set<QuoteSummaryModule> = modules.filterValues { it != null }.keys
 
     /**
      * 요청했지만 응답에 포함되지 않은 모듈 목록을 반환합니다.
@@ -97,8 +91,5 @@ data class QuoteSummaryModuleResult(
      *
      * @return 요청했으나 데이터가 없는 모듈의 Set
      */
-    fun getMissingModules(): Set<QuoteSummaryModule> {
-        return requestedModules.filterNot { hasModule(it) }.toSet()
-    }
+    fun getMissingModules(): Set<QuoteSummaryModule> = requestedModules.filterNot { hasModule(it) }.toSet()
 }
-

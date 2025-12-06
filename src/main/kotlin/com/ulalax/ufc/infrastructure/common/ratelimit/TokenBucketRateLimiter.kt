@@ -4,7 +4,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.math.ceil
 
 /**
  * Token Bucket 알고리즘을 기반으로 한 Rate Limiter 구현
@@ -50,9 +49,8 @@ import kotlin.math.ceil
  */
 class TokenBucketRateLimiter(
     private val source: String,
-    private val config: RateLimitConfig
+    private val config: RateLimitConfig,
 ) : RateLimiter {
-
     // 현재 버킷에 있는 토큰 개수 (Double로 관리하여 정밀한 리필 계산)
     private var tokens: Double = config.capacity.toDouble()
 
@@ -84,7 +82,7 @@ class TokenBucketRateLimiter(
         require(tokensNeeded > 0) { "tokensNeeded는 0보다 커야 합니다. (현재: $tokensNeeded)" }
         require(tokensNeeded <= config.capacity) {
             "tokensNeeded는 capacity를 초과할 수 없습니다. " +
-                    "(요청: $tokensNeeded, capacity: ${config.capacity})"
+                "(요청: $tokensNeeded, capacity: ${config.capacity})"
         }
 
         val startTimeMillis = System.currentTimeMillis()
@@ -111,7 +109,7 @@ class TokenBucketRateLimiter(
                     source = source,
                     config = config,
                     tokensNeeded = tokensNeeded,
-                    waitedMillis = elapsedTime
+                    waitedMillis = elapsedTime,
                 )
             }
 
@@ -143,8 +141,8 @@ class TokenBucketRateLimiter(
      *
      * @return 대기 시간 (밀리초)
      */
-    override fun getWaitTimeMillis(): Long {
-        return runBlocking {
+    override fun getWaitTimeMillis(): Long =
+        runBlocking {
             lock.withLock {
                 refillTokens()
                 if (tokens >= 1.0) {
@@ -154,22 +152,20 @@ class TokenBucketRateLimiter(
                 }
             }
         }
-    }
 
     /**
      * Rate Limiter의 현재 상태를 반환합니다.
      *
      * @return 현재 상태 정보
      */
-    override fun getStatus(): RateLimiterStatus {
-        return RateLimiterStatus(
+    override fun getStatus(): RateLimiterStatus =
+        RateLimiterStatus(
             availableTokens = getAvailableTokens(),
             capacity = config.capacity,
             refillRate = config.refillRate,
             isEnabled = config.enabled,
-            estimatedWaitTimeMs = getWaitTimeMillis()
+            estimatedWaitTimeMs = getWaitTimeMillis(),
         )
-    }
 
     /**
      * 마지막 리필 이후 경과 시간에 따라 토큰을 리필합니다.
@@ -218,12 +214,12 @@ class TokenBucketRateLimiter(
     override fun toString(): String {
         val status = getStatus()
         return "TokenBucketRateLimiter(" +
-                "source=$source, " +
-                "availableTokens=${status.availableTokens}, " +
-                "capacity=${status.capacity}, " +
-                "refillRate=${status.refillRate}/sec, " +
-                "enabled=${status.isEnabled}, " +
-                "utilizationPercent=%.2f%%, ".format(status.utilizationPercent) +
-                "estimatedWaitTimeMs=${status.estimatedWaitTimeMs}ms)"
+            "source=$source, " +
+            "availableTokens=${status.availableTokens}, " +
+            "capacity=${status.capacity}, " +
+            "refillRate=${status.refillRate}/sec, " +
+            "enabled=${status.isEnabled}, " +
+            "utilizationPercent=%.2f%%, ".format(status.utilizationPercent) +
+            "estimatedWaitTimeMs=${status.estimatedWaitTimeMs}ms)"
     }
 }

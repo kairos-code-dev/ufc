@@ -14,5 +14,5 @@ data class SearchResponse(
     val query: String,
     val count: Int,
     val quotes: List<SearchQuote>,
-    val news: List<SearchNews>
+    val news: List<SearchNews>,
 )

@@ -31,9 +31,8 @@ import com.ulalax.ufc.infrastructure.common.ratelimit.GlobalRateLimiters
  */
 class BusinessInsiderClient private constructor(
     private val httpClient: BusinessInsiderHttpClient,
-    private val config: BusinessInsiderClientConfig
+    private val config: BusinessInsiderClientConfig,
 ) : AutoCloseable {
-
     /**
      * ISIN으로 종목 정보 검색
      *
@@ -46,9 +45,7 @@ class BusinessInsiderClient private constructor(
      * @throws NoSuchElementException 검색 결과가 없는 경우
      * @throws Exception 네트워크 오류 또는 API 오류
      */
-    suspend fun searchIsin(isin: String): IsinSearchResult {
-        return httpClient.searchByIsin(isin)
-    }
+    suspend fun searchIsin(isin: String): IsinSearchResult = httpClient.searchByIsin(isin)
 
     /**
      * 클라이언트 리소스 해제
@@ -65,9 +62,7 @@ class BusinessInsiderClient private constructor(
          *
          * @return Business Insider 클라이언트 인스턴스
          */
-        fun create(): BusinessInsiderClient {
-            return create(BusinessInsiderClientConfig())
-        }
+        fun create(): BusinessInsiderClient = create(BusinessInsiderClientConfig())
 
         /**
          * 사용자 정의 설정으로 Business Insider 클라이언트 생성

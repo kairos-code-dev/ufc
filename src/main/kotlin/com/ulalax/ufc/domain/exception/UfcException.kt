@@ -15,18 +15,15 @@ open class UfcException(
     val errorCode: ErrorCode,
     message: String? = null,
     cause: Throwable? = null,
-    val metadata: Map<String, Any> = emptyMap()
+    val metadata: Map<String, Any> = emptyMap(),
 ) : RuntimeException(message ?: errorCode.message, cause) {
-
     /**
      * Retrieves a value from metadata for a specific key.
      *
      * @param key The metadata key to look up
      * @return The value for the key, or null if not found
      */
-    inline fun <reified T> getMeta(key: String): T? {
-        return metadata[key] as? T
-    }
+    inline fun <reified T> getMeta(key: String): T? = metadata[key] as? T
 
     /**
      * Creates a new UfcException with an additional metadata entry.
@@ -35,7 +32,10 @@ open class UfcException(
      * @param value The metadata value
      * @return A new UfcException instance
      */
-    fun withMeta(key: String, value: Any): UfcException {
+    fun withMeta(
+        key: String,
+        value: Any,
+    ): UfcException {
         val newMetadata = metadata.toMutableMap().apply { put(key, value) }
         return UfcException(errorCode, message, cause, newMetadata)
     }
@@ -51,10 +51,9 @@ open class UfcException(
         return UfcException(errorCode, message, cause, mergedMetadata)
     }
 
-    override fun toString(): String {
-        return "UfcException(code=${errorCode.code}, message=${errorCode.message}, " +
-                "customMessage=$message, metadata=$metadata)"
-    }
+    override fun toString(): String =
+        "UfcException(code=${errorCode.code}, message=${errorCode.message}, " +
+            "customMessage=$message, metadata=$metadata)"
 }
 
 /**
@@ -69,19 +68,19 @@ class ApiException(
     val statusCode: Int? = null,
     val responseBody: String? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata) {
     constructor(
         message: String,
         statusCode: Int? = null,
         responseBody: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : this(
         errorCode = ErrorCode.EXTERNAL_API_ERROR,
         message = message,
         statusCode = statusCode,
         responseBody = responseBody,
-        cause = cause
+        cause = cause,
     )
 }
 
@@ -95,17 +94,17 @@ class DataParsingException(
     message: String? = null,
     val sourceData: String? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata) {
     constructor(
         message: String,
         sourceData: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : this(
         errorCode = ErrorCode.JSON_PARSING_ERROR,
         message = message,
         sourceData = sourceData,
-        cause = cause
+        cause = cause,
     )
 }
 
@@ -116,15 +115,15 @@ class ConfigException(
     errorCode: ErrorCode = ErrorCode.CONFIGURATION_ERROR,
     message: String? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata) {
     constructor(
         message: String,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : this(
         errorCode = ErrorCode.CONFIGURATION_ERROR,
         message = message,
-        cause = cause
+        cause = cause,
     )
 }
 
@@ -138,17 +137,17 @@ class ValidationException(
     message: String? = null,
     val field: String? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata) {
     constructor(
         message: String,
         field: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : this(
         errorCode = ErrorCode.INVALID_PARAMETER,
         message = message,
         field = field,
-        cause = cause
+        cause = cause,
     )
 }
 
@@ -159,7 +158,7 @@ class NetworkException(
     errorCode: ErrorCode,
     message: String? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata)
 
 /**
@@ -172,5 +171,5 @@ class RateLimitException(
     message: String? = null,
     val retryAfterSeconds: Long? = null,
     cause: Throwable? = null,
-    metadata: Map<String, Any> = emptyMap()
+    metadata: Map<String, Any> = emptyMap(),
 ) : UfcException(errorCode, message, cause, metadata)

@@ -38,7 +38,7 @@ data class OptionContract(
     val expiration: Long,
     val lastTradeDate: Long? = null,
     val impliedVolatility: Double? = null,
-    val inTheMoney: Boolean
+    val inTheMoney: Boolean,
 ) {
     /**
      * 매수-매도 호가 스프레드 (절대값)
@@ -48,13 +48,12 @@ data class OptionContract(
      *
      * @return 호가 스프레드, 데이터가 없으면 null
      */
-    fun getBidAskSpread(): Double? {
-        return if (bid != null && ask != null) {
+    fun getBidAskSpread(): Double? =
+        if (bid != null && ask != null) {
             ask - bid
         } else {
             null
         }
-    }
 
     /**
      * 매수-매도 호가 스프레드 비율 (%)
@@ -82,13 +81,12 @@ data class OptionContract(
      *
      * @return 중간 가격, 데이터가 없으면 null
      */
-    fun getMidPrice(): Double? {
-        return if (bid != null && ask != null) {
+    fun getMidPrice(): Double? =
+        if (bid != null && ask != null) {
             (bid + ask) / 2.0
         } else {
             null
         }
-    }
 
     /**
      * 내재 가치 (Intrinsic Value)
@@ -100,13 +98,15 @@ data class OptionContract(
      * @param isCall 콜옵션이면 true, 풋옵션이면 false
      * @return 내재 가치
      */
-    fun getIntrinsicValue(underlyingPrice: Double, isCall: Boolean): Double {
-        return if (isCall) {
+    fun getIntrinsicValue(
+        underlyingPrice: Double,
+        isCall: Boolean,
+    ): Double =
+        if (isCall) {
             max(0.0, underlyingPrice - strike)
         } else {
             max(0.0, strike - underlyingPrice)
         }
-    }
 
     /**
      * 시간 가치 (Time Value)
@@ -118,9 +118,11 @@ data class OptionContract(
      * @param isCall 콜옵션이면 true, 풋옵션이면 false
      * @return 시간 가치, lastPrice가 없으면 null
      */
-    fun getTimeValue(underlyingPrice: Double, isCall: Boolean): Double? {
-        return lastPrice?.let {
+    fun getTimeValue(
+        underlyingPrice: Double,
+        isCall: Boolean,
+    ): Double? =
+        lastPrice?.let {
             it - getIntrinsicValue(underlyingPrice, isCall)
         }
-    }
 }

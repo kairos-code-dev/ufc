@@ -30,7 +30,7 @@ data class EarningsCalendar(
     val events: List<EarningsEvent>,
     val requestedLimit: Int,
     val requestedOffset: Int,
-    val actualCount: Int
+    val actualCount: Int,
 ) {
     /**
      * 이벤트가 비어있는지 확인
@@ -53,9 +53,7 @@ data class EarningsCalendar(
      *
      * @return 과거 실적 이벤트 목록
      */
-    fun getHistoricalEvents(): List<EarningsEvent> {
-        return events.filter { it.isHistorical() }
-    }
+    fun getHistoricalEvents(): List<EarningsEvent> = events.filter { it.isHistorical() }
 
     /**
      * 미래 예정 실적 이벤트만 필터링
@@ -64,9 +62,7 @@ data class EarningsCalendar(
      *
      * @return 미래 실적 이벤트 목록
      */
-    fun getFutureEvents(): List<EarningsEvent> {
-        return events.filter { it.isFuture() }
-    }
+    fun getFutureEvents(): List<EarningsEvent> = events.filter { it.isFuture() }
 
     /**
      * 다음 예정된 실적 발표 일정 조회
@@ -75,9 +71,7 @@ data class EarningsCalendar(
      *
      * @return 다음 실적 이벤트, 없으면 null
      */
-    fun getNextEarnings(): EarningsEvent? {
-        return getFutureEvents().firstOrNull()
-    }
+    fun getNextEarnings(): EarningsEvent? = getFutureEvents().firstOrNull()
 
     /**
      * 가장 최근 과거 실적 조회
@@ -86,7 +80,5 @@ data class EarningsCalendar(
      *
      * @return 최근 과거 실적 이벤트, 없으면 null
      */
-    fun getLatestHistoricalEarnings(): EarningsEvent? {
-        return getHistoricalEvents().firstOrNull()
-    }
+    fun getLatestHistoricalEarnings(): EarningsEvent? = getHistoricalEvents().firstOrNull()
 }

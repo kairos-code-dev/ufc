@@ -49,7 +49,9 @@ enum class QuoteType {
     /**
      * 알 수 없는 유형
      */
-    UNKNOWN;
+    UNKNOWN,
+
+    ;
 
     companion object {
         /**
@@ -58,16 +60,17 @@ enum class QuoteType {
          * @param code Protobuf quote_type 필드 값
          * @return 대응되는 QuoteType enum
          */
-        fun fromCode(code: Int): QuoteType = when (code) {
-            1 -> EQUITY
-            2 -> ETF
-            5 -> OPTION
-            6 -> MUTUAL_FUND
-            8 -> INDEX
-            11 -> CRYPTOCURRENCY
-            12 -> CURRENCY
-            13 -> FUTURE
-            else -> UNKNOWN
-        }
+        fun fromCode(code: Int): QuoteType =
+            when (code) {
+                1 -> EQUITY
+                2 -> ETF
+                5 -> OPTION
+                6 -> MUTUAL_FUND
+                8 -> INDEX
+                11 -> CRYPTOCURRENCY
+                12 -> CURRENCY
+                13 -> FUTURE
+                else -> UNKNOWN
+            }
     }
 }

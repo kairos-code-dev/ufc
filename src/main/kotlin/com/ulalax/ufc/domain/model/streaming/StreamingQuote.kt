@@ -45,5 +45,5 @@ data class StreamingQuote(
     val currency: String,
     val exchange: String,
     val shortName: String,
-    val quoteType: QuoteType
+    val quoteType: QuoteType,
 )

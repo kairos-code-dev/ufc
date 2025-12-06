@@ -8,5 +8,5 @@ package com.ulalax.ufc.domain.model.realtime
  */
 data class QuoteMarketCap(
     val marketCap: Long? = null,
-    val sharesOutstanding: Long? = null
+    val sharesOutstanding: Long? = null,
 )

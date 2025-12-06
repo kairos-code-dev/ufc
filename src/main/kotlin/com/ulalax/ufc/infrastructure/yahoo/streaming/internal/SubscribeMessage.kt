@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class SubscribeMessage(
-    val subscribe: List<String>
+    val subscribe: List<String>,
 )

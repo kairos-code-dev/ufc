@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class VisualizationResponse(
-    val finance: VisualizationFinance
+    val finance: VisualizationFinance,
 )

@@ -18,7 +18,7 @@ data class FredSeries(
     val title: String,
     val frequency: String,
     val units: String,
-    val observations: List<FredObservation>
+    val observations: List<FredObservation>,
 )
 
 /**
@@ -29,7 +29,7 @@ data class FredSeries(
  */
 data class FredObservation(
     val date: LocalDate,
-    val value: Double?  // "." 값은 null로 표현
+    val value: Double?, // "." 값은 null로 표현
 )
 
 /**
@@ -50,5 +50,5 @@ data class FredSeriesInfo(
     val frequency: String,
     val units: String,
     val seasonalAdjustment: String?,
-    val lastUpdated: String?
+    val lastUpdated: String?,
 )

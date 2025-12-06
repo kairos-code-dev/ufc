@@ -8,7 +8,10 @@ package com.ulalax.ufc.domain.model.market
  * @property code Yahoo API에 전달되는 시장 코드
  * @property description 시장 설명
  */
-enum class MarketCode(val code: String, val description: String) {
+enum class MarketCode(
+    val code: String,
+    val description: String,
+) {
     US("us", "United States"),
     KR("kr", "South Korea"),
     JP("jp", "Japan"),
@@ -16,7 +19,8 @@ enum class MarketCode(val code: String, val description: String) {
     DE("de", "Germany"),
     HK("hk", "Hong Kong"),
     CN("cn", "China"),
-    FR("fr", "France");
+    FR("fr", "France"),
+    ;
 
     companion object {
         /**
@@ -25,7 +29,6 @@ enum class MarketCode(val code: String, val description: String) {
          * @param code 시장 코드 문자열
          * @return 해당하는 MarketCode, 찾지 못하면 null
          */
-        fun fromCode(code: String): MarketCode? =
-            entries.find { it.code.equals(code, ignoreCase = true) }
+        fun fromCode(code: String): MarketCode? = entries.find { it.code.equals(code, ignoreCase = true) }
     }
 }

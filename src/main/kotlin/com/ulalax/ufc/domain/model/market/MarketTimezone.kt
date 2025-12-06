@@ -12,5 +12,5 @@ package com.ulalax.ufc.domain.model.market
 data class MarketTimezone(
     val shortName: String,
     val ianaName: String,
-    val gmtOffsetMillis: Long
+    val gmtOffsetMillis: Long,
 )

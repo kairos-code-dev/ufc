@@ -10,7 +10,7 @@ package com.ulalax.ufc.domain.model.screener
 enum class PredefinedScreener(
     val apiId: String,
     val defaultSortField: ScreenerSortField,
-    val defaultSortAsc: Boolean
+    val defaultSortAsc: Boolean,
 ) {
     // Equity Screeners
     AGGRESSIVE_SMALL_CAPS("aggressive_small_caps", ScreenerSortField.EOD_VOLUME, false),
@@ -23,5 +23,5 @@ enum class PredefinedScreener(
     // Fund Screeners
     HIGH_YIELD_BOND("high_yield_bond", ScreenerSortField.FUND_NET_ASSETS, false),
     SOLID_LARGE_GROWTH_FUNDS("solid_large_growth_funds", ScreenerSortField.FUND_NET_ASSETS, false),
-    TOP_MUTUAL_FUNDS("top_mutual_funds", ScreenerSortField.PERCENT_CHANGE, false)
+    TOP_MUTUAL_FUNDS("top_mutual_funds", ScreenerSortField.PERCENT_CHANGE, false),
 }

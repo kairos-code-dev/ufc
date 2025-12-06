@@ -16,5 +16,5 @@ data class IsinSearchResult(
     val name: String,
     val exchange: String? = null,
     val currency: String? = null,
-    val type: String? = null
+    val type: String? = null,
 )

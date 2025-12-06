@@ -1,29 +1,29 @@
 package com.ulalax.ufc.api
 
-import com.ulalax.ufc.infrastructure.yahoo.YahooClient
+import com.ulalax.ufc.domain.exception.ErrorCode
+import com.ulalax.ufc.domain.exception.UfcException
 import com.ulalax.ufc.domain.model.chart.ChartEventType
 import com.ulalax.ufc.domain.model.chart.Interval
 import com.ulalax.ufc.domain.model.chart.Period
 import com.ulalax.ufc.domain.model.fundamentals.FundamentalsTimeseriesResult
 import com.ulalax.ufc.domain.model.fundamentals.FundamentalsType
-import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
-import com.ulalax.ufc.domain.model.quote.QuoteSummaryModuleResult
-import com.ulalax.ufc.domain.model.lookup.LookupType
 import com.ulalax.ufc.domain.model.lookup.LookupResult
+import com.ulalax.ufc.domain.model.lookup.LookupType
 import com.ulalax.ufc.domain.model.market.MarketCode
 import com.ulalax.ufc.domain.model.market.MarketSummaryResult
 import com.ulalax.ufc.domain.model.market.MarketTimeResult
 import com.ulalax.ufc.domain.model.options.OptionsData
+import com.ulalax.ufc.domain.model.quote.QuoteSummaryModule
+import com.ulalax.ufc.domain.model.quote.QuoteSummaryModuleResult
 import com.ulalax.ufc.domain.model.realtime.QuoteData
 import com.ulalax.ufc.domain.model.screener.*
 import com.ulalax.ufc.domain.model.search.SearchResponse
-import com.ulalax.ufc.domain.model.visualization.VisualizationEarningsCalendar
-import com.ulalax.ufc.infrastructure.fred.FredClient
-import com.ulalax.ufc.domain.model.series.DataFrequency
-import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
 import com.ulalax.ufc.domain.model.security.IsinSearchResult
-import com.ulalax.ufc.domain.exception.ErrorCode
-import com.ulalax.ufc.domain.exception.UfcException
+import com.ulalax.ufc.domain.model.series.DataFrequency
+import com.ulalax.ufc.domain.model.visualization.VisualizationEarningsCalendar
+import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClient
+import com.ulalax.ufc.infrastructure.fred.FredClient
+import com.ulalax.ufc.infrastructure.yahoo.YahooClient
 import com.ulalax.ufc.infrastructure.yahoo.streaming.StreamingClient
 import java.time.LocalDate
 
@@ -103,9 +103,8 @@ class Ufc private constructor(
     val yahoo: YahooClient,
     val fred: FredClient?,
     val businessInsider: BusinessInsiderClient,
-    val streaming: StreamingClient
+    val streaming: StreamingClient,
 ) : AutoCloseable {
-
     // Yahoo Finance API methods
 
     /**
@@ -171,8 +170,10 @@ class Ufc private constructor(
      * println("P/E Ratio: ${summary.summaryDetail?.trailingPE}")
      * ```
      */
-    suspend fun quoteSummary(symbol: String, vararg modules: QuoteSummaryModule): QuoteSummaryModuleResult =
-        yahoo.quoteSummary(symbol, *modules)
+    suspend fun quoteSummary(
+        symbol: String,
+        vararg modules: QuoteSummaryModule,
+    ): QuoteSummaryModuleResult = yahoo.quoteSummary(symbol, *modules)
 
     /**
      * Retrieves historical OHLCV (Open, High, Low, Close, Volume) chart data.
@@ -201,9 +202,12 @@ class Ufc private constructor(
      * )
      * ```
      */
-    suspend fun chart(symbol: String, interval: Interval = Interval.OneDay,
-                      period: Period = Period.OneYear, vararg events: ChartEventType) =
-        yahoo.chart(symbol, interval, period, *events)
+    suspend fun chart(
+        symbol: String,
+        interval: Interval = Interval.OneDay,
+        period: Period = Period.OneYear,
+        vararg events: ChartEventType,
+    ) = yahoo.chart(symbol, interval, period, *events)
 
     /**
      * Retrieves the earnings calendar for a specific company.
@@ -225,8 +229,11 @@ class Ufc private constructor(
      * }
      * ```
      */
-    suspend fun earningsCalendar(symbol: String, limit: Int = 12, offset: Int = 0) =
-        yahoo.earningsCalendar(symbol, limit, offset)
+    suspend fun earningsCalendar(
+        symbol: String,
+        limit: Int = 12,
+        offset: Int = 0,
+    ) = yahoo.earningsCalendar(symbol, limit, offset)
 
     /**
      * Retrieves time-series fundamental data for financial statement line items.
@@ -254,9 +261,8 @@ class Ufc private constructor(
         symbol: String,
         types: List<FundamentalsType>,
         startDate: LocalDate? = null,
-        endDate: LocalDate? = null
-    ): FundamentalsTimeseriesResult =
-        yahoo.fundamentalsTimeseries(symbol, types, startDate, endDate)
+        endDate: LocalDate? = null,
+    ): FundamentalsTimeseriesResult = yahoo.fundamentalsTimeseries(symbol, types, startDate, endDate)
 
     /**
      * Looks up securities by query string with optional type filtering.
@@ -278,8 +284,11 @@ class Ufc private constructor(
      * }
      * ```
      */
-    suspend fun lookup(query: String, type: LookupType = LookupType.ALL, count: Int = 25): LookupResult =
-        yahoo.lookup(query, type, count)
+    suspend fun lookup(
+        query: String,
+        type: LookupType = LookupType.ALL,
+        count: Int = 25,
+    ): LookupResult = yahoo.lookup(query, type, count)
 
     /**
      * Retrieves market summary data for a specific market.
@@ -297,8 +306,7 @@ class Ufc private constructor(
      * println("Market overview: ${summary.indices}")
      * ```
      */
-    suspend fun marketSummary(market: MarketCode): MarketSummaryResult =
-        yahoo.marketSummary(market)
+    suspend fun marketSummary(market: MarketCode): MarketSummaryResult = yahoo.marketSummary(market)
 
     /**
      * Retrieves market trading hours and status for a specific market.
@@ -316,8 +324,7 @@ class Ufc private constructor(
      * println("Market is open: ${marketTime.isMarketOpen}")
      * ```
      */
-    suspend fun marketTime(market: MarketCode): MarketTimeResult =
-        yahoo.marketTime(market)
+    suspend fun marketTime(market: MarketCode): MarketTimeResult = yahoo.marketTime(market)
 
     /**
      * Retrieves options chain data for a specific symbol and expiration date.
@@ -340,8 +347,10 @@ class Ufc private constructor(
      * }
      * ```
      */
-    suspend fun options(symbol: String, expirationDate: Long? = null): OptionsData =
-        yahoo.options(symbol, expirationDate)
+    suspend fun options(
+        symbol: String,
+        expirationDate: Long? = null,
+    ): OptionsData = yahoo.options(symbol, expirationDate)
 
     /**
      * Screens stocks using a custom query with filtering criteria.
@@ -367,9 +376,13 @@ class Ufc private constructor(
      * val results = ufc.screener(query, sortField = ScreenerSortField.MARKET_CAP)
      * ```
      */
-    suspend fun screener(query: ScreenerQuery, sortField: ScreenerSortField = ScreenerSortField.TICKER,
-                         sortAsc: Boolean = false, size: Int = 100, offset: Int = 0) =
-        yahoo.screener(query, sortField, sortAsc, size, offset)
+    suspend fun screener(
+        query: ScreenerQuery,
+        sortField: ScreenerSortField = ScreenerSortField.TICKER,
+        sortAsc: Boolean = false,
+        size: Int = 100,
+        offset: Int = 0,
+    ) = yahoo.screener(query, sortField, sortAsc, size, offset)
 
     /**
      * Screens stocks using a predefined screener ID.
@@ -384,9 +397,12 @@ class Ufc private constructor(
      * @return Screener results for the predefined screen
      * @throws UfcException if the screener ID is invalid or the request fails
      */
-    suspend fun screener(predefinedId: String, count: Int = 25,
-                         sortField: ScreenerSortField? = null, sortAsc: Boolean? = null) =
-        yahoo.screener(predefinedId, count, sortField, sortAsc)
+    suspend fun screener(
+        predefinedId: String,
+        count: Int = 25,
+        sortField: ScreenerSortField? = null,
+        sortAsc: Boolean? = null,
+    ) = yahoo.screener(predefinedId, count, sortField, sortAsc)
 
     /**
      * Screens stocks using a predefined screener enum.
@@ -409,9 +425,12 @@ class Ufc private constructor(
      * }
      * ```
      */
-    suspend fun screener(predefined: PredefinedScreener, count: Int = 25,
-                         sortField: ScreenerSortField? = null, sortAsc: Boolean? = null) =
-        yahoo.screener(predefined, count, sortField, sortAsc)
+    suspend fun screener(
+        predefined: PredefinedScreener,
+        count: Int = 25,
+        sortField: ScreenerSortField? = null,
+        sortAsc: Boolean? = null,
+    ) = yahoo.screener(predefined, count, sortField, sortAsc)
 
     /**
      * Searches for symbols, companies, and related news.
@@ -433,8 +452,12 @@ class Ufc private constructor(
      * results.news.forEach { println(it.title) }
      * ```
      */
-    suspend fun search(query: String, quotesCount: Int = 8, newsCount: Int = 8, enableFuzzyQuery: Boolean = false): SearchResponse =
-        yahoo.search(query, quotesCount, newsCount, enableFuzzyQuery)
+    suspend fun search(
+        query: String,
+        quotesCount: Int = 8,
+        newsCount: Int = 8,
+        enableFuzzyQuery: Boolean = false,
+    ): SearchResponse = yahoo.search(query, quotesCount, newsCount, enableFuzzyQuery)
 
     /**
      * Retrieves earnings calendar visualization data for a symbol.
@@ -453,8 +476,10 @@ class Ufc private constructor(
      * // Use this data to create earnings calendar charts
      * ```
      */
-    suspend fun visualization(symbol: String, limit: Int = 12): VisualizationEarningsCalendar =
-        yahoo.visualization(symbol, limit)
+    suspend fun visualization(
+        symbol: String,
+        limit: Int = 12,
+    ): VisualizationEarningsCalendar = yahoo.visualization(symbol, limit)
 
     // FRED API methods
 
@@ -492,10 +517,13 @@ class Ufc private constructor(
      * )
      * ```
      */
-    suspend fun series(seriesId: String, startDate: LocalDate? = null,
-                       endDate: LocalDate? = null, frequency: DataFrequency? = null) =
-        fred?.series(seriesId, startDate, endDate, frequency)
-            ?: throw UfcException(ErrorCode.CONFIGURATION_ERROR, "FRED API key not configured")
+    suspend fun series(
+        seriesId: String,
+        startDate: LocalDate? = null,
+        endDate: LocalDate? = null,
+        frequency: DataFrequency? = null,
+    ) = fred?.series(seriesId, startDate, endDate, frequency)
+        ?: throw UfcException(ErrorCode.CONFIGURATION_ERROR, "FRED API key not configured")
 
     // Business Insider API methods
 

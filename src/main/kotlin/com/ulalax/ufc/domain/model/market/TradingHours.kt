@@ -13,5 +13,5 @@ import java.time.Instant
  */
 data class TradingHours(
     val start: Instant,
-    val end: Instant
+    val end: Instant,
 )

@@ -8,5 +8,5 @@ package com.ulalax.ufc.domain.model.realtime
  */
 data class QuoteVolumes(
     val averageDailyVolume3Month: Long? = null,
-    val averageDailyVolume10Day: Long? = null
+    val averageDailyVolume10Day: Long? = null,
 )

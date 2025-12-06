@@ -7,7 +7,9 @@ package com.ulalax.ufc.domain.model.market
  *
  * @property value Yahoo API에서 반환되는 값
  */
-enum class MarketState(val value: String) {
+enum class MarketState(
+    val value: String,
+) {
     /**
      * 프리마켓 (개장 전)
      */
@@ -31,7 +33,8 @@ enum class MarketState(val value: String) {
     /**
      * 알 수 없는 상태
      */
-    UNKNOWN("UNKNOWN");
+    UNKNOWN("UNKNOWN"),
+    ;
 
     companion object {
         /**

@@ -40,20 +40,20 @@ data class OptionsData(
     val strikes: List<Double>,
     val hasMiniOptions: Boolean,
     val underlyingQuote: UnderlyingQuote?,
-    val optionsChain: OptionsChain
+    val optionsChain: OptionsChain,
 ) {
     /**
      * 만기일 목록을 LocalDate로 변환
      *
      * @return LocalDate 목록
      */
-    fun getExpirationDatesAsLocalDate(): List<LocalDate> {
-        return expirationDates.map { timestamp ->
-            Instant.ofEpochSecond(timestamp)
+    fun getExpirationDatesAsLocalDate(): List<LocalDate> =
+        expirationDates.map { timestamp ->
+            Instant
+                .ofEpochSecond(timestamp)
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
         }
-    }
 
     /**
      * 목표 행사가에 가장 가까운 행사가 찾기
@@ -89,9 +89,7 @@ data class OptionsData(
      *
      * @return 현재가, 없으면 null
      */
-    fun getUnderlyingPrice(): Double? {
-        return underlyingQuote?.regularMarketPrice
-    }
+    fun getUnderlyingPrice(): Double? = underlyingQuote?.regularMarketPrice
 
     /**
      * 특정 만기일이 사용 가능한지 확인
@@ -99,7 +97,5 @@ data class OptionsData(
      * @param expirationDate 확인할 만기일 (Unix timestamp, seconds)
      * @return 사용 가능하면 true, 아니면 false
      */
-    fun hasExpirationDate(expirationDate: Long): Boolean {
-        return expirationDate in expirationDates
-    }
+    fun hasExpirationDate(expirationDate: Long): Boolean = expirationDate in expirationDates
 }

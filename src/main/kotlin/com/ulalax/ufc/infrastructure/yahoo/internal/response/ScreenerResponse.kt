@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 internal data class ScreenerResponse(
     @SerialName("finance")
-    val finance: FinanceContainer
+    val finance: FinanceContainer,
 )
 
 /**
@@ -22,9 +22,8 @@ internal data class ScreenerResponse(
 internal data class FinanceContainer(
     @SerialName("result")
     val result: List<ScreenerApiResult>? = null,
-
     @SerialName("error")
-    val error: ScreenerError? = null
+    val error: ScreenerError? = null,
 )
 
 /**
@@ -34,24 +33,18 @@ internal data class FinanceContainer(
 internal data class ScreenerApiResult(
     @SerialName("id")
     val id: String? = null,
-
     @SerialName("title")
     val title: String? = null,
-
     @SerialName("description")
     val description: String? = null,
-
     @SerialName("count")
     val count: Int = 0,
-
     @SerialName("total")
     val total: Int = 0,
-
     @SerialName("start")
     val start: Int = 0,
-
     @SerialName("quotes")
-    val quotes: List<Map<String, JsonElement>> = emptyList()
+    val quotes: List<Map<String, JsonElement>> = emptyList(),
 )
 
 /**
@@ -61,7 +54,6 @@ internal data class ScreenerApiResult(
 internal data class ScreenerError(
     @SerialName("code")
     val code: String,
-
     @SerialName("description")
-    val description: String
+    val description: String,
 )

@@ -17,5 +17,5 @@ data class FredClientConfig(
     val connectTimeoutMs: Long = 30_000,
     val requestTimeoutMs: Long = 60_000,
     val enableLogging: Boolean = false,
-    val rateLimitConfig: RateLimitConfig = RateLimitingSettings.fredDefault()
+    val rateLimitConfig: RateLimitConfig = RateLimitingSettings.fredDefault(),
 )

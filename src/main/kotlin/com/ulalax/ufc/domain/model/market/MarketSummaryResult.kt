@@ -10,5 +10,5 @@ package com.ulalax.ufc.domain.model.market
  */
 data class MarketSummaryResult(
     val market: MarketCode,
-    val items: List<MarketSummaryItem>
+    val items: List<MarketSummaryItem>,
 )

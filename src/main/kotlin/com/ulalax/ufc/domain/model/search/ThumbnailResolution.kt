@@ -12,5 +12,5 @@ data class ThumbnailResolution(
     val url: String,
     val width: Int,
     val height: Int,
-    val tag: String
+    val tag: String,
 )

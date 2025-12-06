@@ -11,5 +11,5 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class VisualizationResult(
-    val documents: List<VisualizationDocument>? = null
+    val documents: List<VisualizationDocument>? = null,
 )

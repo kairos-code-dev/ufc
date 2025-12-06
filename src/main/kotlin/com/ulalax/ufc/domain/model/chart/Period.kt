@@ -7,7 +7,9 @@ package com.ulalax.ufc.domain.model.chart
  *
  * @property value The value used in API requests
  */
-enum class Period(val value: String) {
+enum class Period(
+    val value: String,
+) {
     /**
      * 1 day period
      */
@@ -70,25 +72,24 @@ enum class Period(val value: String) {
  * @param value The value to look up
  * @return The corresponding Period, or null if not found
  */
-fun periodFromValue(value: String): Period? {
-    return Period.values().find { it.value == value }
-}
+fun periodFromValue(value: String): Period? = Period.values().find { it.value == value }
 
 /**
  * Converts Period to a human-readable Korean string.
  *
  * @return Korean representation
  */
-fun Period.toKoreanString(): String = when (this) {
-    Period.OneDay -> "1일"
-    Period.FiveDays -> "5일"
-    Period.OneMonth -> "1개월"
-    Period.ThreeMonths -> "3개월"
-    Period.SixMonths -> "6개월"
-    Period.OneYear -> "1년"
-    Period.TwoYears -> "2년"
-    Period.FiveYears -> "5년"
-    Period.TenYears -> "10년"
-    Period.YearToDate -> "연초~현재"
-    Period.Max -> "전체"
-}
+fun Period.toKoreanString(): String =
+    when (this) {
+        Period.OneDay -> "1일"
+        Period.FiveDays -> "5일"
+        Period.OneMonth -> "1개월"
+        Period.ThreeMonths -> "3개월"
+        Period.SixMonths -> "6개월"
+        Period.OneYear -> "1년"
+        Period.TwoYears -> "2년"
+        Period.FiveYears -> "5년"
+        Period.TenYears -> "10년"
+        Period.YearToDate -> "연초~현재"
+        Period.Max -> "전체"
+    }

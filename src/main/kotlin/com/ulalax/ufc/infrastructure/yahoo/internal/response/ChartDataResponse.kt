@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class ChartDataResponse(
     @SerialName("chart")
-    val chart: Chart
+    val chart: Chart,
 )
 
 /**
@@ -23,9 +23,8 @@ internal data class ChartDataResponse(
 internal data class Chart(
     @SerialName("result")
     val result: List<ChartResult>? = null,
-
     @SerialName("error")
-    val error: ChartError? = null
+    val error: ChartError? = null,
 )
 
 /**
@@ -36,17 +35,14 @@ internal data class ChartResult(
     // 메타데이터
     @SerialName("meta")
     val meta: ChartMeta? = null,
-
     // 시계열 데이터 배열
     @SerialName("timestamp")
     val timestamp: List<Long>? = null,
-
     @SerialName("indicators")
     val indicators: ChartIndicators? = null,
-
     // 이벤트 데이터 (배당금, 주식분할, 자본이득 등)
     @SerialName("events")
-    val events: ChartEvents? = null
+    val events: ChartEvents? = null,
 )
 
 /**
@@ -60,62 +56,48 @@ internal data class ChartMeta(
     // 심볼 (예: "AAPL", "^GSPC")
     @SerialName("symbol")
     val symbol: String? = null,
-
     // 통화 (예: "USD")
     @SerialName("currency")
     val currency: String? = null,
-
     // 통화 기호 (예: "$")
     @SerialName("currencySymbol")
     val currencySymbol: String? = null,
-
     // 현재 가격
     @SerialName("regularMarketPrice")
     val regularMarketPrice: Double? = null,
-
     // 교환 시장 (예: "NASDAQ", "NYSE")
     @SerialName("exchange")
     val exchange: String? = null,
-
     // 최고가 (조회 기간 내)
     @SerialName("regularMarketDayHigh")
     val regularMarketDayHigh: Double? = null,
-
     // 최저가 (조회 기간 내)
     @SerialName("regularMarketDayLow")
     val regularMarketDayLow: Double? = null,
-
     // 데이터 간격 (예: "1d", "1h")
     @SerialName("dataGranularity")
     val dataGranularity: String? = null,
-
     // 범위 (예: "1y", "1d")
     @SerialName("range")
     val range: String? = null,
-
     // 52주 최고가
     @SerialName("fiftyTwoWeekHigh")
     val fiftyTwoWeekHigh: Double? = null,
-
     // 52주 최저가
     @SerialName("fiftyTwoWeekLow")
     val fiftyTwoWeekLow: Double? = null,
-
     // 발행 주식수
     @SerialName("sharesOutstanding")
     val sharesOutstanding: Long? = null,
-
     // 시가총액
     @SerialName("marketCap")
     val marketCap: Long? = null,
-
     // 거래량
     @SerialName("regularMarketVolume")
     val regularMarketVolume: Long? = null,
-
     // 유효한 범위
     @SerialName("validRanges")
-    val validRanges: List<String>? = null
+    val validRanges: List<String>? = null,
 )
 
 /**
@@ -128,10 +110,9 @@ internal data class ChartIndicators(
     // OHLCV 데이터
     @SerialName("quote")
     val quote: List<ChartQuote>? = null,
-
     // 보조 지표 (마실 연결선 등)
     @SerialName("adjclose")
-    val adjclose: List<ChartAdjClose>? = null
+    val adjclose: List<ChartAdjClose>? = null,
 )
 
 /**
@@ -142,22 +123,18 @@ internal data class ChartQuote(
     // 시가 (Open Price)
     @SerialName("open")
     val open: List<Double?>? = null,
-
     // 고가 (High Price)
     @SerialName("high")
     val high: List<Double?>? = null,
-
     // 저가 (Low Price)
     @SerialName("low")
     val low: List<Double?>? = null,
-
     // 종가 (Close Price)
     @SerialName("close")
     val close: List<Double?>? = null,
-
     // 거래량 (Volume)
     @SerialName("volume")
-    val volume: List<Long?>? = null
+    val volume: List<Long?>? = null,
 )
 
 /**
@@ -169,7 +146,7 @@ internal data class ChartQuote(
 internal data class ChartAdjClose(
     // 조정 종가
     @SerialName("adjclose")
-    val adjclose: List<Double?>? = null
+    val adjclose: List<Double?>? = null,
 )
 
 /**
@@ -179,9 +156,8 @@ internal data class ChartAdjClose(
 internal data class ChartError(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )
 
 /**
@@ -193,12 +169,10 @@ internal data class ChartError(
 internal data class ChartEvents(
     @SerialName("dividends")
     val dividends: Map<String, DividendEvent>? = null,
-
     @SerialName("splits")
     val splits: Map<String, SplitEvent>? = null,
-
     @SerialName("capitalGains")
-    val capitalGains: Map<String, CapitalGainEvent>? = null
+    val capitalGains: Map<String, CapitalGainEvent>? = null,
 )
 
 /**
@@ -207,7 +181,7 @@ internal data class ChartEvents(
 @Serializable
 internal data class DividendEvent(
     val amount: Double? = null,
-    val date: Long? = null
+    val date: Long? = null,
 )
 
 /**
@@ -218,7 +192,7 @@ internal data class SplitEvent(
     val date: Long? = null,
     val numerator: Double? = null,
     val denominator: Double? = null,
-    val splitRatio: String? = null
+    val splitRatio: String? = null,
 )
 
 /**
@@ -227,5 +201,5 @@ internal data class SplitEvent(
 @Serializable
 internal data class CapitalGainEvent(
     val amount: Double? = null,
-    val date: Long? = null
+    val date: Long? = null,
 )

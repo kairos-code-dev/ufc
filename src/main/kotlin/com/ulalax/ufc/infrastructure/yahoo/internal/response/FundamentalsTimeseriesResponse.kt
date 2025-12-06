@@ -4,8 +4,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -20,7 +18,7 @@ import kotlinx.serialization.json.*
 @Serializable
 internal data class FundamentalsTimeseriesResponse(
     @SerialName("timeseries")
-    val timeseries: Timeseries
+    val timeseries: Timeseries,
 )
 
 /**
@@ -30,9 +28,8 @@ internal data class FundamentalsTimeseriesResponse(
 internal data class Timeseries(
     @SerialName("result")
     val result: List<TimeseriesResult>? = null,
-
     @SerialName("error")
-    val error: ApiError? = null
+    val error: ApiError? = null,
 )
 
 /**
@@ -42,9 +39,8 @@ internal data class Timeseries(
 internal data class ApiError(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )
 
 /**
@@ -54,9 +50,8 @@ internal data class ApiError(
 internal data class Meta(
     @SerialName("type")
     val type: List<String>? = null,
-
     @SerialName("symbol")
-    val symbol: List<String>? = null
+    val symbol: List<String>? = null,
 )
 
 /**
@@ -68,15 +63,12 @@ internal data class Meta(
 internal data class DataPoint(
     @SerialName("asOfDate")
     val asOfDate: String? = null,
-
     @SerialName("periodType")
     val periodType: String? = null,
-
     @SerialName("currencyCode")
     val currencyCode: String? = null,
-
     @SerialName("reportedValue")
-    val reportedValue: ReportedValue? = null
+    val reportedValue: ReportedValue? = null,
 )
 
 /**
@@ -86,9 +78,8 @@ internal data class DataPoint(
 internal data class ReportedValue(
     @SerialName("raw")
     val raw: JsonElement? = null,
-
     @SerialName("fmt")
-    val fmt: String? = null
+    val fmt: String? = null,
 ) {
     /**
      * raw 값을 Double로 추출합니다.
@@ -118,7 +109,7 @@ internal data class ReportedValue(
 internal data class TimeseriesResult(
     val meta: Meta,
     val timestamp: List<Long>,
-    val dataFields: Map<String, List<DataPoint>>
+    val dataFields: Map<String, List<DataPoint>>,
 )
 
 /**
@@ -130,23 +121,27 @@ internal data class TimeseriesResult(
 internal object TimeseriesResultSerializer : KSerializer<TimeseriesResult> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("TimeseriesResult")
 
-    override fun serialize(encoder: Encoder, value: TimeseriesResult) {
-        throw NotImplementedError("Serialization is not supported for TimeseriesResult")
-    }
+    override fun serialize(
+        encoder: Encoder,
+        value: TimeseriesResult,
+    ): Unit = throw NotImplementedError("Serialization is not supported for TimeseriesResult")
 
     override fun deserialize(decoder: Decoder): TimeseriesResult {
-        val jsonDecoder = decoder as? JsonDecoder
-            ?: throw IllegalStateException("TimeseriesResultSerializer requires JsonDecoder")
+        val jsonDecoder =
+            decoder as? JsonDecoder
+                ?: throw IllegalStateException("TimeseriesResultSerializer requires JsonDecoder")
 
         val jsonObject = jsonDecoder.decodeJsonElement().jsonObject
 
         // 고정 필드 파싱
-        val meta = jsonDecoder.json.decodeFromJsonElement<Meta>(
-            jsonObject["meta"] ?: JsonObject(emptyMap())
-        )
-        val timestamp = jsonDecoder.json.decodeFromJsonElement<List<Long>>(
-            jsonObject["timestamp"] ?: JsonArray(emptyList())
-        )
+        val meta =
+            jsonDecoder.json.decodeFromJsonElement<Meta>(
+                jsonObject["meta"] ?: JsonObject(emptyMap()),
+            )
+        val timestamp =
+            jsonDecoder.json.decodeFromJsonElement<List<Long>>(
+                jsonObject["timestamp"] ?: JsonArray(emptyList()),
+            )
 
         // 동적 필드 파싱 (meta, timestamp, error 제외한 모든 필드)
         val dataFields = mutableMapOf<String, List<DataPoint>>()
@@ -166,7 +161,7 @@ internal object TimeseriesResultSerializer : KSerializer<TimeseriesResult> {
         return TimeseriesResult(
             meta = meta,
             timestamp = timestamp,
-            dataFields = dataFields
+            dataFields = dataFields,
         )
     }
 }

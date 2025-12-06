@@ -4,7 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.longOrNull
 
@@ -15,9 +14,8 @@ import kotlinx.serialization.json.longOrNull
 internal data class RawFormatted(
     @SerialName("raw")
     val raw: JsonElement? = null,
-
     @SerialName("fmt")
-    val fmt: String? = null
+    val fmt: String? = null,
 ) {
     /** Double 값 추출 */
     val doubleValue: Double? get() = raw?.jsonPrimitive?.doubleOrNull
@@ -42,7 +40,7 @@ internal data class RawFormatted(
 @Serializable
 internal data class QuoteSummaryResponse(
     @SerialName("quoteSummary")
-    val quoteSummary: QuoteSummary
+    val quoteSummary: QuoteSummary,
 )
 
 /**
@@ -52,9 +50,8 @@ internal data class QuoteSummaryResponse(
 internal data class QuoteSummary(
     @SerialName("result")
     val result: List<QuoteSummaryResult>? = null,
-
     @SerialName("error")
-    val error: QuoteError? = null
+    val error: QuoteError? = null,
 )
 
 /**
@@ -67,54 +64,41 @@ internal data class QuoteSummaryResult(
     // 기본 가격 정보
     @SerialName("price")
     val price: Price? = null,
-
     // 상세 정보
     @SerialName("summaryDetail")
     val summaryDetail: SummaryDetail? = null,
-
     // 재무 정보
     @SerialName("financialData")
     val financialData: FinancialData? = null,
-
     // 수익 추이
     @SerialName("earningsTrend")
     val earningsTrend: EarningsTrend? = null,
-
     // 수익 이력
     @SerialName("earningsHistory")
     val earningsHistory: EarningsHistory? = null,
-
     // 수익 발표 날짜
     @SerialName("earningsDates")
     val earningsDates: EarningsDates? = null,
-
     // 주요 주주
     @SerialName("majorHolders")
     val majorHolders: MajorHolders? = null,
-
     // 내부자 거래
     @SerialName("insiderTransactions")
     val insiderTransactions: InsiderTransactions? = null,
-
     // ufc.stock용 필드
     @SerialName("quoteType")
     val quoteType: QuoteType? = null,
-
     @SerialName("assetProfile")
     val assetProfile: AssetProfile? = null,
-
     @SerialName("summaryProfile")
     val summaryProfile: SummaryProfile? = null,
-
     @SerialName("defaultKeyStatistics")
     val defaultKeyStatistics: DefaultKeyStatistics? = null,
-
     // ufc.funds용 필드
     @SerialName("topHoldings")
     val topHoldings: TopHoldings? = null,
-
     @SerialName("fundProfile")
-    val fundProfile: FundProfile? = null
+    val fundProfile: FundProfile? = null,
 )
 
 /**
@@ -124,66 +108,51 @@ internal data class QuoteSummaryResult(
 internal data class Price(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 현재 가격
     @SerialName("regularMarketPrice")
     val regularMarketPrice: RawFormatted? = null,
-
     // 통화
     @SerialName("currency")
     val currency: String? = null,
-
     // 심볼
     @SerialName("symbol")
     val symbol: String? = null,
-
     // 회사명 (긴 이름)
     @SerialName("longName")
     val longName: String? = null,
-
     // 회사명 (짧은 이름)
     @SerialName("shortName")
     val shortName: String? = null,
-
     // 거래소
     @SerialName("exchange")
     val exchange: String? = null,
-
     // 장 시간 후 변화
     @SerialName("postMarketChangePercent")
     val postMarketChangePercent: RawFormatted? = null,
-
     // 장 시간 후 가격
     @SerialName("postMarketPrice")
     val postMarketPrice: RawFormatted? = null,
-
     // 53주 최저가
     @SerialName("fiftyTwoWeekLow")
     val fiftyTwoWeekLow: RawFormatted? = null,
-
     // 53주 최고가
     @SerialName("fiftyTwoWeekHigh")
     val fiftyTwoWeekHigh: RawFormatted? = null,
-
     // 52주 변화
     @SerialName("fiftyTwoWeekChangePercent")
     val fiftyTwoWeekChangePercent: RawFormatted? = null,
-
     // 공시 당시 가격
     @SerialName("regularMarketDayRange")
     val regularMarketDayRange: String? = null,
-
     // 이전 거래일 종가
     @SerialName("regularMarketPreviousClose")
     val regularMarketPreviousClose: RawFormatted? = null,
-
     // 변화
     @SerialName("regularMarketChange")
     val regularMarketChange: RawFormatted? = null,
-
     // 변화 비율
     @SerialName("regularMarketChangePercent")
-    val regularMarketChangePercent: RawFormatted? = null
+    val regularMarketChangePercent: RawFormatted? = null,
 )
 
 /**
@@ -193,82 +162,63 @@ internal data class Price(
 internal data class SummaryDetail(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 배당 수익률
     @SerialName("dividendRate")
     val dividendRate: RawFormatted? = null,
-
     // 배당 수익률 (퍼센트)
     @SerialName("dividendYield")
     val dividendYield: RawFormatted? = null,
-
     // 거래량
     @SerialName("averageVolume")
     val averageVolume: RawFormatted? = null,
-
     // 거래 규모 (50일 평균)
     @SerialName("averageVolume10days")
     val averageVolume10days: RawFormatted? = null,
-
     // 베타
     @SerialName("beta")
     val beta: RawFormatted? = null,
-
     // 일일 고가
     @SerialName("regularMarketDayHigh")
     val regularMarketDayHigh: RawFormatted? = null,
-
     // 일일 저가
     @SerialName("regularMarketDayLow")
     val regularMarketDayLow: RawFormatted? = null,
-
     // 일일 거래량
     @SerialName("regularMarketVolume")
     val regularMarketVolume: RawFormatted? = null,
-
     // 시가총액
     @SerialName("marketCap")
     val marketCap: RawFormatted? = null,
-
     // 매출
     @SerialName("revenue")
     val revenue: RawFormatted? = null,
-
     // 배당 지급 날짜
     @SerialName("dividendDate")
     val dividendDate: RawFormatted? = null,
-
     // 배당 지급 날짜 (타임스탬프)
     @SerialName("exDividendDate")
     val exDividendDate: RawFormatted? = null,
-
     // 발행주식수
     @SerialName("sharesOutstanding")
     val sharesOutstanding: RawFormatted? = null,
-
     // 공개 부채
     @SerialName("debtToEquity")
     val debtToEquity: RawFormatted? = null,
-
     // PER (주가수익비율)
     @SerialName("trailingPE")
     val trailingPE: RawFormatted? = null,
-
     // 포워드 PER
     @SerialName("forwardPE")
     val forwardPE: RawFormatted? = null,
-
     // PBR (주가순자산비율)
     @SerialName("priceToBook")
     val priceToBook: RawFormatted? = null,
-
     // 52주 고가
     @SerialName("fiftyTwoWeekHigh")
     val fiftyTwoWeekHigh: RawFormatted? = null,
-
     // 52주 저가
     @SerialName("fiftyTwoWeekLow")
-    val fiftyTwoWeekLow: RawFormatted? = null
+    val fiftyTwoWeekLow: RawFormatted? = null,
 )
 
 /**
@@ -278,74 +228,57 @@ internal data class SummaryDetail(
 internal data class FinancialData(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 현금 흐름
     @SerialName("operatingCashflow")
     val operatingCashflow: RawFormatted? = null,
-
     // 잉여 현금 흐름
     @SerialName("freeCashflow")
     val freeCashflow: RawFormatted? = null,
-
     // 총 부채
     @SerialName("totalDebt")
     val totalDebt: RawFormatted? = null,
-
     // 총 현금
     @SerialName("totalCash")
     val totalCash: RawFormatted? = null,
-
     // 장기 부채
     @SerialName("longTermDebt")
     val longTermDebt: RawFormatted? = null,
-
     // 현재 비율
     @SerialName("currentRatio")
     val currentRatio: RawFormatted? = null,
-
     // ROE (자기자본이익률)
     @SerialName("returnOnEquity")
     val returnOnEquity: RawFormatted? = null,
-
     // ROA (자산이익률)
     @SerialName("returnOnAssets")
     val returnOnAssets: RawFormatted? = null,
-
     // PEG 비율
     @SerialName("pegRatio")
     val pegRatio: RawFormatted? = null,
-
     // 순이익률
     @SerialName("profitMargins")
     val profitMargins: RawFormatted? = null,
-
     // 매출 성장률
     @SerialName("revenueGrowth")
     val revenueGrowth: RawFormatted? = null,
-
     // 수익 성장률
     @SerialName("earningsGrowth")
     val earningsGrowth: RawFormatted? = null,
-
     // 올해 목표 가격
     @SerialName("targetPriceHigh")
     val targetPriceHigh: RawFormatted? = null,
-
     // 목표 가격 (낮음)
     @SerialName("targetPriceLow")
     val targetPriceLow: RawFormatted? = null,
-
     // 목표 가격 (평균)
     @SerialName("targetPriceMean")
     val targetPriceMean: RawFormatted? = null,
-
     // 추천
     @SerialName("recommendationKey")
     val recommendationKey: String? = null,
-
     // 추천 수
     @SerialName("numberOfAnalysts")
-    val numberOfAnalysts: Int? = null
+    val numberOfAnalysts: Int? = null,
 )
 
 /**
@@ -355,12 +288,10 @@ internal data class FinancialData(
 internal data class EarningsTrend(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     @SerialName("trend")
     val trend: List<EarningsTrendData>? = null,
-
     @SerialName("earningsHistory")
-    val earningsHistory: List<EarningsTrendData>? = null
+    val earningsHistory: List<EarningsTrendData>? = null,
 )
 
 /**
@@ -370,30 +301,24 @@ internal data class EarningsTrend(
 internal data class EarningsTrendData(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 기간 (예: "1Q2023")
     @SerialName("period")
     val period: String? = null,
-
     // 종료 날짜
     @SerialName("endDate")
     val endDate: String? = null,
-
     // 추정 수익
     @SerialName("epsEstimate")
     val epsEstimate: RawFormatted? = null,
-
     // 실제 수익
     @SerialName("epsActual")
     val epsActual: RawFormatted? = null,
-
     // 차이
     @SerialName("epsDifference")
     val epsDifference: RawFormatted? = null,
-
     // 놀람 비율
     @SerialName("surprisePercent")
-    val surprisePercent: RawFormatted? = null
+    val surprisePercent: RawFormatted? = null,
 )
 
 /**
@@ -403,9 +328,8 @@ internal data class EarningsTrendData(
 internal data class EarningsHistory(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     @SerialName("history")
-    val history: List<EarningsTrendData>? = null
+    val history: List<EarningsTrendData>? = null,
 )
 
 /**
@@ -415,22 +339,18 @@ internal data class EarningsHistory(
 internal data class EarningsDates(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 다음 발표 날짜
     @SerialName("earningsDate")
     val earningsDate: List<Long>? = null,
-
     // 평균 수익 발표 날짜
     @SerialName("earningsAverage")
     val earningsAverage: RawFormatted? = null,
-
     // 예상 수익
     @SerialName("earningsLow")
     val earningsLow: RawFormatted? = null,
-
     // 예상 수익 (높음)
     @SerialName("earningsHigh")
-    val earningsHigh: RawFormatted? = null
+    val earningsHigh: RawFormatted? = null,
 )
 
 /**
@@ -440,9 +360,8 @@ internal data class EarningsDates(
 internal data class MajorHolders(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     @SerialName("holders")
-    val holders: List<Holder>? = null
+    val holders: List<Holder>? = null,
 )
 
 /**
@@ -452,14 +371,12 @@ internal data class MajorHolders(
 internal data class Holder(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 기관명
     @SerialName("holder")
     val holder: String? = null,
-
     // 보유 비율
     @SerialName("value")
-    val value: RawFormatted? = null
+    val value: RawFormatted? = null,
 )
 
 /**
@@ -469,9 +386,8 @@ internal data class Holder(
 internal data class InsiderTransactions(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     @SerialName("transactions")
-    val transactions: List<InsiderTransaction>? = null
+    val transactions: List<InsiderTransaction>? = null,
 )
 
 /**
@@ -481,30 +397,24 @@ internal data class InsiderTransactions(
 internal data class InsiderTransaction(
     @SerialName("maxAge")
     val maxAge: Int? = null,
-
     // 거래자명
     @SerialName("filerName")
     val filerName: String? = null,
-
     // 관계
     @SerialName("relationship")
     val relationship: String? = null,
-
     // 거래 날짜
     @SerialName("transactionDate")
     val transactionDate: RawFormatted? = null,
-
     // 거래량
     @SerialName("transactionShares")
     val transactionShares: RawFormatted? = null,
-
     // 거래 가격
     @SerialName("transactionPrice")
     val transactionPrice: RawFormatted? = null,
-
     // 거래 후 주식수
     @SerialName("sharesOwned")
-    val sharesOwned: RawFormatted? = null
+    val sharesOwned: RawFormatted? = null,
 )
 
 /**
@@ -514,9 +424,8 @@ internal data class InsiderTransaction(
 internal data class QuoteError(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )
 
 // =========================================
@@ -533,7 +442,7 @@ internal data class QuoteType(
     @SerialName("exchange")
     val exchange: String? = null,
     @SerialName("quoteType")
-    val quoteType: String? = null,        // EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY 등
+    val quoteType: String? = null, // EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY 등
     @SerialName("symbol")
     val symbol: String? = null,
     @SerialName("shortName")
@@ -545,7 +454,7 @@ internal data class QuoteType(
     @SerialName("sector")
     val sector: String? = null,
     @SerialName("industry")
-    val industry: String? = null
+    val industry: String? = null,
 )
 
 /**
@@ -576,7 +485,7 @@ internal data class AssetProfile(
     @SerialName("zip")
     val zip: String? = null,
     @SerialName("fullTimeEmployees")
-    val fullTimeEmployees: Int? = null
+    val fullTimeEmployees: Int? = null,
 )
 
 /**
@@ -603,7 +512,7 @@ internal data class SummaryProfile(
     @SerialName("country")
     val country: String? = null,
     @SerialName("phone")
-    val phone: String? = null
+    val phone: String? = null,
 )
 
 /**
@@ -620,7 +529,7 @@ internal data class DefaultKeyStatistics(
     @SerialName("cusip")
     val cusip: String? = null,
     @SerialName("maxAge")
-    val maxAge: Int? = null
+    val maxAge: Int? = null,
 )
 
 // =========================================
@@ -637,7 +546,7 @@ internal data class TopHoldings(
     val holdings: List<Holding>? = null,
     val equityHoldings: EquityHoldings? = null,
     val bondHoldings: BondHoldings? = null,
-    val sectorWeightings: List<SectorWeighting>? = null
+    val sectorWeightings: List<SectorWeighting>? = null,
 )
 
 /**
@@ -647,7 +556,7 @@ internal data class TopHoldings(
 internal data class Holding(
     val symbol: String? = null,
     val name: String? = null,
-    val holdingPercent: RawFormatted? = null
+    val holdingPercent: RawFormatted? = null,
 )
 
 /**
@@ -660,7 +569,7 @@ internal data class EquityHoldings(
     val priceToSales: RawFormatted? = null,
     val priceToCashflow: RawFormatted? = null,
     val medianMarketCap: RawFormatted? = null,
-    val threeYearEarningsGrowth: RawFormatted? = null
+    val threeYearEarningsGrowth: RawFormatted? = null,
 )
 
 /**
@@ -670,7 +579,7 @@ internal data class EquityHoldings(
 internal data class BondHoldings(
     val duration: RawFormatted? = null,
     val maturity: RawFormatted? = null,
-    val creditQuality: RawFormatted? = null
+    val creditQuality: RawFormatted? = null,
 )
 
 /**
@@ -679,7 +588,7 @@ internal data class BondHoldings(
 @Serializable
 internal data class SectorWeighting(
     val sector: String? = null,
-    val weight: RawFormatted? = null
+    val weight: RawFormatted? = null,
 )
 
 /**
@@ -692,7 +601,7 @@ internal data class FundProfile(
     val categoryName: String? = null,
     val family: String? = null,
     val legalType: String? = null,
-    val feesExpensesInvestment: FeesExpenses? = null
+    val feesExpensesInvestment: FeesExpenses? = null,
 )
 
 /**
@@ -702,5 +611,5 @@ internal data class FundProfile(
 internal data class FeesExpenses(
     val annualReportExpenseRatio: RawFormatted? = null,
     val annualHoldingsTurnover: RawFormatted? = null,
-    val totalNetAssets: RawFormatted? = null
+    val totalNetAssets: RawFormatted? = null,
 )

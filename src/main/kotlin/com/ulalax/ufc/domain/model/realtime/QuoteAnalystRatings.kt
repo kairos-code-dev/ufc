@@ -18,5 +18,5 @@ data class QuoteAnalystRatings(
     val targetMedianPrice: Double? = null,
     val recommendationMean: Double? = null,
     val recommendationKey: String? = null,
-    val numberOfAnalystOpinions: Int? = null
+    val numberOfAnalystOpinions: Int? = null,
 )

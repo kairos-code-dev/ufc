@@ -5,9 +5,8 @@ import com.ulalax.ufc.domain.exception.UfcException
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.ZoneId
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.Date
 
 /**
  * Options Chain Example
@@ -20,44 +19,44 @@ import java.util.*
  * 4. Analyzing calls and puts by strike price
  * 5. Calculating option Greeks and metrics
  */
-fun main() = runBlocking {
-    println("=".repeat(80))
-    println("UFC Options Example - Options Chain Data")
-    println("=".repeat(80))
-    println()
+fun main() =
+    runBlocking {
+        println("=".repeat(80))
+        println("UFC Options Example - Options Chain Data")
+        println("=".repeat(80))
+        println()
 
-    // Create UFC client instance
-    Ufc.create().use { ufc ->
-        try {
-            // Example 1: Overview of available expiration dates
-            expirationDatesOverview(ufc)
-            println()
+        // Create UFC client instance
+        Ufc.create().use { ufc ->
+            try {
+                // Example 1: Overview of available expiration dates
+                expirationDatesOverview(ufc)
+                println()
 
-            // Example 2: Options chain for nearest expiration
-            nearestExpirationChain(ufc)
-            println()
+                // Example 2: Options chain for nearest expiration
+                nearestExpirationChain(ufc)
+                println()
 
-            // Example 3: At-the-money (ATM) options analysis
-            atmOptionsAnalysis(ufc)
-            println()
+                // Example 3: At-the-money (ATM) options analysis
+                atmOptionsAnalysis(ufc)
+                println()
 
-            // Example 4: Compare calls vs puts at different strikes
-            callsPutsComparison(ufc)
-
-        } catch (e: UfcException) {
-            println("Error: ${e.message}")
-            println("Error Code: ${e.errorCode}")
-        } catch (e: Exception) {
-            println("Unexpected error: ${e.message}")
-            e.printStackTrace()
+                // Example 4: Compare calls vs puts at different strikes
+                callsPutsComparison(ufc)
+            } catch (e: UfcException) {
+                println("Error: ${e.message}")
+                println("Error Code: ${e.errorCode}")
+            } catch (e: Exception) {
+                println("Unexpected error: ${e.message}")
+                e.printStackTrace()
+            }
         }
-    }
 
-    println()
-    println("=".repeat(80))
-    println("Example completed successfully")
-    println("=".repeat(80))
-}
+        println()
+        println("=".repeat(80))
+        println("Example completed successfully")
+        println("=".repeat(80))
+    }
 
 /**
  * Example 1: Overview of available expiration dates
@@ -95,11 +94,12 @@ suspend fun expirationDatesOverview(ufc: Ufc) {
         val dateStr = dateFormatter.format(Date.from(date))
         val daysToExpiration = ChronoUnit.DAYS.between(now, date)
 
-        val expType = when {
-            daysToExpiration <= 7 -> "Weekly"
-            daysToExpiration <= 45 -> "Monthly"
-            else -> "LEAPS"
-        }
+        val expType =
+            when {
+                daysToExpiration <= 7 -> "Weekly"
+                daysToExpiration <= 45 -> "Monthly"
+                else -> "LEAPS"
+            }
 
         println("%-4d %-20s %15d %10s".format(index + 1, dateStr, daysToExpiration, expType))
     }
@@ -143,9 +143,10 @@ suspend fun nearestExpirationChain(ufc: Ufc) {
     println()
 
     // Find strikes near the current price
-    val nearbyStrikes = optionsData.strikes
-        .filter { Math.abs(it - underlyingPrice) / underlyingPrice <= 0.10 } // Within 10%
-        .sorted()
+    val nearbyStrikes =
+        optionsData.strikes
+            .filter { Math.abs(it - underlyingPrice) / underlyingPrice <= 0.10 } // Within 10%
+            .sorted()
 
     println("=== CALLS (Strikes near current price) ===")
     println("%-10s %10s %10s %10s %12s %10s %8s".format("Strike", "Last", "Bid", "Ask", "Volume", "OI", "IV"))
@@ -163,9 +164,18 @@ suspend fun nearestExpirationChain(ufc: Ufc) {
             val ivStr = call.impliedVolatility?.let { "%.1f%%".format(it * 100) } ?: "N/A"
 
             val marker = if (Math.abs(strike - underlyingPrice) < 1.0) " *" else ""
-            println("%-10s %10s %10s %10s %12s %10s %8s%s".format(
-                strikeStr, lastStr, bidStr, askStr, volumeStr, oiStr, ivStr, marker
-            ))
+            println(
+                "%-10s %10s %10s %10s %12s %10s %8s%s".format(
+                    strikeStr,
+                    lastStr,
+                    bidStr,
+                    askStr,
+                    volumeStr,
+                    oiStr,
+                    ivStr,
+                    marker,
+                ),
+            )
         }
     }
 
@@ -186,9 +196,18 @@ suspend fun nearestExpirationChain(ufc: Ufc) {
             val ivStr = put.impliedVolatility?.let { "%.1f%%".format(it * 100) } ?: "N/A"
 
             val marker = if (Math.abs(strike - underlyingPrice) < 1.0) " *" else ""
-            println("%-10s %10s %10s %10s %12s %10s %8s%s".format(
-                strikeStr, lastStr, bidStr, askStr, volumeStr, oiStr, ivStr, marker
-            ))
+            println(
+                "%-10s %10s %10s %10s %12s %10s %8s%s".format(
+                    strikeStr,
+                    lastStr,
+                    bidStr,
+                    askStr,
+                    volumeStr,
+                    oiStr,
+                    ivStr,
+                    marker,
+                ),
+            )
         }
     }
 
@@ -319,10 +338,11 @@ suspend fun callsPutsComparison(ufc: Ufc) {
     println()
 
     // Select strikes around the current price
-    val targetStrikes = optionsData.strikes
-        .filter { it >= underlyingPrice * 0.95 && it <= underlyingPrice * 1.05 }
-        .sorted()
-        .take(7)
+    val targetStrikes =
+        optionsData.strikes
+            .filter { it >= underlyingPrice * 0.95 && it <= underlyingPrice * 1.05 }
+            .sorted()
+            .take(7)
 
     println("%-10s %10s %10s %15s %15s".format("Strike", "Call IV", "Put IV", "Call Volume", "Put Volume"))
     println("-".repeat(70))
@@ -339,9 +359,16 @@ suspend fun callsPutsComparison(ufc: Ufc) {
 
         val marker = if (Math.abs(strike - underlyingPrice) / underlyingPrice < 0.01) " *" else ""
 
-        println("%-10s %10s %10s %15s %15s%s".format(
-            strikeStr, callIVStr, putIVStr, callVolStr, putVolStr, marker
-        ))
+        println(
+            "%-10s %10s %10s %15s %15s%s".format(
+                strikeStr,
+                callIVStr,
+                putIVStr,
+                callVolStr,
+                putVolStr,
+                marker,
+            ),
+        )
     }
 
     println()

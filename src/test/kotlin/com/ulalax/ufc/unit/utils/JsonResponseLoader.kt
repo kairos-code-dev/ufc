@@ -43,7 +43,6 @@ import java.nio.file.Paths
  * @see RecordingConfig 레코딩 경로 설정
  */
 object JsonResponseLoader {
-
     /**
      * 테스트 리소스의 기본 경로
      */
@@ -69,7 +68,10 @@ object JsonResponseLoader {
      * val json = JsonResponseLoader.load("businessinsider/isin", "apple_isin")
      * ```
      */
-    fun load(category: String, fileName: String): String {
+    fun load(
+        category: String,
+        fileName: String,
+    ): String {
         val filePath = baseResourcePath.resolve(category).resolve("$fileName.json")
 
         if (!Files.exists(filePath)) {
@@ -88,7 +90,7 @@ object JsonResponseLoader {
 
                 3. 레코딩된 파일 목록을 확인하세요.
                    ls -la src/test/resources/responses/$category/
-                """.trimIndent()
+                """.trimIndent(),
             )
         }
 
@@ -101,7 +103,7 @@ object JsonResponseLoader {
                 경로: $filePath
                 에러: ${e.message}
                 """.trimIndent(),
-                e
+                e,
             )
         }
     }
@@ -153,7 +155,10 @@ object JsonResponseLoader {
      * }
      * ```
      */
-    fun exists(category: String, fileName: String): Boolean {
+    fun exists(
+        category: String,
+        fileName: String,
+    ): Boolean {
         val filePath = baseResourcePath.resolve(category).resolve("$fileName.json")
         return Files.exists(filePath)
     }

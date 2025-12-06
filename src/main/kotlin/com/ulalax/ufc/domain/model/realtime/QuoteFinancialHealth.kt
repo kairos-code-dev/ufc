@@ -16,5 +16,5 @@ data class QuoteFinancialHealth(
     val totalDebt: Long? = null,
     val debtToEquity: Double? = null,
     val currentRatio: Double? = null,
-    val quickRatio: Double? = null
+    val quickRatio: Double? = null,
 )

@@ -22,5 +22,5 @@ data class QuoteExtendedHours(
     val postMarketPrice: Double? = null,
     val postMarketChange: Double? = null,
     val postMarketChangePercent: Double? = null,
-    val postMarketTime: Instant? = null
+    val postMarketTime: Instant? = null,
 )

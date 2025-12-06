@@ -26,314 +26,323 @@ import java.time.LocalDate
  */
 @DisplayName("[I] Yahoo.fundamentalsTimeseries() - 재무제표 시계열 데이터 조회")
 class FundamentalsTimeseriesSpec : IntegrationTestBase() {
-
     @Nested
     @DisplayName("기본 동작")
     inner class BasicBehavior {
-
         @Test
         @DisplayName("AAPL의 연간 총 매출 시계열을 조회할 수 있다")
-        fun `returns annual total revenue for AAPL`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+        fun `returns annual total revenue for AAPL`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.hasData(FundamentalsType.ANNUAL_TOTAL_REVENUE)).isTrue()
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.hasData(FundamentalsType.ANNUAL_TOTAL_REVENUE)).isTrue()
 
-            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            assertThat(revenues).isNotNull()
-            assertThat(revenues).isNotEmpty()
+                val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                assertThat(revenues).isNotNull()
+                assertThat(revenues).isNotEmpty()
 
-            // 시계열 데이터 검증
-            revenues?.forEach { dataPoint ->
-                assertThat(dataPoint.asOfDate).isNotNull()
-                assertThat(dataPoint.periodType).isNotBlank()
-                assertThat(dataPoint.currencyCode).isNotBlank()
-                // value는 null일 수 있음
+                // 시계열 데이터 검증
+                revenues?.forEach { dataPoint ->
+                    assertThat(dataPoint.asOfDate).isNotNull()
+                    assertThat(dataPoint.periodType).isNotBlank()
+                    assertThat(dataPoint.currencyCode).isNotBlank()
+                    // value는 null일 수 있음
+                }
+
+                // 날짜순 정렬 확인
+                val dates = revenues?.map { it.asOfDate }
+                assertThat(dates).isSorted()
             }
-
-            // 날짜순 정렬 확인
-            val dates = revenues?.map { it.asOfDate }
-            assertThat(dates).isSorted()
-        }
 
         @Test
         @DisplayName("여러 재무 항목을 동시에 조회할 수 있다")
-        fun `returns multiple fundamentals types`() = integrationTest {
-            // Given - 확실히 데이터가 있는 타입들 사용
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(
-                FundamentalsType.ANNUAL_TOTAL_REVENUE,
-                FundamentalsType.QUARTERLY_TOTAL_REVENUE,
-                FundamentalsType.ANNUAL_NET_INCOME
-            )
+        fun `returns multiple fundamentals types`() =
+            integrationTest {
+                // Given - 확실히 데이터가 있는 타입들 사용
+                val symbol = TestFixtures.Symbols.AAPL
+                val types =
+                    listOf(
+                        FundamentalsType.ANNUAL_TOTAL_REVENUE,
+                        FundamentalsType.QUARTERLY_TOTAL_REVENUE,
+                        FundamentalsType.ANNUAL_NET_INCOME,
+                    )
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
 
-            // 각 타입별로 데이터 존재 확인
-            types.forEach { type ->
-                val data = result.get(type)
-                assertThat(data).isNotNull().isNotEmpty()
+                // 각 타입별로 데이터 존재 확인
+                types.forEach { type ->
+                    val data = result.get(type)
+                    assertThat(data).isNotNull().isNotEmpty()
+                }
             }
-        }
 
         @Test
         @DisplayName("특정 기간의 데이터를 조회할 수 있다")
-        fun `returns data for specific date range`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            val startDate = LocalDate.of(2020, 1, 1)
-            val endDate = LocalDate.of(2023, 12, 31)
+        fun `returns data for specific date range`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                val startDate = LocalDate.of(2020, 1, 1)
+                val endDate = LocalDate.of(2023, 12, 31)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types, startDate, endDate)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types, startDate, endDate)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
 
-            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            assertThat(revenues).isNotNull().isNotEmpty()
-            revenues!!.forEach { dataPoint ->
-                assertThat(dataPoint.asOfDate).isNotNull()
+                val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                assertThat(revenues).isNotNull().isNotEmpty()
+                revenues!!.forEach { dataPoint ->
+                    assertThat(dataPoint.asOfDate).isNotNull()
+                }
             }
-        }
     }
 
     @Nested
     @DisplayName("손익계산서 데이터")
     inner class IncomeStatementData {
-
         @Test
         @DisplayName("분기별 순이익을 조회할 수 있다")
-        fun `returns quarterly net income`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.QUARTERLY_NET_INCOME)
+        fun `returns quarterly net income`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.QUARTERLY_NET_INCOME)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val netIncomes = result.get(FundamentalsType.QUARTERLY_NET_INCOME)
-            assertThat(netIncomes).isNotNull().isNotEmpty()
-            netIncomes!!.forEach { dataPoint ->
-                assertThat(dataPoint.periodType).isIn("3M", "UNKNOWN")
+                // Then
+                assertThat(result).isNotNull()
+                val netIncomes = result.get(FundamentalsType.QUARTERLY_NET_INCOME)
+                assertThat(netIncomes).isNotNull().isNotEmpty()
+                netIncomes!!.forEach { dataPoint ->
+                    assertThat(dataPoint.periodType).isIn("3M", "UNKNOWN")
+                }
             }
-        }
 
         @Test
         @DisplayName("Trailing 데이터를 조회할 수 있다")
-        fun `returns trailing data`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            // trailingEPS는 404를 반환할 수 있으므로 다른 trailing 타입 사용
-            val types = listOf(FundamentalsType.TRAILING_TOTAL_REVENUE)
+        fun `returns trailing data`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                // trailingEPS는 404를 반환할 수 있으므로 다른 trailing 타입 사용
+                val types = listOf(FundamentalsType.TRAILING_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val revenue = result.get(FundamentalsType.TRAILING_TOTAL_REVENUE)
-            assertThat(revenue).isNotNull().isNotEmpty()
-            revenue!!.forEach { dataPoint ->
-                assertThat(dataPoint.periodType).isIn("TTM", "UNKNOWN")
+                // Then
+                assertThat(result).isNotNull()
+                val revenue = result.get(FundamentalsType.TRAILING_TOTAL_REVENUE)
+                assertThat(revenue).isNotNull().isNotEmpty()
+                revenue!!.forEach { dataPoint ->
+                    assertThat(dataPoint.periodType).isIn("TTM", "UNKNOWN")
+                }
             }
-        }
     }
 
     @Nested
     @DisplayName("대차대조표 데이터")
     inner class BalanceSheetData {
-
         @Test
         @DisplayName("연간 총 자산을 조회할 수 있다")
-        fun `returns annual total assets`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_ASSETS)
+        fun `returns annual total assets`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_ASSETS)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val assets = result.get(FundamentalsType.ANNUAL_TOTAL_ASSETS)
-            assertThat(assets).isNotNull().isNotEmpty()
-            assets!!.forEach { dataPoint ->
-                assertThat(dataPoint.periodType).isIn("12M", "UNKNOWN")
+                // Then
+                assertThat(result).isNotNull()
+                val assets = result.get(FundamentalsType.ANNUAL_TOTAL_ASSETS)
+                assertThat(assets).isNotNull().isNotEmpty()
+                assets!!.forEach { dataPoint ->
+                    assertThat(dataPoint.periodType).isIn("12M", "UNKNOWN")
+                }
             }
-        }
 
         @Test
         @DisplayName("분기별 발행주식수를 조회할 수 있다")
-        fun `returns quarterly ordinary shares number`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.QUARTERLY_ORDINARY_SHARES_NUMBER)
+        fun `returns quarterly ordinary shares number`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.QUARTERLY_ORDINARY_SHARES_NUMBER)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val shares = result.get(FundamentalsType.QUARTERLY_ORDINARY_SHARES_NUMBER)
-            assertThat(shares).isNotNull().isNotEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                val shares = result.get(FundamentalsType.QUARTERLY_ORDINARY_SHARES_NUMBER)
+                assertThat(shares).isNotNull().isNotEmpty()
+            }
     }
 
     @Nested
     @DisplayName("현금흐름표 데이터")
     inner class CashFlowData {
-
         @Test
         @DisplayName("연간 영업 현금 흐름을 조회할 수 있다")
-        fun `returns annual operating cash flow`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_OPERATING_CASH_FLOW)
+        fun `returns annual operating cash flow`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_OPERATING_CASH_FLOW)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val cashFlows = result.get(FundamentalsType.ANNUAL_OPERATING_CASH_FLOW)
-            assertThat(cashFlows).isNotNull().isNotEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                val cashFlows = result.get(FundamentalsType.ANNUAL_OPERATING_CASH_FLOW)
+                assertThat(cashFlows).isNotNull().isNotEmpty()
+            }
 
         @Test
         @DisplayName("분기별 잉여 현금 흐름을 조회할 수 있다")
-        fun `returns quarterly free cash flow`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.QUARTERLY_FREE_CASH_FLOW)
+        fun `returns quarterly free cash flow`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.QUARTERLY_FREE_CASH_FLOW)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            val freeCashFlows = result.get(FundamentalsType.QUARTERLY_FREE_CASH_FLOW)
-            assertThat(freeCashFlows).isNotNull().isNotEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                val freeCashFlows = result.get(FundamentalsType.QUARTERLY_FREE_CASH_FLOW)
+                assertThat(freeCashFlows).isNotNull().isNotEmpty()
+            }
     }
 
     @Nested
     @DisplayName("데이터 품질")
     inner class DataQuality {
-
         @Test
         @DisplayName("TimeseriesDataPoint는 날짜순으로 정렬된다")
-        fun `data points are sorted by date`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+        fun `data points are sorted by date`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            assertThat(revenues).isNotNull()
-            assertThat(revenues!!.size).isGreaterThan(1)
-            for (i in 0 until revenues.size - 1) {
-                assertThat(revenues[i].asOfDate)
-                    .isBeforeOrEqualTo(revenues[i + 1].asOfDate)
+                // Then
+                val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                assertThat(revenues).isNotNull()
+                assertThat(revenues!!.size).isGreaterThan(1)
+                for (i in 0 until revenues.size - 1) {
+                    assertThat(revenues[i].asOfDate)
+                        .isBeforeOrEqualTo(revenues[i + 1].asOfDate)
+                }
             }
-        }
 
         @Test
         @DisplayName("currencyCode는 항상 존재한다")
-        fun `currency code is always present`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+        fun `currency code is always present`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            revenues?.forEach { dataPoint ->
-                assertThat(dataPoint.currencyCode).isNotBlank()
+                // Then
+                val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                revenues?.forEach { dataPoint ->
+                    assertThat(dataPoint.currencyCode).isNotBlank()
+                }
             }
-        }
     }
 
     @Nested
     @DisplayName("에지 케이스")
     inner class EdgeCases {
-
         @Test
         @DisplayName("존재하지 않는 심볼은 빈 결과를 반환한다")
-        fun `returns empty result for invalid symbol`() = integrationTest {
-            // Given
-            val symbol = "INVALID_SYMBOL_XXXYYY"
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+        fun `returns empty result for invalid symbol`() =
+            integrationTest {
+                // Given
+                val symbol = "INVALID_SYMBOL_XXXYYY"
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.data).isEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.data).isEmpty()
+            }
 
         @Test
         @DisplayName("ETF는 재무 데이터가 없어 빈 결과를 반환할 수 있다")
-        fun `returns empty result for ETF`() = integrationTest {
-            // Given
-            val symbol = "SPY" // ETF
-            val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+        fun `returns empty result for ETF`() =
+            integrationTest {
+                // Given
+                val symbol = "SPY" // ETF
+                val types = listOf(FundamentalsType.ANNUAL_TOTAL_REVENUE)
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            // ETF는 재무 데이터가 없을 수 있음
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                // ETF는 재무 데이터가 없을 수 있음
+            }
 
         @Test
         @DisplayName("일부 재무 타입은 데이터가 없을 수 있다")
-        fun `some fundamentals types may return null`() = integrationTest {
-            // Given - TRAILING_EPS 같은 일부 타입은 모든 종목에 존재하지 않음
-            val symbol = TestFixtures.Symbols.AAPL
-            val types = listOf(
-                FundamentalsType.ANNUAL_TOTAL_REVENUE,  // 거의 항상 존재
-                FundamentalsType.TRAILING_EPS           // 존재하지 않을 수 있음
-            )
+        fun `some fundamentals types may return null`() =
+            integrationTest {
+                // Given - TRAILING_EPS 같은 일부 타입은 모든 종목에 존재하지 않음
+                val symbol = TestFixtures.Symbols.AAPL
+                val types =
+                    listOf(
+                        FundamentalsType.ANNUAL_TOTAL_REVENUE, // 거의 항상 존재
+                        FundamentalsType.TRAILING_EPS, // 존재하지 않을 수 있음
+                    )
 
-            // When
-            val result = ufc.fundamentalsTimeseries(symbol, types)
+                // When
+                val result = ufc.fundamentalsTimeseries(symbol, types)
 
-            // Then
-            assertThat(result).isNotNull()
+                // Then
+                assertThat(result).isNotNull()
 
-            // ANNUAL_TOTAL_REVENUE는 대부분 존재
-            val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
-            assertThat(revenues).isNotNull()
+                // ANNUAL_TOTAL_REVENUE는 대부분 존재
+                val revenues = result.get(FundamentalsType.ANNUAL_TOTAL_REVENUE)
+                assertThat(revenues).isNotNull()
 
-            // TRAILING_EPS는 null일 수 있음 - 이는 정상 동작임
-            val eps = result.get(FundamentalsType.TRAILING_EPS)
-            // eps가 null이거나 empty일 수 있음 - API 특성상 정상
-        }
+                // TRAILING_EPS는 null일 수 있음 - 이는 정상 동작임
+                val eps = result.get(FundamentalsType.TRAILING_EPS)
+                // eps가 null이거나 empty일 수 있음 - API 특성상 정상
+            }
     }
 }

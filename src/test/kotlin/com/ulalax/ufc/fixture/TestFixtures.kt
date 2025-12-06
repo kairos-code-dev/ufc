@@ -18,7 +18,6 @@ import java.time.LocalDate
  * ```
  */
 object TestFixtures {
-
     /**
      * Yahoo Finance 티커 심볼
      */

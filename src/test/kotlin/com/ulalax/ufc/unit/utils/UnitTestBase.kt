@@ -46,7 +46,6 @@ import org.junit.jupiter.api.Tag
  */
 @Tag("unit")
 abstract class UnitTestBase {
-
     /**
      * Unit 테스트 실행 헬퍼 함수
      *
@@ -87,6 +86,8 @@ abstract class UnitTestBase {
      * val json = loadMockResponse(RecordingConfig.Paths.BusinessInsider.ISIN_SEARCH, "apple_isin")
      * ```
      */
-    protected fun loadMockResponse(category: String, fileName: String): String =
-        JsonResponseLoader.load(category, fileName)
+    protected fun loadMockResponse(
+        category: String,
+        fileName: String,
+    ): String = JsonResponseLoader.load(category, fileName)
 }

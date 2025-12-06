@@ -7,9 +7,8 @@ package com.ulalax.ufc.infrastructure.common.ratelimit
  */
 sealed class RateLimitException(
     message: String,
-    cause: Throwable? = null
+    cause: Throwable? = null,
 ) : RuntimeException(message, cause) {
-
     /**
      * Rate Limit 토큰 대기 타임아웃 예외
      *
@@ -34,13 +33,14 @@ sealed class RateLimitException(
         val source: String,
         val config: RateLimitConfig,
         val tokensNeeded: Int = 1,
-        val waitedMillis: Long = 0L
+        val waitedMillis: Long = 0L,
     ) : RateLimitException(
-        message = "Rate limit timeout for source '$source' after waiting ${waitedMillis}ms. " +
-                "Needed tokens: $tokensNeeded, capacity: ${config.capacity}, " +
-                "refill rate: ${config.refillRate} tokens/sec, " +
-                "timeout: ${config.waitTimeoutMillis}ms"
-    ) {
+            message =
+                "Rate limit timeout for source '$source' after waiting ${waitedMillis}ms. " +
+                    "Needed tokens: $tokensNeeded, capacity: ${config.capacity}, " +
+                    "refill rate: ${config.refillRate} tokens/sec, " +
+                    "timeout: ${config.waitTimeoutMillis}ms",
+        ) {
         /**
          * 예상 대기 시간을 형식화하여 반환합니다.
          */
@@ -62,10 +62,10 @@ sealed class RateLimitException(
      * @property configError 설정 오류 메시지
      */
     data class RateLimitConfigException(
-        val configError: String
+        val configError: String,
     ) : RateLimitException(
-        message = "Invalid rate limit configuration: $configError"
-    )
+            message = "Invalid rate limit configuration: $configError",
+        )
 
     /**
      * Rate Limit 상태 오류 예외
@@ -76,8 +76,8 @@ sealed class RateLimitException(
      * @property stateError 상태 오류 메시지
      */
     data class RateLimitStateException(
-        val stateError: String
+        val stateError: String,
     ) : RateLimitException(
-        message = "Rate limiter state error: $stateError"
-    )
+            message = "Rate limiter state error: $stateError",
+        )
 }

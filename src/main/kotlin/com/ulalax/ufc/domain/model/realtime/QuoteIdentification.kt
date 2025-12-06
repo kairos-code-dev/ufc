@@ -22,5 +22,5 @@ data class QuoteIdentification(
     val timezoneShortName: String? = null,
     val quoteType: String? = null,
     val currency: String? = null,
-    val market: String? = null
+    val market: String? = null,
 )

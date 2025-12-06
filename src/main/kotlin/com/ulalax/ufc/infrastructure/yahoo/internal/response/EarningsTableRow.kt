@@ -22,5 +22,5 @@ internal data class EarningsTableRow(
     val earningsDateRaw: String,
     val epsEstimateRaw: String,
     val reportedEpsRaw: String,
-    val surprisePercentRaw: String
+    val surprisePercentRaw: String,
 )

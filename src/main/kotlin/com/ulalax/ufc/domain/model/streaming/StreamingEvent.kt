@@ -18,21 +18,27 @@ sealed class StreamingEvent {
      *
      * @property reason 종료 사유 (없을 경우 null)
      */
-    data class Disconnected(val reason: String?) : StreamingEvent()
+    data class Disconnected(
+        val reason: String?,
+    ) : StreamingEvent()
 
     /**
      * 재연결 시도 중
      *
      * @property attempt 재시도 횟수 (1부터 시작)
      */
-    data class Reconnecting(val attempt: Int) : StreamingEvent()
+    data class Reconnecting(
+        val attempt: Int,
+    ) : StreamingEvent()
 
     /**
      * 구독 목록 업데이트
      *
      * @property symbols 현재 구독 중인 심볼 목록
      */
-    data class SubscriptionUpdated(val symbols: Set<String>) : StreamingEvent()
+    data class SubscriptionUpdated(
+        val symbols: Set<String>,
+    ) : StreamingEvent()
 
     /**
      * 에러 발생
@@ -40,5 +46,8 @@ sealed class StreamingEvent {
      * @property exception 발생한 예외
      * @property isFatal 복구 불가능한 에러인지 여부 (true일 경우 연결 종료됨)
      */
-    data class Error(val exception: UfcException, val isFatal: Boolean) : StreamingEvent()
+    data class Error(
+        val exception: UfcException,
+        val isFatal: Boolean,
+    ) : StreamingEvent()
 }

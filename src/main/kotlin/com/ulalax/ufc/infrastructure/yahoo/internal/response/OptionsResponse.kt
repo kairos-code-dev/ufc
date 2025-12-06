@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class OptionsResponse(
     @SerialName("optionChain")
-    val optionChain: OptionChainWrapper
+    val optionChain: OptionChainWrapper,
 )
 
 /**
@@ -23,9 +23,8 @@ internal data class OptionsResponse(
 internal data class OptionChainWrapper(
     @SerialName("result")
     val result: List<OptionsResult>? = null,
-
     @SerialName("error")
-    val error: OptionsError? = null
+    val error: OptionsError? = null,
 )
 
 /**
@@ -37,21 +36,16 @@ internal data class OptionChainWrapper(
 internal data class OptionsResult(
     @SerialName("underlyingSymbol")
     val underlyingSymbol: String,
-
     @SerialName("expirationDates")
     val expirationDates: List<Long> = emptyList(),
-
     @SerialName("strikes")
     val strikes: List<Double> = emptyList(),
-
     @SerialName("hasMiniOptions")
     val hasMiniOptions: Boolean = false,
-
     @SerialName("quote")
     val quote: UnderlyingQuoteResponse? = null,
-
     @SerialName("options")
-    val options: List<OptionsChainResponse> = emptyList()
+    val options: List<OptionsChainResponse> = emptyList(),
 )
 
 /**
@@ -63,15 +57,12 @@ internal data class OptionsResult(
 internal data class OptionsChainResponse(
     @SerialName("expirationDate")
     val expirationDate: Long,
-
     @SerialName("hasMiniOptions")
     val hasMiniOptions: Boolean = false,
-
     @SerialName("calls")
     val calls: List<OptionContractResponse> = emptyList(),
-
     @SerialName("puts")
-    val puts: List<OptionContractResponse> = emptyList()
+    val puts: List<OptionContractResponse> = emptyList(),
 )
 
 /**
@@ -83,48 +74,34 @@ internal data class OptionsChainResponse(
 internal data class OptionContractResponse(
     @SerialName("contractSymbol")
     val contractSymbol: String,
-
     @SerialName("strike")
     val strike: Double,
-
     @SerialName("currency")
     val currency: String,
-
     @SerialName("lastPrice")
     val lastPrice: Double? = null,
-
     @SerialName("change")
     val change: Double? = null,
-
     @SerialName("percentChange")
     val percentChange: Double? = null,
-
     @SerialName("volume")
     val volume: Long? = null,
-
     @SerialName("openInterest")
     val openInterest: Long? = null,
-
     @SerialName("bid")
     val bid: Double? = null,
-
     @SerialName("ask")
     val ask: Double? = null,
-
     @SerialName("contractSize")
     val contractSize: String,
-
     @SerialName("expiration")
     val expiration: Long,
-
     @SerialName("lastTradeDate")
     val lastTradeDate: Long? = null,
-
     @SerialName("impliedVolatility")
     val impliedVolatility: Double? = null,
-
     @SerialName("inTheMoney")
-    val inTheMoney: Boolean
+    val inTheMoney: Boolean,
 )
 
 /**
@@ -136,24 +113,18 @@ internal data class OptionContractResponse(
 internal data class UnderlyingQuoteResponse(
     @SerialName("symbol")
     val symbol: String,
-
     @SerialName("shortName")
     val shortName: String? = null,
-
     @SerialName("regularMarketPrice")
     val regularMarketPrice: Double? = null,
-
     @SerialName("regularMarketChange")
     val regularMarketChange: Double? = null,
-
     @SerialName("regularMarketChangePercent")
     val regularMarketChangePercent: Double? = null,
-
     @SerialName("regularMarketVolume")
     val regularMarketVolume: Long? = null,
-
     @SerialName("regularMarketTime")
-    val regularMarketTime: Long? = null
+    val regularMarketTime: Long? = null,
 )
 
 /**
@@ -163,7 +134,6 @@ internal data class UnderlyingQuoteResponse(
 internal data class OptionsError(
     @SerialName("code")
     val code: String? = null,
-
     @SerialName("description")
-    val description: String? = null
+    val description: String? = null,
 )

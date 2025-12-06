@@ -18,5 +18,5 @@ data class QuoteEarnings(
     val epsCurrentYear: Double? = null,
     val earningsTimestamp: Instant? = null,
     val earningsTimestampStart: Instant? = null,
-    val earningsTimestampEnd: Instant? = null
+    val earningsTimestampEnd: Instant? = null,
 )

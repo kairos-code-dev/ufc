@@ -1,11 +1,11 @@
 package com.ulalax.ufc.infrastructure.businessinsider.internal
 
-import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClientConfig
-import com.ulalax.ufc.domain.model.security.IsinSearchResult
 import com.ulalax.ufc.domain.exception.ApiException
 import com.ulalax.ufc.domain.exception.DataParsingException
 import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.ValidationException
+import com.ulalax.ufc.domain.model.security.IsinSearchResult
+import com.ulalax.ufc.infrastructure.businessinsider.BusinessInsiderClientConfig
 import com.ulalax.ufc.infrastructure.common.ratelimit.RateLimiter
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -26,31 +26,31 @@ import org.slf4j.LoggerFactory
  */
 internal class BusinessInsiderHttpClient(
     private val config: BusinessInsiderClientConfig,
-    private val rateLimiter: RateLimiter
+    private val rateLimiter: RateLimiter,
 ) : AutoCloseable {
-
     private val logger = LoggerFactory.getLogger(BusinessInsiderHttpClient::class.java)
 
-    private val httpClient = HttpClient(CIO) {
-        install(HttpTimeout) {
-            connectTimeoutMillis = config.connectTimeoutMs
-            requestTimeoutMillis = config.requestTimeoutMs
-        }
+    private val httpClient =
+        HttpClient(CIO) {
+            install(HttpTimeout) {
+                connectTimeoutMillis = config.connectTimeoutMs
+                requestTimeoutMillis = config.requestTimeoutMs
+            }
 
-        if (config.enableLogging) {
-            install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.INFO
+            if (config.enableLogging) {
+                install(Logging) {
+                    logger = Logger.DEFAULT
+                    level = LogLevel.INFO
+                }
+            }
+
+            defaultRequest {
+                headers {
+                    append(HttpHeaders.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                    append(HttpHeaders.Accept, "*/*")
+                }
             }
         }
-
-        defaultRequest {
-            headers {
-                append(HttpHeaders.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                append(HttpHeaders.Accept, "*/*")
-            }
-        }
-    }
 
     /**
      * ISIN으로 종목 검색
@@ -80,27 +80,29 @@ internal class BusinessInsiderHttpClient(
             val results = parseJsCallback(responseText)
 
             // ISIN과 정확히 일치하는 결과 찾기 또는 첫 번째 결과 사용
-            val matchingResult = results.find { it.isin.equals(normalizedIsin, ignoreCase = true) }
-                ?: results.firstOrNull()
-                ?: throw ApiException(
-                    errorCode = ErrorCode.DATA_NOT_FOUND,
-                    message = "No results found for ISIN: $normalizedIsin",
-                    metadata = mapOf("isin" to normalizedIsin)
-                )
+            val matchingResult =
+                results.find { it.isin.equals(normalizedIsin, ignoreCase = true) }
+                    ?: results.firstOrNull()
+                    ?: throw ApiException(
+                        errorCode = ErrorCode.DATA_NOT_FOUND,
+                        message = "No results found for ISIN: $normalizedIsin",
+                        metadata = mapOf("isin" to normalizedIsin),
+                    )
 
             IsinSearchResult(
                 isin = matchingResult.isin.ifEmpty { normalizedIsin },
-                symbol = matchingResult.symbol.ifEmpty {
-                    throw DataParsingException(
-                        errorCode = ErrorCode.DATA_PARSING_ERROR,
-                        message = "Symbol not found for ISIN: $normalizedIsin",
-                        metadata = mapOf("isin" to normalizedIsin)
-                    )
-                },
+                symbol =
+                    matchingResult.symbol.ifEmpty {
+                        throw DataParsingException(
+                            errorCode = ErrorCode.DATA_PARSING_ERROR,
+                            message = "Symbol not found for ISIN: $normalizedIsin",
+                            metadata = mapOf("isin" to normalizedIsin),
+                        )
+                    },
                 name = matchingResult.name,
                 exchange = null,
                 currency = null,
-                type = matchingResult.category
+                type = matchingResult.category,
             )
         } catch (e: ValidationException) {
             throw e
@@ -114,7 +116,7 @@ internal class BusinessInsiderHttpClient(
                 errorCode = ErrorCode.EXTERNAL_API_ERROR,
                 message = "Failed to search ISIN $normalizedIsin: ${e.message}",
                 cause = e,
-                metadata = mapOf("isin" to normalizedIsin)
+                metadata = mapOf("isin" to normalizedIsin),
             )
         }
     }
@@ -165,7 +167,7 @@ internal class BusinessInsiderHttpClient(
         val name: String,
         val category: String,
         val symbol: String,
-        val isin: String
+        val isin: String,
     )
 
     /**
@@ -182,7 +184,7 @@ internal class BusinessInsiderHttpClient(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "ISIN must be 12 characters: $isin",
                 field = "isin",
-                metadata = mapOf("isin" to isin, "length" to isin.length)
+                metadata = mapOf("isin" to isin, "length" to isin.length),
             )
         }
         if (!isin.matches(Regex("^[A-Z]{2}[A-Z0-9]{9}[0-9]$"))) {
@@ -190,7 +192,7 @@ internal class BusinessInsiderHttpClient(
                 errorCode = ErrorCode.INVALID_PARAMETER,
                 message = "Invalid ISIN format: $isin",
                 field = "isin",
-                metadata = mapOf("isin" to isin, "expectedFormat" to "^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
+                metadata = mapOf("isin" to isin, "expectedFormat" to "^[A-Z]{2}[A-Z0-9]{9}[0-9]$"),
             )
         }
     }

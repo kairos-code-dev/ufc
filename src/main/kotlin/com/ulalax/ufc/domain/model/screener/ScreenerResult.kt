@@ -18,5 +18,5 @@ data class ScreenerResult(
     val count: Int,
     val total: Int,
     val start: Int,
-    val quotes: List<ScreenerQuote>
+    val quotes: List<ScreenerQuote>,
 )

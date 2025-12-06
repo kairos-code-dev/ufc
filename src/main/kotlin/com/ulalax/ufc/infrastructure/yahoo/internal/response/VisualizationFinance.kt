@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class VisualizationFinance(
     val result: List<VisualizationResult>? = null,
-    val error: VisualizationError? = null
+    val error: VisualizationError? = null,
 )

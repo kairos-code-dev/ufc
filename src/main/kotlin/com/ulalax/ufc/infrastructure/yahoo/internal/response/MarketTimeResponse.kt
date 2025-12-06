@@ -23,7 +23,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class MarketTimeResponse(
     @SerialName("finance")
-    val finance: FinanceWrapper
+    val finance: FinanceWrapper,
 )
 
 /**
@@ -33,9 +33,8 @@ internal data class MarketTimeResponse(
 internal data class FinanceWrapper(
     @SerialName("marketTimes")
     val marketTimes: List<MarketTimeWrapper>? = null,
-
     @SerialName("error")
-    val error: ErrorResponse? = null
+    val error: ErrorResponse? = null,
 )
 
 /**
@@ -44,7 +43,7 @@ internal data class FinanceWrapper(
 @Serializable
 internal data class MarketTimeWrapper(
     @SerialName("marketTime")
-    val marketTime: List<MarketTimeItemResponse>
+    val marketTime: List<MarketTimeItemResponse>,
 )
 
 /**
@@ -56,30 +55,22 @@ internal data class MarketTimeWrapper(
 internal data class MarketTimeItemResponse(
     @SerialName("exchange")
     val exchange: String? = null,
-
     @SerialName("market")
     val market: String? = null,
-
     @SerialName("marketState")
     val marketState: String? = null,
-
     @SerialName("open")
     val open: String? = null,
-
     @SerialName("close")
     val close: String? = null,
-
     @SerialName("preMarket")
     val preMarket: PrePostMarketResponse? = null,
-
     @SerialName("postMarket")
     val postMarket: PrePostMarketResponse? = null,
-
     @SerialName("timezone")
     val timezone: List<TimezoneResponse>? = null,
-
     @SerialName("time")
-    val time: String? = null
+    val time: String? = null,
 )
 
 /**
@@ -89,9 +80,8 @@ internal data class MarketTimeItemResponse(
 internal data class PrePostMarketResponse(
     @SerialName("start")
     val start: String,
-
     @SerialName("end")
-    val end: String
+    val end: String,
 )
 
 /**
@@ -101,10 +91,8 @@ internal data class PrePostMarketResponse(
 internal data class TimezoneResponse(
     @SerialName("short")
     val short: String? = null,
-
     @SerialName("name")
     val name: String? = null,
-
     @SerialName("gmtoffset")
-    val gmtoffset: Long? = null
+    val gmtoffset: Long? = null,
 )

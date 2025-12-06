@@ -25,9 +25,8 @@ import kotlin.coroutines.CoroutineContext
  * ```
  */
 class ResponseRecordingContext(
-    private val responseBodyRef: AtomicReference<String?> = AtomicReference(null)
+    private val responseBodyRef: AtomicReference<String?> = AtomicReference(null),
 ) : AbstractCoroutineContextElement(ResponseRecordingContext) {
-
     companion object Key : CoroutineContext.Key<ResponseRecordingContext>
 
     /**

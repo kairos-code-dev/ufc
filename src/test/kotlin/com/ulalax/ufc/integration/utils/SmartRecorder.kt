@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory
  * @see RecordingConfig 레코딩 설정 및 경로
  */
 object SmartRecorder {
-
     @PublishedApi
     internal val logger = LoggerFactory.getLogger(SmartRecorder::class.java)
 
@@ -100,13 +99,14 @@ object SmartRecorder {
          *
          * @property originalSize 원본 데이터의 크기 (로깅용)
          */
-        data class Limited(val originalSize: Int) : RecordingStrategy() {
+        data class Limited(
+            val originalSize: Int,
+        ) : RecordingStrategy() {
             override val fileNameSuffix: String = "_limited"
             override val description: String =
                 "제한된 레코딩 (${originalSize}개 중 ${SMALL_THRESHOLD}개)"
 
-            override fun <T> transform(data: List<T>): List<T> =
-                data.take(SMALL_THRESHOLD)
+            override fun <T> transform(data: List<T>): List<T> = data.take(SMALL_THRESHOLD)
         }
 
         /**
@@ -117,13 +117,14 @@ object SmartRecorder {
          *
          * @property originalSize 원본 데이터의 크기 (로깅용)
          */
-        data class Sampled(val originalSize: Int) : RecordingStrategy() {
+        data class Sampled(
+            val originalSize: Int,
+        ) : RecordingStrategy() {
             override val fileNameSuffix: String = "_sample"
             override val description: String =
                 "샘플링 레코딩 (${originalSize}개 중 ${LARGE_SAMPLE_SIZE}개 랜덤 추출)"
 
-            override fun <T> transform(data: List<T>): List<T> =
-                data.shuffled().take(LARGE_SAMPLE_SIZE)
+            override fun <T> transform(data: List<T>): List<T> = data.shuffled().take(LARGE_SAMPLE_SIZE)
         }
     }
 
@@ -137,13 +138,12 @@ object SmartRecorder {
      * @param dataSize 레코딩할 데이터의 크기
      * @return 선택된 레코딩 전략
      */
-    fun selectStrategy(dataSize: Int): RecordingStrategy {
-        return when {
+    fun selectStrategy(dataSize: Int): RecordingStrategy =
+        when {
             dataSize <= SMALL_THRESHOLD -> RecordingStrategy.Full
             dataSize <= MEDIUM_THRESHOLD -> RecordingStrategy.Limited(dataSize)
             else -> RecordingStrategy.Sampled(dataSize)
         }
-    }
 
     // ========================================
     // 메인 레코딩 함수
@@ -167,7 +167,7 @@ object SmartRecorder {
     inline fun <reified T> recordSmartly(
         data: List<T>,
         category: String,
-        fileName: String
+        fileName: String,
     ) {
         // 빈 데이터 체크
         if (data.isEmpty()) {
@@ -204,14 +204,15 @@ object SmartRecorder {
     inline fun <reified T> recordSmartly(
         data: T,
         category: String,
-        fileName: String
+        fileName: String,
     ) {
         // ResponseRecorder를 통해 실제 레코딩 수행
         ResponseRecorder.record(data, category, fileName)
 
         logger.info(
             "[SmartRecorder] 단일 객체 레코딩: {}/{}",
-            category, fileName
+            category,
+            fileName,
         )
     }
 
@@ -228,30 +229,38 @@ object SmartRecorder {
         strategy: RecordingStrategy,
         originalSize: Int,
         category: String,
-        fileName: String
+        fileName: String,
     ) {
         when (strategy) {
             is RecordingStrategy.Full -> {
                 logger.info(
                     "[SmartRecorder] Tier 1 - 전체 레코딩: {}개 -> {}/{}",
-                    originalSize, category, fileName
+                    originalSize,
+                    category,
+                    fileName,
                 )
             }
 
             is RecordingStrategy.Limited -> {
                 logger.warn(
                     "[SmartRecorder] Tier 2 - 제한된 레코딩: {}개 중 {}개만 레코딩 -> {}/{}",
-                    originalSize, SMALL_THRESHOLD, category, fileName
+                    originalSize,
+                    SMALL_THRESHOLD,
+                    category,
+                    fileName,
                 )
-                println("! [SmartRecorder] 대용량 데이터 감지: ${originalSize}개 중 ${SMALL_THRESHOLD}개만 레코딩됨 (${fileName})")
+                println("! [SmartRecorder] 대용량 데이터 감지: ${originalSize}개 중 ${SMALL_THRESHOLD}개만 레코딩됨 ($fileName)")
             }
 
             is RecordingStrategy.Sampled -> {
                 logger.warn(
                     "[SmartRecorder] Tier 3 - 샘플링 레코딩: {}개 중 {}개 랜덤 샘플링 -> {}/{}",
-                    originalSize, LARGE_SAMPLE_SIZE, category, fileName
+                    originalSize,
+                    LARGE_SAMPLE_SIZE,
+                    category,
+                    fileName,
                 )
-                println("!! [SmartRecorder] 초대용량 데이터 감지: ${originalSize}개 중 ${LARGE_SAMPLE_SIZE}개 랜덤 샘플링됨 (${fileName})")
+                println("!! [SmartRecorder] 초대용량 데이터 감지: ${originalSize}개 중 ${LARGE_SAMPLE_SIZE}개 랜덤 샘플링됨 ($fileName)")
                 println("   - 샘플링 비율: ${String.format("%.2f", LARGE_SAMPLE_SIZE.toDouble() / originalSize * 100)}%")
             }
         }
@@ -286,24 +295,25 @@ object SmartRecorder {
     /**
      * 전략 선택 기준을 설명하는 도움말을 반환합니다.
      */
-    fun getStrategyGuide(): String = buildString {
-        appendLine("=== SmartRecorder 전략 가이드 ===")
-        appendLine()
-        appendLine("Tier 1 - Full (전체 레코딩)")
-        appendLine("  - 조건: 데이터 <= ${SMALL_THRESHOLD}개")
-        appendLine("  - 동작: 모든 데이터 저장")
-        appendLine("  - 파일명: 원본 그대로")
-        appendLine()
-        appendLine("Tier 2 - Limited (제한된 레코딩)")
-        appendLine("  - 조건: ${SMALL_THRESHOLD}개 < 데이터 <= ${MEDIUM_THRESHOLD}개")
-        appendLine("  - 동작: 처음 ${SMALL_THRESHOLD}개만 저장")
-        appendLine("  - 파일명: *_limited.json")
-        appendLine()
-        appendLine("Tier 3 - Sampled (샘플링 레코딩)")
-        appendLine("  - 조건: 데이터 > ${MEDIUM_THRESHOLD}개")
-        appendLine("  - 동작: 랜덤 ${LARGE_SAMPLE_SIZE}개 샘플링")
-        appendLine("  - 파일명: *_sample.json")
-    }
+    fun getStrategyGuide(): String =
+        buildString {
+            appendLine("=== SmartRecorder 전략 가이드 ===")
+            appendLine()
+            appendLine("Tier 1 - Full (전체 레코딩)")
+            appendLine("  - 조건: 데이터 <= ${SMALL_THRESHOLD}개")
+            appendLine("  - 동작: 모든 데이터 저장")
+            appendLine("  - 파일명: 원본 그대로")
+            appendLine()
+            appendLine("Tier 2 - Limited (제한된 레코딩)")
+            appendLine("  - 조건: ${SMALL_THRESHOLD}개 < 데이터 <= ${MEDIUM_THRESHOLD}개")
+            appendLine("  - 동작: 처음 ${SMALL_THRESHOLD}개만 저장")
+            appendLine("  - 파일명: *_limited.json")
+            appendLine()
+            appendLine("Tier 3 - Sampled (샘플링 레코딩)")
+            appendLine("  - 조건: 데이터 > ${MEDIUM_THRESHOLD}개")
+            appendLine("  - 동작: 랜덤 ${LARGE_SAMPLE_SIZE}개 샘플링")
+            appendLine("  - 파일명: *_sample.json")
+        }
 }
 
 // ========================================

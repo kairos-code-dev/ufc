@@ -20,7 +20,7 @@ sealed interface ScreenerField {
 enum class EquityField(
     override val apiValue: String,
     override val category: String,
-    override val valueType: FieldValueType
+    override val valueType: FieldValueType,
 ) : ScreenerField {
     // 공통
     REGION("region", "common", FieldValueType.STRING),
@@ -52,7 +52,7 @@ enum class EquityField(
     // 손익계산서
     TOTAL_REVENUES("totalrevenues.lasttwelvemonths", "income_statement", FieldValueType.NUMBER),
     NET_INCOME("netincomeis.lasttwelvemonths", "income_statement", FieldValueType.NUMBER),
-    EBITDA("ebitda.lasttwelvemonths", "income_statement", FieldValueType.NUMBER)
+    EBITDA("ebitda.lasttwelvemonths", "income_statement", FieldValueType.NUMBER),
 }
 
 /**
@@ -61,7 +61,7 @@ enum class EquityField(
 enum class FundField(
     override val apiValue: String,
     override val category: String,
-    override val valueType: FieldValueType
+    override val valueType: FieldValueType,
 ) : ScreenerField {
     // 공통
     REGION("region", "common", FieldValueType.STRING),
@@ -75,5 +75,5 @@ enum class FundField(
     FUND_NET_ASSETS("fundnetassets", "fund", FieldValueType.NUMBER),
     PERFORMANCE_RATING("performancerating", "fund", FieldValueType.NUMBER),
     YIELD("yield", "fund", FieldValueType.NUMBER),
-    EXPENSE_RATIO("expenseratio", "fund", FieldValueType.NUMBER)
+    EXPENSE_RATIO("expenseratio", "fund", FieldValueType.NUMBER),
 }

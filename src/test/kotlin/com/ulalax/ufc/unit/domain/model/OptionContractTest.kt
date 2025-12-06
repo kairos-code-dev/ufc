@@ -10,11 +10,9 @@ import org.junit.jupiter.api.Test
 @Tag("unit")
 @DisplayName("[U] OptionContract 유틸리티 메서드")
 class OptionContractTest {
-
     @Nested
     @DisplayName("getBidAskSpread")
     inner class GetBidAskSpread {
-
         @Test
         fun `bid와 ask가 있으면 스프레드를 계산한다`() {
             val contract = createContract(bid = 1.0, ask = 1.5)
@@ -46,7 +44,6 @@ class OptionContractTest {
     @Nested
     @DisplayName("getBidAskSpreadPercent")
     inner class GetBidAskSpreadPercent {
-
         @Test
         fun `bid와 ask가 있으면 스프레드 비율을 계산한다`() {
             val contract = createContract(bid = 1.0, ask = 1.5)
@@ -79,7 +76,6 @@ class OptionContractTest {
     @Nested
     @DisplayName("getMidPrice")
     inner class GetMidPrice {
-
         @Test
         fun `bid와 ask가 있으면 중간 가격을 계산한다`() {
             val contract = createContract(bid = 1.0, ask = 1.5)
@@ -102,7 +98,6 @@ class OptionContractTest {
     @Nested
     @DisplayName("getIntrinsicValue")
     inner class GetIntrinsicValue {
-
         @Test
         fun `ITM 콜옵션의 내재가치를 계산한다`() {
             val contract = createContract(strike = 100.0)
@@ -143,7 +138,6 @@ class OptionContractTest {
     @Nested
     @DisplayName("getTimeValue")
     inner class GetTimeValue {
-
         @Test
         fun `시간가치를 계산한다`() {
             val contract = createContract(strike = 100.0, lastPrice = 15.0)
@@ -168,7 +162,7 @@ class OptionContractTest {
         strike: Double = 100.0,
         bid: Double? = 1.0,
         ask: Double? = 1.5,
-        lastPrice: Double? = 1.25
+        lastPrice: Double? = 1.25,
     ) = OptionContract(
         contractSymbol = "AAPL250117C00100000",
         strike = strike,
@@ -184,6 +178,6 @@ class OptionContractTest {
         expiration = 1737158400,
         lastTradeDate = 1704326400,
         impliedVolatility = 0.25,
-        inTheMoney = false
+        inTheMoney = false,
     )
 }

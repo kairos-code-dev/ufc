@@ -16,7 +16,7 @@ package com.ulalax.ufc.domain.exception
 enum class ErrorCode(
     val code: Int,
     val message: String,
-    val isRetryableFlag: Boolean = false
+    val isRetryableFlag: Boolean = false,
 ) {
     // 1000s: Network/WebSocket errors
     WEBSOCKET_CONNECTION_FAILED(1010, "WebSocket connection failed.", true),

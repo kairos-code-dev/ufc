@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class VisualizationQuery(
     val operator: String,
-    val operands: List<String>
+    val operands: List<String>,
 )

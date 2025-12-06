@@ -20,7 +20,7 @@ data class StreamingClientConfig(
     val pingTimeoutMs: Long = 30000,
     val reconnection: ReconnectionConfig = ReconnectionConfig(),
     val eventBufferSize: Int = 64,
-    val enableLogging: Boolean = false
+    val enableLogging: Boolean = false,
 ) {
     init {
         require(webSocketUrl.isNotBlank()) { "webSocketUrl must not be blank" }

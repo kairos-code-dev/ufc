@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory
  * @see RateLimitingSettings
  */
 object GlobalRateLimiters {
-
     private val logger = LoggerFactory.getLogger(GlobalRateLimiters::class.java)
 
     // ========================================
@@ -90,12 +89,12 @@ object GlobalRateLimiters {
                 yahooInstance = newInstance
                 logger.info(
                     "Initialized global Yahoo RateLimiter: " +
-                            "capacity={}, " +
-                            "refillRate={} req/sec, " +
-                            "enabled={}",
+                        "capacity={}, " +
+                        "refillRate={} req/sec, " +
+                        "enabled={}",
                     config.capacity,
                     config.refillRate,
-                    config.enabled
+                    config.enabled,
                 )
             }
         }
@@ -122,12 +121,12 @@ object GlobalRateLimiters {
                 fredInstance = newInstance
                 logger.info(
                     "Initialized global FRED RateLimiter: " +
-                            "capacity={}, " +
-                            "refillRate={} req/sec, " +
-                            "enabled={}",
+                        "capacity={}, " +
+                        "refillRate={} req/sec, " +
+                        "enabled={}",
                     config.capacity,
                     config.refillRate,
-                    config.enabled
+                    config.enabled,
                 )
             }
         }
@@ -147,7 +146,7 @@ object GlobalRateLimiters {
      * @return Business Insider 전용 글로벌 TokenBucketRateLimiter
      */
     fun getBusinessInsiderLimiter(
-        config: RateLimitConfig = RateLimitingSettings.businessInsiderDefault()
+        config: RateLimitConfig = RateLimitingSettings.businessInsiderDefault(),
     ): TokenBucketRateLimiter {
         businessInsiderInstance?.let { return it }
 
@@ -156,12 +155,12 @@ object GlobalRateLimiters {
                 businessInsiderInstance = newInstance
                 logger.info(
                     "Initialized global BusinessInsider RateLimiter: " +
-                            "capacity={}, " +
-                            "refillRate={} req/sec, " +
-                            "enabled={}",
+                        "capacity={}, " +
+                        "refillRate={} req/sec, " +
+                        "enabled={}",
                     config.capacity,
                     config.refillRate,
-                    config.enabled
+                    config.enabled,
                 )
             }
         }

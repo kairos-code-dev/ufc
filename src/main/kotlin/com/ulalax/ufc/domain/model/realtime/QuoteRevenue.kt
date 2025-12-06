@@ -16,5 +16,5 @@ data class QuoteRevenue(
     val returnOnAssets: Double? = null,
     val returnOnEquity: Double? = null,
     val profitMargins: Double? = null,
-    val grossMargins: Double? = null
+    val grossMargins: Double? = null,
 )

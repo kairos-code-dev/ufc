@@ -6,5 +6,5 @@ package com.ulalax.ufc.domain.model.search
  * @property resolutions 다양한 해상도의 이미지 URL 리스트
  */
 data class NewsThumbnail(
-    val resolutions: List<ThumbnailResolution>
+    val resolutions: List<ThumbnailResolution>,
 )

@@ -16,5 +16,5 @@ data class QuoteFinancialRatios(
     val priceToBook: Double? = null,
     val priceToSales: Double? = null,
     val bookValue: Double? = null,
-    val earningsQuarterlyGrowth: Double? = null
+    val earningsQuarterlyGrowth: Double? = null,
 )

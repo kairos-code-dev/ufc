@@ -22,5 +22,5 @@ data class SearchQuote(
     val exchangeDisplay: String?,
     val sector: String?,
     val industry: String?,
-    val score: Double
+    val score: Double,
 )

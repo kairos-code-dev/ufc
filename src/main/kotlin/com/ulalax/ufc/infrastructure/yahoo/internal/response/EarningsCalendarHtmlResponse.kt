@@ -11,5 +11,5 @@ package com.ulalax.ufc.infrastructure.yahoo.internal.response
  */
 internal data class EarningsCalendarHtmlResponse(
     val hasTable: Boolean,
-    val rows: List<EarningsTableRow>
+    val rows: List<EarningsTableRow>,
 )

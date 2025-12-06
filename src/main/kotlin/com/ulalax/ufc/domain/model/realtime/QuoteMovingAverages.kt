@@ -16,5 +16,5 @@ data class QuoteMovingAverages(
     val fiftyDayChangePercent: Double? = null,
     val twoHundredDayAverage: Double? = null,
     val twoHundredDayChange: Double? = null,
-    val twoHundredDayChangePercent: Double? = null
+    val twoHundredDayChangePercent: Double? = null,
 )

@@ -30,9 +30,8 @@ import org.slf4j.LoggerFactory
  * @property basicStrategy BasicAuthStrategy 인스턴스
  */
 class YahooAuthenticator(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) {
-
     private companion object {
         private val logger = LoggerFactory.getLogger(YahooAuthenticator::class.java)
     }
@@ -103,14 +102,15 @@ class YahooAuthenticator(
 
             // 3단계: 새로운 인증 수행
             logger.info("새로운 인증 수행 중...")
-            val newAuthResult = try {
-                basicStrategy.authenticate()
-            } catch (e: Exception) {
-                logger.error("인증 전략 실행 실패", e)
-                // 인증 실패 시 캐시 초기화
-                authResult = null
-                throw Exception("인증 수행 중 예외 발생: ${e.message}", e)
-            }
+            val newAuthResult =
+                try {
+                    basicStrategy.authenticate()
+                } catch (e: Exception) {
+                    logger.error("인증 전략 실행 실패", e)
+                    // 인증 실패 시 캐시 초기화
+                    authResult = null
+                    throw Exception("인증 수행 중 예외 발생: ${e.message}", e)
+                }
 
             // 4단계: 결과 캐싱
             authResult = newAuthResult
@@ -191,9 +191,8 @@ class YahooAuthenticator(
      *
      * @return 캐시된 인증 결과, 없으면 null
      */
-    suspend fun getCachedAuth(): AuthResult? {
-        return lock.withLock {
+    suspend fun getCachedAuth(): AuthResult? =
+        lock.withLock {
             authResult
         }
-    }
 }

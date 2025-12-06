@@ -7,6 +7,19 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+}
+
+// Ktlint 설정
+ktlint {
+    version.set("1.5.0")
+    android.set(false)
+    ignoreFailures.set(false)
+
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
+    }
 }
 
 group = "com.github.kairos-code-dev"
@@ -27,7 +40,7 @@ kotlin {
         freeCompilerArgs.addAll(
             "-Xjsr305=strict",
             "-opt-in=kotlin.ExperimentalCoroutinesApi",
-            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
+            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
         )
     }
 }
@@ -151,50 +164,52 @@ dependencies {
 }
 
 // 유닛 테스트 태스크 설정
-val unitTest = tasks.register<Test>("unitTest") {
-    description = "Runs unit tests only (pure domain logic, excludes integration tests)"
-    group = "verification"
+val unitTest =
+    tasks.register<Test>("unitTest") {
+        description = "Runs unit tests only (pure domain logic, excludes integration tests)"
+        group = "verification"
 
-    useJUnitPlatform {
-        excludeTags("integration")
+        useJUnitPlatform {
+            excludeTags("integration")
+        }
+
+        // 유닛 테스트는 순차 실행
+        maxParallelForks = 1
+
+        // 테스트 출력 설정
+        testLogging {
+            events("passed", "skipped", "failed")
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showStandardStreams = false
+        }
     }
-
-    // 유닛 테스트는 순차 실행
-    maxParallelForks = 1
-
-    // 테스트 출력 설정
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showStandardStreams = false
-    }
-}
 
 // 통합 테스트 태스크 설정
-val integrationTest = tasks.register<Test>("integrationTest") {
-    description = "Runs integration tests only (tagged with @Tag(\"integration\"))"
-    group = "verification"
+val integrationTest =
+    tasks.register<Test>("integrationTest") {
+        description = "Runs integration tests only (tagged with @Tag(\"integration\"))"
+        group = "verification"
 
-    useJUnitPlatform {
-        includeTags("integration")
+        useJUnitPlatform {
+            includeTags("integration")
+        }
+
+        // 통합 테스트 순차 실행 (Rate Limiting 방지)
+        maxParallelForks = 10
+
+        // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
+        timeout.set(Duration.ofMinutes(5))
+
+        // 테스트 출력 설정
+        testLogging {
+            events("passed", "skipped", "failed")
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showStandardStreams = true // 통합 테스트는 출력 표시
+        }
+
+        // 환경 변수 설정
+        environment("TEST_ENV", "integration")
     }
-
-    // 통합 테스트 순차 실행 (Rate Limiting 방지)
-    maxParallelForks = 10
-
-    // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
-    timeout.set(Duration.ofMinutes(5))
-
-    // 테스트 출력 설정
-    testLogging {
-        events("passed", "skipped", "failed")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showStandardStreams = true // 통합 테스트는 출력 표시
-    }
-
-    // 환경 변수 설정
-    environment("TEST_ENV", "integration")
-}
 
 // 빌드 작업 설정
 tasks {

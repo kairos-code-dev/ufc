@@ -1,14 +1,15 @@
 package com.ulalax.ufc.examples
 
 import com.ulalax.ufc.api.Ufc
+import com.ulalax.ufc.domain.exception.UfcException
 import com.ulalax.ufc.domain.model.chart.ChartEventType
 import com.ulalax.ufc.domain.model.chart.Interval
 import com.ulalax.ufc.domain.model.chart.Period
-import com.ulalax.ufc.domain.exception.UfcException
 import kotlinx.coroutines.runBlocking
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Historical Chart Data Example
@@ -20,44 +21,44 @@ import java.util.*
  * 3. Retrieving dividend and split events
  * 4. Basic technical analysis (moving averages, volatility)
  */
-fun main() = runBlocking {
-    println("=".repeat(80))
-    println("UFC Chart Example - Historical Market Data")
-    println("=".repeat(80))
-    println()
+fun main() =
+    runBlocking {
+        println("=".repeat(80))
+        println("UFC Chart Example - Historical Market Data")
+        println("=".repeat(80))
+        println()
 
-    // Create UFC client instance
-    Ufc.create().use { ufc ->
-        try {
-            // Example 1: Daily chart data for 1 year
-            dailyChartData(ufc)
-            println()
+        // Create UFC client instance
+        Ufc.create().use { ufc ->
+            try {
+                // Example 1: Daily chart data for 1 year
+                dailyChartData(ufc)
+                println()
 
-            // Example 2: Intraday chart data
-            intradayChartData(ufc)
-            println()
+                // Example 2: Intraday chart data
+                intradayChartData(ufc)
+                println()
 
-            // Example 3: Chart data with dividends and splits
-            chartWithEvents(ufc)
-            println()
+                // Example 3: Chart data with dividends and splits
+                chartWithEvents(ufc)
+                println()
 
-            // Example 4: Basic technical analysis
-            technicalAnalysis(ufc)
-
-        } catch (e: UfcException) {
-            println("Error: ${e.message}")
-            println("Error Code: ${e.errorCode}")
-        } catch (e: Exception) {
-            println("Unexpected error: ${e.message}")
-            e.printStackTrace()
+                // Example 4: Basic technical analysis
+                technicalAnalysis(ufc)
+            } catch (e: UfcException) {
+                println("Error: ${e.message}")
+                println("Error Code: ${e.errorCode}")
+            } catch (e: Exception) {
+                println("Unexpected error: ${e.message}")
+                e.printStackTrace()
+            }
         }
-    }
 
-    println()
-    println("=".repeat(80))
-    println("Example completed successfully")
-    println("=".repeat(80))
-}
+        println()
+        println("=".repeat(80))
+        println("Example completed successfully")
+        println("=".repeat(80))
+    }
 
 /**
  * Example 1: Retrieve daily chart data for different periods
@@ -72,11 +73,12 @@ suspend fun dailyChartData(ufc: Ufc) {
     println()
 
     // Fetch daily data for 1 year
-    val chartData = ufc.chart(
-        symbol = symbol,
-        interval = Interval.OneDay,
-        period = Period.OneYear
-    )
+    val chartData =
+        ufc.chart(
+            symbol = symbol,
+            interval = Interval.OneDay,
+            period = Period.OneYear,
+        )
 
     // Display metadata
     chartData.meta.let { meta ->
@@ -129,11 +131,12 @@ suspend fun dailyChartData(ufc: Ufc) {
         val low = priceFormatter(ohlcv.low)
         val close = priceFormatter(ohlcv.close)
         val volume = volumeFormatter(ohlcv.volume)
-        val changePercent = if (ohlcv.changePercent() >= 0) {
-            "+%.2f%%".format(ohlcv.changePercent())
-        } else {
-            "%.2f%%".format(ohlcv.changePercent())
-        }
+        val changePercent =
+            if (ohlcv.changePercent() >= 0) {
+                "+%.2f%%".format(ohlcv.changePercent())
+            } else {
+                "%.2f%%".format(ohlcv.changePercent())
+            }
 
         println("%-12s %10s %10s %10s %10s %15s %10s".format(date, open, high, low, close, volume, changePercent))
     }
@@ -169,11 +172,12 @@ suspend fun intradayChartData(ufc: Ufc) {
     println()
 
     // Fetch 5-minute interval data for last 5 days
-    val chartData = ufc.chart(
-        symbol = symbol,
-        interval = Interval.FiveMinutes,
-        period = Period.FiveDays
-    )
+    val chartData =
+        ufc.chart(
+            symbol = symbol,
+            interval = Interval.FiveMinutes,
+            period = Period.FiveDays,
+        )
 
     println("=== Intraday Data Summary ===")
     println("Symbol: ${chartData.meta.symbol}")
@@ -223,13 +227,14 @@ suspend fun chartWithEvents(ufc: Ufc) {
     println()
 
     // Fetch chart data with dividend and split events
-    val chartData = ufc.chart(
-        symbol = symbol,
-        interval = Interval.OneDay,
-        period = Period.FiveYears,
-        ChartEventType.DIVIDEND,
-        ChartEventType.SPLIT
-    )
+    val chartData =
+        ufc.chart(
+            symbol = symbol,
+            interval = Interval.OneDay,
+            period = Period.FiveYears,
+            ChartEventType.DIVIDEND,
+            ChartEventType.SPLIT,
+        )
 
     println("=== Chart Data Summary ===")
     println("Symbol: ${chartData.meta.symbol}")
@@ -277,11 +282,12 @@ suspend fun chartWithEvents(ufc: Ufc) {
                 val ratio = event.splitRatio ?: "N/A"
                 val numerator = event.numerator
                 val denominator = event.denominator
-                val details = if (numerator != null && denominator != null) {
-                    "${numerator.toInt()}:${denominator.toInt()} split"
-                } else {
-                    "Details N/A"
-                }
+                val details =
+                    if (numerator != null && denominator != null) {
+                        "${numerator.toInt()}:${denominator.toInt()} split"
+                    } else {
+                        "Details N/A"
+                    }
                 println("%-12s %15s %20s".format(date, ratio, details))
             }
         }
@@ -305,11 +311,12 @@ suspend fun technicalAnalysis(ufc: Ufc) {
     println("Fetching data for technical analysis: $symbol (6 Months)...")
     println()
 
-    val chartData = ufc.chart(
-        symbol = symbol,
-        interval = Interval.OneDay,
-        period = Period.SixMonths
-    )
+    val chartData =
+        ufc.chart(
+            symbol = symbol,
+            interval = Interval.OneDay,
+            period = Period.SixMonths,
+        )
 
     val prices = chartData.prices
     val closes = prices.map { it.close }
@@ -330,22 +337,24 @@ suspend fun technicalAnalysis(ufc: Ufc) {
         println()
 
         // Determine trend
-        val trend = when {
-            currentPrice > sma20 && sma20 > sma50 -> "Strong Uptrend"
-            currentPrice > sma20 -> "Uptrend"
-            currentPrice < sma20 && sma20 < sma50 -> "Strong Downtrend"
-            currentPrice < sma20 -> "Downtrend"
-            else -> "Sideways"
-        }
+        val trend =
+            when {
+                currentPrice > sma20 && sma20 > sma50 -> "Strong Uptrend"
+                currentPrice > sma20 -> "Uptrend"
+                currentPrice < sma20 && sma20 < sma50 -> "Strong Downtrend"
+                currentPrice < sma20 -> "Downtrend"
+                else -> "Sideways"
+            }
         println("  Trend Indication: $trend")
         println()
     }
 
     // Calculate Volatility (Standard Deviation of Returns)
     if (prices.size >= 20) {
-        val returns = prices.zipWithNext { a, b ->
-            (b.close - a.close) / a.close * 100.0
-        }
+        val returns =
+            prices.zipWithNext { a, b ->
+                (b.close - a.close) / a.close * 100.0
+            }
         val avgReturn = returns.average()
         val variance = returns.map { (it - avgReturn) * (it - avgReturn) }.average()
         val stdDev = Math.sqrt(variance)
@@ -380,7 +389,15 @@ suspend fun technicalAnalysis(ufc: Ufc) {
     println("  Average Volume: ${NumberFormat.getNumberInstance(Locale.US).format(avgVolume)}")
     println("  Recent 5-Day Avg: ${NumberFormat.getNumberInstance(Locale.US).format(recentVolume)}")
     println("  Volume Ratio: %.2fx".format(volumeRatio))
-    println("  Status: ${if (volumeRatio > 1.2) "Above Average" else if (volumeRatio < 0.8) "Below Average" else "Normal"}")
+    println(
+        "  Status: ${if (volumeRatio > 1.2) {
+            "Above Average"
+        } else if (volumeRatio < 0.8) {
+            "Below Average"
+        } else {
+            "Normal"
+        }}",
+    )
     println()
 
     println("Note: These are basic technical indicators for educational purposes.")

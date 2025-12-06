@@ -18,5 +18,5 @@ data class LookupResult(
     val count: Int,
     val start: Int,
     val total: Int,
-    val documents: List<LookupDocument>
+    val documents: List<LookupDocument>,
 )

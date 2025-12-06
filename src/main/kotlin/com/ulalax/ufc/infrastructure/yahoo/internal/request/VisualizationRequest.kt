@@ -21,5 +21,5 @@ internal data class VisualizationRequest(
     val sortField: String,
     val sortType: String,
     val entityIdType: String,
-    val includeFields: List<String>
+    val includeFields: List<String>,
 )

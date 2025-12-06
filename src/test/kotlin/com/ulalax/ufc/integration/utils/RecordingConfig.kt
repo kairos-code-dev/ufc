@@ -36,7 +36,9 @@ object RecordingConfig {
      * Test 리소스 경로로 저장됩니다.
      */
     val baseOutputPath: Path
-        get() = java.nio.file.Paths.get("src/test/resources/responses")
+        get() =
+            java.nio.file.Paths
+                .get("src/test/resources/responses")
 
     /**
      * API 소스별 레코딩 경로
@@ -51,7 +53,6 @@ object RecordingConfig {
      *   - IsinSearch: ISIN 검색
      */
     object Paths {
-
         // ========================================
         // Yahoo Finance API 네임스페이스
         // ========================================

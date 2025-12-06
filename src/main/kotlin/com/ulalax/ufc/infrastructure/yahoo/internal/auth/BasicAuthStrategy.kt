@@ -23,9 +23,8 @@ import org.slf4j.LoggerFactory
  * @throws Exception CRUMB 토큰 획득 실패 시
  */
 class BasicAuthStrategy(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
 ) : AuthStrategy {
-
     private companion object {
         private val logger = LoggerFactory.getLogger(BasicAuthStrategy::class.java)
 
@@ -50,8 +49,8 @@ class BasicAuthStrategy(
      * @throws Exception CRUMB_ACQUISITION_FAILED - CRUMB 획득 실패
      * @throws Exception AUTHENTICATION_FAILED - 기타 인증 실패
      */
-    override suspend fun authenticate(): AuthResult {
-        return try {
+    override suspend fun authenticate(): AuthResult =
+        try {
             logger.debug("Yahoo Finance 인증 시작: CRUMB 토큰 획득 중...")
 
             // Step 1: fc.yahoo.com 방문 (쿠키 획득)
@@ -64,19 +63,18 @@ class BasicAuthStrategy(
             validateCrumb(crumb)
 
             // Step 4: AuthResult 생성 및 반환
-            val authResult = AuthResult(
-                crumb = crumb,
-                strategy = "basic"
-            )
+            val authResult =
+                AuthResult(
+                    crumb = crumb,
+                    strategy = "basic",
+                )
 
             logger.info("Yahoo Finance 인증 성공: strategy=${authResult.strategy}, crumb_length=${crumb.length}")
             authResult
-
         } catch (e: Exception) {
             logger.error("Yahoo Finance 인증 실패: ${e.message}", e)
             throw Exception("Yahoo Finance 인증 중 오류 발생: ${e.message}", e)
         }
-    }
 
     /**
      * fc.yahoo.com에 방문하여 초기 쿠키를 획득합니다.
@@ -120,10 +118,11 @@ class BasicAuthStrategy(
         try {
             logger.debug("CRUMB 토큰 획득 중: endpoint=${YahooApiUrls.CRUMB}")
 
-            val response = httpClient.get(YahooApiUrls.CRUMB) {
-                // Ktor는 자동으로 기본 User-Agent를 설정합니다
-                // 필요시 사용자 정의 User-Agent 추가 가능
-            }
+            val response =
+                httpClient.get(YahooApiUrls.CRUMB) {
+                    // Ktor는 자동으로 기본 User-Agent를 설정합니다
+                    // 필요시 사용자 정의 User-Agent 추가 가능
+                }
 
             // HTTP 상태 코드 검증
             if (response.status.value !in 200..299) {
@@ -136,7 +135,6 @@ class BasicAuthStrategy(
             logger.debug("CRUMB 응답 수신: length=${responseBody.length}")
 
             return responseBody
-
         } catch (e: Exception) {
             logger.error("CRUMB 요청 중 네트워크 오류 발생", e)
             throw Exception("CRUMB 토큰 획득 중 네트워크 오류: ${e.message}", e)

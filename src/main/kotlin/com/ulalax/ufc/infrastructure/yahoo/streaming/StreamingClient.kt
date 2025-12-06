@@ -2,16 +2,46 @@ package com.ulalax.ufc.infrastructure.yahoo.streaming
 
 import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.UfcException
-import com.ulalax.ufc.domain.model.streaming.*
-import com.ulalax.ufc.infrastructure.yahoo.streaming.internal.*
+import com.ulalax.ufc.domain.model.streaming.MarketHours
+import com.ulalax.ufc.domain.model.streaming.QuoteType
+import com.ulalax.ufc.domain.model.streaming.StreamingClientConfig
+import com.ulalax.ufc.domain.model.streaming.StreamingEvent
+import com.ulalax.ufc.domain.model.streaming.StreamingPrice
+import com.ulalax.ufc.domain.model.streaming.StreamingQuote
+import com.ulalax.ufc.infrastructure.yahoo.streaming.internal.PricingData
+import com.ulalax.ufc.infrastructure.yahoo.streaming.internal.StreamingMessage
+import com.ulalax.ufc.infrastructure.yahoo.streaming.internal.SubscribeMessage
+import com.ulalax.ufc.infrastructure.yahoo.streaming.internal.UnsubscribeMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
-import io.ktor.websocket.*
-import kotlinx.coroutines.*
+import io.ktor.websocket.CloseReason
+import io.ktor.websocket.DefaultWebSocketSession
+import io.ktor.websocket.Frame
+import io.ktor.websocket.close
+import io.ktor.websocket.readReason
+import io.ktor.websocket.readText
+import io.ktor.websocket.send
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.protobuf.ProtoBuf
 import org.slf4j.LoggerFactory
@@ -46,23 +76,25 @@ import java.util.concurrent.atomic.AtomicInteger
  * @property config 클라이언트 설정
  */
 class StreamingClient private constructor(
-    private val config: StreamingClientConfig
+    private val config: StreamingClientConfig,
 ) : AutoCloseable {
-
     private val logger = LoggerFactory.getLogger(StreamingClient::class.java)
 
-    private val httpClient = HttpClient(CIO) {
-        install(WebSockets)
-    }
+    private val httpClient =
+        HttpClient(CIO) {
+            install(WebSockets)
+        }
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
 
-    private val protoBuf = ProtoBuf {
-        encodeDefaults = false
-    }
+    private val protoBuf =
+        ProtoBuf {
+            encodeDefaults = false
+        }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -80,18 +112,21 @@ class StreamingClient private constructor(
     private var receiveJob: Job? = null
 
     // Flow 이벤트
-    private val _prices = MutableSharedFlow<StreamingPrice>(
-        replay = 0,
-        extraBufferCapacity = config.eventBufferSize
-    )
-    private val _quotes = MutableSharedFlow<StreamingQuote>(
-        replay = 0,
-        extraBufferCapacity = config.eventBufferSize
-    )
-    private val _events = MutableSharedFlow<StreamingEvent>(
-        replay = 0,
-        extraBufferCapacity = config.eventBufferSize
-    )
+    private val _prices =
+        MutableSharedFlow<StreamingPrice>(
+            replay = 0,
+            extraBufferCapacity = config.eventBufferSize,
+        )
+    private val _quotes =
+        MutableSharedFlow<StreamingQuote>(
+            replay = 0,
+            extraBufferCapacity = config.eventBufferSize,
+        )
+    private val _events =
+        MutableSharedFlow<StreamingEvent>(
+            replay = 0,
+            extraBufferCapacity = config.eventBufferSize,
+        )
 
     /**
      * 실시간 가격 데이터 스트림.
@@ -150,9 +185,10 @@ class StreamingClient private constructor(
                 logger.info("Connecting to WebSocket: ${config.webSocketUrl}")
             }
 
-            val newSession = withTimeout(config.connectTimeoutMs) {
-                httpClient.webSocketSession(config.webSocketUrl)
-            }
+            val newSession =
+                withTimeout(config.connectTimeoutMs) {
+                    httpClient.webSocketSession(config.webSocketUrl)
+                }
 
             session = newSession
             isConnected.set(true)
@@ -175,18 +211,17 @@ class StreamingClient private constructor(
             if (config.enableLogging) {
                 logger.info("Connected successfully")
             }
-
         } catch (e: TimeoutCancellationException) {
             throw UfcException(
                 ErrorCode.WEBSOCKET_CONNECTION_FAILED,
                 "Connection timeout after ${config.connectTimeoutMs}ms",
-                e
+                e,
             )
         } catch (e: Exception) {
             throw UfcException(
                 ErrorCode.WEBSOCKET_CONNECTION_FAILED,
                 "Failed to connect: ${e.message}",
-                e
+                e,
             )
         }
     }
@@ -218,7 +253,6 @@ class StreamingClient private constructor(
             if (config.enableLogging) {
                 logger.info("Disconnected")
             }
-
         } catch (e: Exception) {
             if (config.enableLogging) {
                 logger.warn("Error during disconnect: ${e.message}")
@@ -342,35 +376,36 @@ class StreamingClient private constructor(
     // ===== Private Methods =====
 
     private fun startReceiving() {
-        receiveJob = scope.launch {
-            try {
-                session?.incoming?.consumeAsFlow()?.collect { frame ->
-                    when (frame) {
-                        is Frame.Text -> {
-                            handleTextFrame(frame.readText())
-                        }
-                        is Frame.Close -> {
-                            handleClose(frame.readReason())
-                        }
-                        else -> {
-                            // Ignore other frame types
+        receiveJob =
+            scope.launch {
+                try {
+                    session?.incoming?.consumeAsFlow()?.collect { frame ->
+                        when (frame) {
+                            is Frame.Text -> {
+                                handleTextFrame(frame.readText())
+                            }
+                            is Frame.Close -> {
+                                handleClose(frame.readReason())
+                            }
+                            else -> {
+                                // Ignore other frame types
+                            }
                         }
                     }
+                } catch (e: ClosedReceiveChannelException) {
+                    if (config.enableLogging) {
+                        logger.debug("WebSocket channel closed")
+                    }
+                    handleDisconnection("Channel closed")
+                } catch (e: CancellationException) {
+                    // Job cancelled, do nothing
+                } catch (e: Exception) {
+                    if (config.enableLogging) {
+                        logger.error("Error receiving WebSocket frames", e)
+                    }
+                    handleDisconnection("Receive error: ${e.message}")
                 }
-            } catch (e: ClosedReceiveChannelException) {
-                if (config.enableLogging) {
-                    logger.debug("WebSocket channel closed")
-                }
-                handleDisconnection("Channel closed")
-            } catch (e: CancellationException) {
-                // Job cancelled, do nothing
-            } catch (e: Exception) {
-                if (config.enableLogging) {
-                    logger.error("Error receiving WebSocket frames", e)
-                }
-                handleDisconnection("Receive error: ${e.message}")
             }
-        }
     }
 
     private suspend fun handleTextFrame(text: String) {
@@ -381,7 +416,6 @@ class StreamingClient private constructor(
 
             // Domain 모델로 변환 및 방출
             convertAndEmit(pricingData)
-
         } catch (e: Exception) {
             if (config.enableLogging) {
                 logger.warn("Failed to parse message: ${e.message}")
@@ -391,8 +425,8 @@ class StreamingClient private constructor(
             _events.emit(
                 StreamingEvent.Error(
                     UfcException(ErrorCode.PROTOBUF_DECODING_ERROR, "Failed to parse message", e),
-                    isFatal = false
-                )
+                    isFatal = false,
+                ),
             )
         }
     }
@@ -438,8 +472,8 @@ class StreamingClient private constructor(
             _events.emit(
                 StreamingEvent.Error(
                     UfcException(ErrorCode.STREAMING_RECONNECTION_FAILED, "Max attempts exceeded"),
-                    isFatal = true
-                )
+                    isFatal = true,
+                ),
             )
             return
         }
@@ -467,22 +501,23 @@ class StreamingClient private constructor(
     }
 
     private fun startHeartbeat() {
-        heartbeatJob = scope.launch {
-            while (isActive && isConnected.get()) {
-                delay(config.heartbeatIntervalMs)
+        heartbeatJob =
+            scope.launch {
+                while (isActive && isConnected.get()) {
+                    delay(config.heartbeatIntervalMs)
 
-                try {
-                    // 구독 메시지 재전송 (하트비트)
-                    if (subscribedSymbols.isNotEmpty()) {
-                        sendSubscribe(subscribedSymbols.toList())
-                    }
-                } catch (e: Exception) {
-                    if (config.enableLogging) {
-                        logger.warn("Heartbeat failed: ${e.message}")
+                    try {
+                        // 구독 메시지 재전송 (하트비트)
+                        if (subscribedSymbols.isNotEmpty()) {
+                            sendSubscribe(subscribedSymbols.toList())
+                        }
+                    } catch (e: Exception) {
+                        if (config.enableLogging) {
+                            logger.warn("Heartbeat failed: ${e.message}")
+                        }
                     }
                 }
             }
-        }
     }
 
     private fun stopHeartbeat() {
@@ -518,22 +553,8 @@ class StreamingClient private constructor(
         }
 
         // StreamingPrice 생성 및 방출
-        val price = StreamingPrice(
-            symbol = data.id,
-            price = data.price.toDouble(),
-            change = data.change.toDouble(),
-            changePercent = data.changePercent.toDouble(),
-            timestamp = data.time,
-            volume = data.dayVolume,
-            bid = if (data.bid > 0f) data.bid.toDouble() else null,
-            ask = if (data.ask > 0f) data.ask.toDouble() else null,
-            marketHours = MarketHours.fromCode(data.marketHours)
-        )
-        _prices.emit(price)
-
-        // StreamingQuote 생성 및 방출 (필수 필드가 있을 때만)
-        if (data.shortName.isNotBlank() && data.currency.isNotBlank() && data.exchange.isNotBlank()) {
-            val quote = StreamingQuote(
+        val price =
+            StreamingPrice(
                 symbol = data.id,
                 price = data.price.toDouble(),
                 change = data.change.toDouble(),
@@ -543,17 +564,33 @@ class StreamingClient private constructor(
                 bid = if (data.bid > 0f) data.bid.toDouble() else null,
                 ask = if (data.ask > 0f) data.ask.toDouble() else null,
                 marketHours = MarketHours.fromCode(data.marketHours),
-                dayHigh = data.dayHigh.toDouble(),
-                dayLow = data.dayLow.toDouble(),
-                openPrice = data.openPrice.toDouble(),
-                previousClose = data.previousClose.toDouble(),
-                bidSize = if (data.bidSize > 0L) data.bidSize else null,
-                askSize = if (data.askSize > 0L) data.askSize else null,
-                currency = data.currency,
-                exchange = data.exchange,
-                shortName = data.shortName,
-                quoteType = QuoteType.fromCode(data.quoteType)
             )
+        _prices.emit(price)
+
+        // StreamingQuote 생성 및 방출 (필수 필드가 있을 때만)
+        if (data.shortName.isNotBlank() && data.currency.isNotBlank() && data.exchange.isNotBlank()) {
+            val quote =
+                StreamingQuote(
+                    symbol = data.id,
+                    price = data.price.toDouble(),
+                    change = data.change.toDouble(),
+                    changePercent = data.changePercent.toDouble(),
+                    timestamp = data.time,
+                    volume = data.dayVolume,
+                    bid = if (data.bid > 0f) data.bid.toDouble() else null,
+                    ask = if (data.ask > 0f) data.ask.toDouble() else null,
+                    marketHours = MarketHours.fromCode(data.marketHours),
+                    dayHigh = data.dayHigh.toDouble(),
+                    dayLow = data.dayLow.toDouble(),
+                    openPrice = data.openPrice.toDouble(),
+                    previousClose = data.previousClose.toDouble(),
+                    bidSize = if (data.bidSize > 0L) data.bidSize else null,
+                    askSize = if (data.askSize > 0L) data.askSize else null,
+                    currency = data.currency,
+                    exchange = data.exchange,
+                    shortName = data.shortName,
+                    quoteType = QuoteType.fromCode(data.quoteType),
+                )
             _quotes.emit(quote)
         }
     }
@@ -565,8 +602,6 @@ class StreamingClient private constructor(
          * @param config 클라이언트 설정 (기본값 사용 가능)
          * @return StreamingClient 인스턴스
          */
-        fun create(config: StreamingClientConfig = StreamingClientConfig()): StreamingClient {
-            return StreamingClient(config)
-        }
+        fun create(config: StreamingClientConfig = StreamingClientConfig()): StreamingClient = StreamingClient(config)
     }
 }

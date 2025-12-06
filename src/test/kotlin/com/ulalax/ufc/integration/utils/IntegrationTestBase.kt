@@ -58,7 +58,6 @@ import kotlin.time.Duration.Companion.seconds
 @Tag("integration")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class IntegrationTestBase {
-
     /**
      * UFC 통합 클라이언트
      *
@@ -74,14 +73,16 @@ abstract class IntegrationTestBase {
      * 2. local.properties 파일
      */
     @BeforeAll
-    fun setUp() = runBlocking {
-        val fredApiKey = System.getenv("FRED_API_KEY") ?: loadFromLocalProperties("FRED_API_KEY")
-        ufc = if (fredApiKey != null) {
-            Ufc.create(UfcConfig(fredApiKey = fredApiKey))
-        } else {
-            Ufc.create()
+    fun setUp() =
+        runBlocking {
+            val fredApiKey = System.getenv("FRED_API_KEY") ?: loadFromLocalProperties("FRED_API_KEY")
+            ufc =
+                if (fredApiKey != null) {
+                    Ufc.create(UfcConfig(fredApiKey = fredApiKey))
+                } else {
+                    Ufc.create()
+                }
         }
-    }
 
     /**
      * local.properties 파일에서 값을 읽습니다.
@@ -137,7 +138,7 @@ abstract class IntegrationTestBase {
      */
     protected fun integrationTest(
         timeout: Duration = 30.seconds,
-        block: suspend () -> Unit
+        block: suspend () -> Unit,
     ) = runTest(timeout = timeout) { block() }
 
     /**
@@ -165,23 +166,24 @@ abstract class IntegrationTestBase {
         category: String,
         fileName: String,
         timeout: Duration = 30.seconds,
-        crossinline block: suspend () -> Unit
-    ): Unit = runTest(timeout = timeout) {
-        val recordingContext = ResponseRecordingContext()
-        withContext(recordingContext) {
-            block()
+        crossinline block: suspend () -> Unit,
+    ): Unit =
+        runTest(timeout = timeout) {
+            val recordingContext = ResponseRecordingContext()
+            withContext(recordingContext) {
+                block()
 
-            // 캡처된 응답 body가 있으면 레코딩
-            val responseBody = recordingContext.getResponseBody()
-            if (responseBody != null) {
-                ResponseRecorder.recordRaw(
-                    jsonString = responseBody,
-                    category = category,
-                    fileName = fileName
-                )
-            } else {
-                println("[IntegrationTest] Warning: 캡처된 응답이 없습니다. ($category/$fileName)")
+                // 캡처된 응답 body가 있으면 레코딩
+                val responseBody = recordingContext.getResponseBody()
+                if (responseBody != null) {
+                    ResponseRecorder.recordRaw(
+                        jsonString = responseBody,
+                        category = category,
+                        fileName = fileName,
+                    )
+                } else {
+                    println("[IntegrationTest] Warning: 캡처된 응답이 없습니다. ($category/$fileName)")
+                }
             }
         }
-    }
 }

@@ -8,7 +8,10 @@ package com.ulalax.ufc.domain.model.chart
  * @property value The value used in API requests
  * @property minutes The interval represented in minutes
  */
-enum class Interval(val value: String, val minutes: Int) {
+enum class Interval(
+    val value: String,
+    val minutes: Int,
+) {
     /**
      * 1 minute interval
      */
@@ -71,28 +74,27 @@ enum class Interval(val value: String, val minutes: Int) {
  * @param value The value to look up
  * @return The corresponding Interval, or null if not found
  */
-fun intervalFromValue(value: String): Interval? {
-    return Interval.values().find { it.value == value }
-}
+fun intervalFromValue(value: String): Interval? = Interval.values().find { it.value == value }
 
 /**
  * Converts Interval to a human-readable Korean string.
  *
  * @return Korean representation
  */
-fun Interval.toKoreanString(): String = when (this) {
-    Interval.OneMinute -> "1분"
-    Interval.TwoMinutes -> "2분"
-    Interval.FiveMinutes -> "5분"
-    Interval.FifteenMinutes -> "15분"
-    Interval.ThirtyMinutes -> "30분"
-    Interval.OneHour -> "1시간"
-    Interval.OneDay -> "1일"
-    Interval.FiveDays -> "5일"
-    Interval.OneWeek -> "1주"
-    Interval.OneMonth -> "1개월"
-    Interval.ThreeMonths -> "3개월"
-}
+fun Interval.toKoreanString(): String =
+    when (this) {
+        Interval.OneMinute -> "1분"
+        Interval.TwoMinutes -> "2분"
+        Interval.FiveMinutes -> "5분"
+        Interval.FifteenMinutes -> "15분"
+        Interval.ThirtyMinutes -> "30분"
+        Interval.OneHour -> "1시간"
+        Interval.OneDay -> "1일"
+        Interval.FiveDays -> "5일"
+        Interval.OneWeek -> "1주"
+        Interval.OneMonth -> "1개월"
+        Interval.ThreeMonths -> "3개월"
+    }
 
 /**
  * Checks if the Interval value is suitable for intraday data.
@@ -100,7 +102,7 @@ fun Interval.toKoreanString(): String = when (this) {
  * @return true if interval is less than daily
  */
 fun Interval.isIntraday(): Boolean {
-    return this.minutes < 1440  // 1440 minutes = 1 day
+    return this.minutes < 1440 // 1440 minutes = 1 day
 }
 
 /**
@@ -109,5 +111,5 @@ fun Interval.isIntraday(): Boolean {
  * @return true if interval is daily or longer
  */
 fun Interval.isDailyOrLonger(): Boolean {
-    return this.minutes >= 1440  // 1440 minutes = 1 day
+    return this.minutes >= 1440 // 1440 minutes = 1 day
 }

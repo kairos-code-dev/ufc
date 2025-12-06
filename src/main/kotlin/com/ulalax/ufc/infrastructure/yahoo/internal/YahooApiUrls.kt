@@ -5,8 +5,8 @@ package com.ulalax.ufc.infrastructure.yahoo.internal
  * 리팩토링을 통해 API URL 변경 시 한 곳에서만 수정할 수 있도록 구성
  */
 object YahooApiUrls {
-
     // ===== Base URLs =====
+
     /**
      * Query1 서버 - 기본 데이터 조회용 엔드포인트
      */

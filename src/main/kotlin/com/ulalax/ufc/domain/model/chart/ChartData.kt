@@ -20,7 +20,7 @@ data class OHLCV(
     val low: Double,
     val close: Double,
     val adjClose: Double?,
-    val volume: Long
+    val volume: Long,
 ) {
     /**
      * 일중 가격 변동폭 (절대값)
@@ -110,7 +110,7 @@ data class ChartData(
     val requestedEvents: Set<ChartEventType>,
     val meta: ChartMeta,
     val prices: List<OHLCV>,
-    val events: ChartEvents?
+    val events: ChartEvents?,
 ) {
     /**
      * 특정 이벤트 타입을 요청했는지 확인
@@ -121,9 +121,7 @@ data class ChartData(
      * @param eventType 확인할 이벤트 타입
      * @return 요청한 이벤트면 true, 아니면 false
      */
-    fun hasEvent(eventType: ChartEventType): Boolean {
-        return eventType in requestedEvents
-    }
+    fun hasEvent(eventType: ChartEventType): Boolean = eventType in requestedEvents
 
     /**
      * 배당금 이벤트 데이터 가져오기
@@ -132,13 +130,12 @@ data class ChartData(
      *
      * @return 배당금 이벤트 맵 (timestamp → event), 없으면 null
      */
-    fun getDividends(): Map<String, DividendEvent>? {
-        return if (hasEvent(ChartEventType.DIVIDEND)) {
+    fun getDividends(): Map<String, DividendEvent>? =
+        if (hasEvent(ChartEventType.DIVIDEND)) {
             events?.dividends
         } else {
             null
         }
-    }
 
     /**
      * 주식 분할 이벤트 데이터 가져오기
@@ -147,13 +144,12 @@ data class ChartData(
      *
      * @return 주식 분할 이벤트 맵 (timestamp → event), 없으면 null
      */
-    fun getSplits(): Map<String, SplitEvent>? {
-        return if (hasEvent(ChartEventType.SPLIT)) {
+    fun getSplits(): Map<String, SplitEvent>? =
+        if (hasEvent(ChartEventType.SPLIT)) {
             events?.splits
         } else {
             null
         }
-    }
 
     /**
      * 자본 이득 이벤트 데이터 가져오기
@@ -162,13 +158,12 @@ data class ChartData(
      *
      * @return 자본 이득 이벤트 맵 (timestamp → event), 없으면 null
      */
-    fun getCapitalGains(): Map<String, CapitalGainEvent>? {
-        return if (hasEvent(ChartEventType.CAPITAL_GAIN)) {
+    fun getCapitalGains(): Map<String, CapitalGainEvent>? =
+        if (hasEvent(ChartEventType.CAPITAL_GAIN)) {
             events?.capitalGains
         } else {
             null
         }
-    }
 }
 
 /**
@@ -180,48 +175,34 @@ data class ChartData(
 data class ChartMeta(
     // 심볼 (예: "AAPL", "^GSPC")
     val symbol: String? = null,
-
     // 통화 (예: "USD")
     val currency: String? = null,
-
     // 통화 기호 (예: "$")
     val currencySymbol: String? = null,
-
     // 현재 가격
     val regularMarketPrice: Double? = null,
-
     // 교환 시장 (예: "NASDAQ", "NYSE")
     val exchange: String? = null,
-
     // 최고가 (조회 기간 내)
     val regularMarketDayHigh: Double? = null,
-
     // 최저가 (조회 기간 내)
     val regularMarketDayLow: Double? = null,
-
     // 데이터 간격 (예: "1d", "1h")
     val dataGranularity: String? = null,
-
     // 범위 (예: "1y", "1d")
     val range: String? = null,
-
     // 52주 최고가
     val fiftyTwoWeekHigh: Double? = null,
-
     // 52주 최저가
     val fiftyTwoWeekLow: Double? = null,
-
     // 발행 주식수
     val sharesOutstanding: Long? = null,
-
     // 시가총액
     val marketCap: Long? = null,
-
     // 거래량
     val regularMarketVolume: Long? = null,
-
     // 유효한 범위
-    val validRanges: List<String>? = null
+    val validRanges: List<String>? = null,
 )
 
 /**
@@ -232,7 +213,7 @@ data class ChartMeta(
 data class ChartEvents(
     val dividends: Map<String, DividendEvent>? = null,
     val splits: Map<String, SplitEvent>? = null,
-    val capitalGains: Map<String, CapitalGainEvent>? = null
+    val capitalGains: Map<String, CapitalGainEvent>? = null,
 )
 
 /**
@@ -240,7 +221,7 @@ data class ChartEvents(
  */
 data class DividendEvent(
     val amount: Double? = null,
-    val date: Long? = null
+    val date: Long? = null,
 )
 
 /**
@@ -250,7 +231,7 @@ data class SplitEvent(
     val date: Long? = null,
     val numerator: Double? = null,
     val denominator: Double? = null,
-    val splitRatio: String? = null
+    val splitRatio: String? = null,
 )
 
 /**
@@ -258,5 +239,5 @@ data class SplitEvent(
  */
 data class CapitalGainEvent(
     val amount: Double? = null,
-    val date: Long? = null
+    val date: Long? = null,
 )

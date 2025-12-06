@@ -18,7 +18,9 @@ package com.ulalax.ufc.domain.model.fundamentals
  *
  * @property apiValue Yahoo Finance API에서 사용하는 실제 파라미터 값
  */
-enum class FundamentalsType(val apiValue: String) {
+enum class FundamentalsType(
+    val apiValue: String,
+) {
     // ===== Income Statement - Annual =====
     ANNUAL_TOTAL_REVENUE("annualTotalRevenue"),
     ANNUAL_COST_OF_REVENUE("annualCostOfRevenue"),
@@ -120,7 +122,8 @@ enum class FundamentalsType(val apiValue: String) {
     TRAILING_INVESTING_CASH_FLOW("trailingInvestingCashFlow"),
     TRAILING_FINANCING_CASH_FLOW("trailingFinancingCashFlow"),
     TRAILING_FREE_CASH_FLOW("trailingFreeCashFlow"),
-    TRAILING_CAPITAL_EXPENDITURE("trailingCapitalExpenditure");
+    TRAILING_CAPITAL_EXPENDITURE("trailingCapitalExpenditure"),
+    ;
 
     companion object {
         /**
@@ -129,61 +132,59 @@ enum class FundamentalsType(val apiValue: String) {
          * @param value Yahoo Finance API 파라미터 값
          * @return 매칭되는 FundamentalsType 또는 null
          */
-        fun fromApiValue(value: String): FundamentalsType? {
-            return entries.find { it.apiValue == value }
-        }
+        fun fromApiValue(value: String): FundamentalsType? = entries.find { it.apiValue == value }
 
         /**
          * 손익계산서 항목만 필터링합니다.
          *
          * @return 손익계산서 관련 FundamentalsType 목록
          */
-        fun incomeStatementTypes(): List<FundamentalsType> {
-            return entries.filter {
+        fun incomeStatementTypes(): List<FundamentalsType> =
+            entries.filter {
                 it.apiValue.contains("Revenue") ||
-                it.apiValue.contains("Income") ||
-                it.apiValue.contains("Profit") ||
-                it.apiValue.contains("EPS") ||
-                it.apiValue.contains("Eps") ||
-                it.apiValue.contains("EBIT") ||
-                it.apiValue.contains("Shares") ||
-                it.apiValue.contains("Research") ||
-                it.apiValue.contains("Selling")
+                    it.apiValue.contains("Income") ||
+                    it.apiValue.contains("Profit") ||
+                    it.apiValue.contains("EPS") ||
+                    it.apiValue.contains("Eps") ||
+                    it.apiValue.contains("EBIT") ||
+                    it.apiValue.contains("Shares") ||
+                    it.apiValue.contains("Research") ||
+                    it.apiValue.contains("Selling")
             }
-        }
 
         /**
          * 대차대조표 항목만 필터링합니다.
          *
          * @return 대차대조표 관련 FundamentalsType 목록
          */
-        fun balanceSheetTypes(): List<FundamentalsType> {
-            return entries.filter {
+        fun balanceSheetTypes(): List<FundamentalsType> =
+            entries.filter {
                 it.apiValue.contains("Assets") ||
-                it.apiValue.contains("Liabilities") ||
-                it.apiValue.contains("Equity") ||
-                it.apiValue.contains("Receivable") ||
-                it.apiValue.contains("Inventory") ||
-                it.apiValue.contains("PPE") ||
-                it.apiValue.contains("Debt") ||
-                it.apiValue.contains("Earnings") && it.apiValue.contains("Retained") ||
-                it.apiValue.contains("Shares") && (it.apiValue.contains("Ordinary") || it.apiValue.contains("Issued"))
+                    it.apiValue.contains("Liabilities") ||
+                    it.apiValue.contains("Equity") ||
+                    it.apiValue.contains("Receivable") ||
+                    it.apiValue.contains("Inventory") ||
+                    it.apiValue.contains("PPE") ||
+                    it.apiValue.contains("Debt") ||
+                    it.apiValue.contains("Earnings") &&
+                    it.apiValue.contains("Retained") ||
+                    it.apiValue.contains("Shares") &&
+                    (it.apiValue.contains("Ordinary") || it.apiValue.contains("Issued"))
             }
-        }
 
         /**
          * 현금흐름표 항목만 필터링합니다.
          *
          * @return 현금흐름표 관련 FundamentalsType 목록
          */
-        fun cashFlowTypes(): List<FundamentalsType> {
-            return entries.filter {
+        fun cashFlowTypes(): List<FundamentalsType> =
+            entries.filter {
                 it.apiValue.contains("CashFlow") ||
-                it.apiValue.contains("Expenditure") ||
-                it.apiValue.contains("Repurchase") ||
-                it.apiValue.contains("Dividends") && it.apiValue.contains("Paid") ||
-                it.apiValue.contains("CashPosition")
+                    it.apiValue.contains("Expenditure") ||
+                    it.apiValue.contains("Repurchase") ||
+                    it.apiValue.contains("Dividends") &&
+                    it.apiValue.contains("Paid") ||
+                    it.apiValue.contains("CashPosition")
             }
-        }
     }
 }

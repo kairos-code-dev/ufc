@@ -2,8 +2,8 @@ package com.ulalax.ufc.examples
 
 import com.ulalax.ufc.api.Ufc
 import com.ulalax.ufc.api.UfcConfig
-import com.ulalax.ufc.domain.model.series.DataFrequency
 import com.ulalax.ufc.domain.exception.UfcException
+import com.ulalax.ufc.domain.model.series.DataFrequency
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -25,63 +25,63 @@ import java.time.format.DateTimeFormatter
  * - Environment variable: FRED_API_KEY=your_key_here
  * - Or in local.properties: fred.api.key=your_key_here
  */
-fun main() = runBlocking {
-    println("=".repeat(80))
-    println("UFC FRED Example - Economic Data from Federal Reserve")
-    println("=".repeat(80))
-    println()
-
-    // Get FRED API key from environment variable
-    val fredApiKey = System.getenv("FRED_API_KEY")
-
-    if (fredApiKey == null || fredApiKey.isBlank()) {
-        println("ERROR: FRED API key not found!")
+fun main() =
+    runBlocking {
+        println("=".repeat(80))
+        println("UFC FRED Example - Economic Data from Federal Reserve")
+        println("=".repeat(80))
         println()
-        println("To run this example, you need a FRED API key.")
-        println("Get your free API key at: https://fred.stlouisfed.org/docs/api/api_key.html")
-        println()
-        println("Then set it via environment variable:")
-        println("  export FRED_API_KEY=your_api_key_here")
-        println()
-        println("Or add it to local.properties:")
-        println("  fred.api.key=your_api_key_here")
-        return@runBlocking
-    }
 
-    // Create UFC client with FRED API key
-    val config = UfcConfig(fredApiKey = fredApiKey)
+        // Get FRED API key from environment variable
+        val fredApiKey = System.getenv("FRED_API_KEY")
 
-    Ufc.create(config).use { ufc ->
-        try {
-            // Example 1: GDP data
-            gdpData(ufc)
+        if (fredApiKey == null || fredApiKey.isBlank()) {
+            println("ERROR: FRED API key not found!")
             println()
-
-            // Example 2: Unemployment rate
-            unemploymentData(ufc)
+            println("To run this example, you need a FRED API key.")
+            println("Get your free API key at: https://fred.stlouisfed.org/docs/api/api_key.html")
             println()
-
-            // Example 3: Inflation (CPI)
-            inflationData(ufc)
+            println("Then set it via environment variable:")
+            println("  export FRED_API_KEY=your_api_key_here")
             println()
-
-            // Example 4: Interest rates
-            interestRatesData(ufc)
-
-        } catch (e: UfcException) {
-            println("Error: ${e.message}")
-            println("Error Code: ${e.errorCode}")
-        } catch (e: Exception) {
-            println("Unexpected error: ${e.message}")
-            e.printStackTrace()
+            println("Or add it to local.properties:")
+            println("  fred.api.key=your_api_key_here")
+            return@runBlocking
         }
-    }
 
-    println()
-    println("=".repeat(80))
-    println("Example completed successfully")
-    println("=".repeat(80))
-}
+        // Create UFC client with FRED API key
+        val config = UfcConfig(fredApiKey = fredApiKey)
+
+        Ufc.create(config).use { ufc ->
+            try {
+                // Example 1: GDP data
+                gdpData(ufc)
+                println()
+
+                // Example 2: Unemployment rate
+                unemploymentData(ufc)
+                println()
+
+                // Example 3: Inflation (CPI)
+                inflationData(ufc)
+                println()
+
+                // Example 4: Interest rates
+                interestRatesData(ufc)
+            } catch (e: UfcException) {
+                println("Error: ${e.message}")
+                println("Error Code: ${e.errorCode}")
+            } catch (e: Exception) {
+                println("Unexpected error: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+
+        println()
+        println("=".repeat(80))
+        println("Example completed successfully")
+        println("=".repeat(80))
+    }
 
 /**
  * Example 1: Retrieve GDP (Gross Domestic Product) data
@@ -200,7 +200,7 @@ suspend fun inflationData(ufc: Ufc) {
     println("Example 3: Inflation Rate (CPI)")
     println("-".repeat(80))
 
-    val seriesId = "CPIAUCSL"  // Consumer Price Index for All Urban Consumers
+    val seriesId = "CPIAUCSL" // Consumer Price Index for All Urban Consumers
     val startDate = LocalDate.of(2021, 1, 1)
 
     println("Fetching CPI data from FRED...")
@@ -231,12 +231,13 @@ suspend fun inflationData(ufc: Ufc) {
 
         val obsValue = obs.value
         val yearAgoValue = yearAgoObs?.value
-        val inflationStr = if (obsValue != null && yearAgoValue != null) {
-            val inflation = ((obsValue - yearAgoValue) / yearAgoValue) * 100
-            "%.2f%%".format(inflation)
-        } else {
-            "N/A"
-        }
+        val inflationStr =
+            if (obsValue != null && yearAgoValue != null) {
+                val inflation = ((obsValue - yearAgoValue) / yearAgoValue) * 100
+                "%.2f%%".format(inflation)
+            } else {
+                "N/A"
+            }
 
         println("%-15s %12s %20s".format(dateStr, cpiStr, inflationStr))
     }
@@ -270,7 +271,7 @@ suspend fun interestRatesData(ufc: Ufc) {
     println("Example 4: Federal Funds Rate")
     println("-".repeat(80))
 
-    val seriesId = "DFF"  // Daily Federal Funds Rate
+    val seriesId = "DFF" // Daily Federal Funds Rate
     val startDate = LocalDate.of(2023, 1, 1)
 
     println("Fetching Federal Funds Rate from FRED...")
@@ -308,11 +309,12 @@ suspend fun interestRatesData(ufc: Ufc) {
         val oldestValue = oldest.value
         if (latestValue != null && oldestValue != null) {
             val rateChange = latestValue - oldestValue
-            val trend = when {
-                rateChange > 0.25 -> "Rising (tightening monetary policy)"
-                rateChange < -0.25 -> "Falling (loosening monetary policy)"
-                else -> "Relatively stable"
-            }
+            val trend =
+                when {
+                    rateChange > 0.25 -> "Rising (tightening monetary policy)"
+                    rateChange < -0.25 -> "Falling (loosening monetary policy)"
+                    else -> "Relatively stable"
+                }
 
             println("=== 6-Month Analysis ===")
             println("Rate Change: %.2f percentage points".format(rateChange))

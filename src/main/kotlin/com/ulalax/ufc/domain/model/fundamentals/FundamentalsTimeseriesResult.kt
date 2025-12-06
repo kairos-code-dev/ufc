@@ -34,7 +34,7 @@ package com.ulalax.ufc.domain.model.fundamentals
  */
 data class FundamentalsTimeseriesResult(
     val symbol: String,
-    val data: Map<FundamentalsType, List<TimeseriesDataPoint>>
+    val data: Map<FundamentalsType, List<TimeseriesDataPoint>>,
 ) {
     /**
      * 특정 타입의 데이터가 존재하는지 확인합니다.
@@ -42,9 +42,7 @@ data class FundamentalsTimeseriesResult(
      * @param type 확인할 FundamentalsType
      * @return 데이터가 존재하면 true, 없으면 false
      */
-    fun hasData(type: FundamentalsType): Boolean {
-        return data.containsKey(type) && data[type]?.isNotEmpty() == true
-    }
+    fun hasData(type: FundamentalsType): Boolean = data.containsKey(type) && data[type]?.isNotEmpty() == true
 
     /**
      * 특정 타입의 시계열 데이터를 조회합니다.
@@ -52,9 +50,7 @@ data class FundamentalsTimeseriesResult(
      * @param type 조회할 FundamentalsType
      * @return 시계열 데이터 리스트 (데이터가 없으면 null)
      */
-    fun get(type: FundamentalsType): List<TimeseriesDataPoint>? {
-        return data[type]
-    }
+    fun get(type: FundamentalsType): List<TimeseriesDataPoint>? = data[type]
 
     companion object {
         /**
@@ -65,8 +61,7 @@ data class FundamentalsTimeseriesResult(
          * @param symbol 조회한 종목 심볼
          * @return 빈 FundamentalsTimeseriesResult
          */
-        fun empty(symbol: String): FundamentalsTimeseriesResult {
-            return FundamentalsTimeseriesResult(symbol = symbol, data = emptyMap())
-        }
+        fun empty(symbol: String): FundamentalsTimeseriesResult =
+            FundamentalsTimeseriesResult(symbol = symbol, data = emptyMap())
     }
 }

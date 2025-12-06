@@ -8,5 +8,5 @@ package com.ulalax.ufc.domain.model.realtime
  */
 data class QuoteGrowthRates(
     val revenueGrowth: Double? = null,
-    val earningsGrowth: Double? = null
+    val earningsGrowth: Double? = null,
 )

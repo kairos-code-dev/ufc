@@ -13,5 +13,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class VisualizationColumn(
     val label: String,
-    val id: String
+    val id: String,
 )

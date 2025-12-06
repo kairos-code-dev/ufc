@@ -4,7 +4,7 @@ import com.ulalax.ufc.api.Ufc
 import com.ulalax.ufc.domain.exception.UfcException
 import kotlinx.coroutines.runBlocking
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 /**
  * Real-time Quote Retrieval Example
@@ -16,45 +16,45 @@ import java.util.*
  * 3. Accessing various quote fields (price, volume, market cap, etc.)
  * 4. Error handling for invalid symbols
  */
-fun main() = runBlocking {
-    println("=".repeat(80))
-    println("UFC Quote Example - Real-time Market Data")
-    println("=".repeat(80))
-    println()
+fun main() =
+    runBlocking {
+        println("=".repeat(80))
+        println("UFC Quote Example - Real-time Market Data")
+        println("=".repeat(80))
+        println()
 
-    // Create UFC client instance
-    // Always use 'use' block to ensure proper resource cleanup
-    Ufc.create().use { ufc ->
-        try {
-            // Example 1: Single Symbol Quote
-            singleSymbolQuote(ufc)
-            println()
+        // Create UFC client instance
+        // Always use 'use' block to ensure proper resource cleanup
+        Ufc.create().use { ufc ->
+            try {
+                // Example 1: Single Symbol Quote
+                singleSymbolQuote(ufc)
+                println()
 
-            // Example 2: Multiple Symbols Quote
-            multipleSymbolsQuote(ufc)
-            println()
+                // Example 2: Multiple Symbols Quote
+                multipleSymbolsQuote(ufc)
+                println()
 
-            // Example 3: Detailed Quote Information
-            detailedQuoteInfo(ufc)
-            println()
+                // Example 3: Detailed Quote Information
+                detailedQuoteInfo(ufc)
+                println()
 
-            // Example 4: Error Handling
-            errorHandlingExample(ufc)
-
-        } catch (e: UfcException) {
-            println("Error: ${e.message}")
-            println("Error Code: ${e.errorCode}")
-        } catch (e: Exception) {
-            println("Unexpected error: ${e.message}")
-            e.printStackTrace()
+                // Example 4: Error Handling
+                errorHandlingExample(ufc)
+            } catch (e: UfcException) {
+                println("Error: ${e.message}")
+                println("Error Code: ${e.errorCode}")
+            } catch (e: Exception) {
+                println("Unexpected error: ${e.message}")
+                e.printStackTrace()
+            }
         }
-    }
 
-    println()
-    println("=".repeat(80))
-    println("Example completed successfully")
-    println("=".repeat(80))
-}
+        println()
+        println("=".repeat(80))
+        println("Example completed successfully")
+        println("=".repeat(80))
+    }
 
 /**
  * Example 1: Retrieve quote for a single symbol
@@ -153,14 +153,16 @@ suspend fun multipleSymbolsQuote(ufc: Ufc) {
         val symbol = quote.identification?.symbol ?: "N/A"
         val name = quote.identification?.shortName?.take(47) ?: "N/A"
         val price = quote.pricing?.let { "$%.2f".format(it.price) } ?: "N/A"
-        val changePercent = quote.pricing?.changePercent?.let {
-            val sign = if (it >= 0) "+" else ""
-            "$sign%.2f%%".format(it)
-        } ?: "N/A"
-        val volume = quote.pricing?.volume?.let {
-            val millions = it / 1_000_000.0
-            "%.2fM".format(millions)
-        } ?: "N/A"
+        val changePercent =
+            quote.pricing?.changePercent?.let {
+                val sign = if (it >= 0) "+" else ""
+                "$sign%.2f%%".format(it)
+            } ?: "N/A"
+        val volume =
+            quote.pricing?.volume?.let {
+                val millions = it / 1_000_000.0
+                "%.2fM".format(millions)
+            } ?: "N/A"
 
         println("%-10s %-50s %12s %12s %10s".format(symbol, name, price, changePercent, volume))
     }

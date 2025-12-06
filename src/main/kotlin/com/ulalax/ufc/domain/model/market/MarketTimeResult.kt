@@ -28,5 +28,5 @@ data class MarketTimeResult(
     val preMarket: TradingHours? = null,
     val postMarket: TradingHours? = null,
     val timezone: MarketTimezone,
-    val currentTime: Instant? = null
+    val currentTime: Instant? = null,
 )

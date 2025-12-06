@@ -11,5 +11,5 @@ package com.ulalax.ufc.domain.model.visualization
  */
 data class VisualizationEarningsCalendar(
     val symbol: String,
-    val earningsDates: List<EarningsDate>
+    val earningsDates: List<EarningsDate>,
 )

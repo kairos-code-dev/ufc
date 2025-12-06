@@ -29,7 +29,9 @@ enum class MarketHours {
     /**
      * 알 수 없는 상태
      */
-    UNKNOWN;
+    UNKNOWN,
+
+    ;
 
     companion object {
         /**
@@ -38,12 +40,13 @@ enum class MarketHours {
          * @param code Protobuf market_hours 필드 값
          * @return 대응되는 MarketHours enum
          */
-        fun fromCode(code: Int): MarketHours = when (code) {
-            0 -> CLOSED
-            1 -> REGULAR
-            2 -> PRE_MARKET
-            3 -> POST_MARKET
-            else -> UNKNOWN
-        }
+        fun fromCode(code: Int): MarketHours =
+            when (code) {
+                0 -> CLOSED
+                1 -> REGULAR
+                2 -> PRE_MARKET
+                3 -> POST_MARKET
+                else -> UNKNOWN
+            }
     }
 }

@@ -25,167 +25,174 @@ import org.junit.jupiter.api.Test
  */
 @DisplayName("[I] Yahoo.visualization() - 실적 발표 일정 조회")
 class VisualizationSpec : IntegrationTestBase() {
-
     @Nested
     @DisplayName("기본 동작")
     inner class BasicBehavior {
-
         @Test
         @DisplayName("AAPL의 실적 발표 일정을 조회할 수 있다")
-        fun `returns earnings dates for AAPL`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
+        fun `returns earnings dates for AAPL`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
 
-            // When
-            val result = ufc.yahoo.visualization(symbol, limit = 12)
+                // When
+                val result = ufc.yahoo.visualization(symbol, limit = 12)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.earningsDates).isNotEmpty()
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.earningsDates).isNotEmpty()
 
-            // 첫 번째 실적 일정 확인
-            val firstEarnings = result.earningsDates.first()
-            assertThat(firstEarnings.earningsDate).isNotNull()
-            assertThat(firstEarnings.eventType).isNotNull()
+                // 첫 번째 실적 일정 확인
+                val firstEarnings = result.earningsDates.first()
+                assertThat(firstEarnings.earningsDate).isNotNull()
+                assertThat(firstEarnings.eventType).isNotNull()
 
-            // 로그 출력 (디버깅용)
-            println("총 ${result.earningsDates.size}개의 실적 일정")
-            result.earningsDates.take(3).forEach { earnings ->
-                println("날짜: ${earnings.earningsDate}, 타입: ${earnings.eventType}, " +
-                        "EPS 추정: ${earnings.epsEstimate}, EPS 실제: ${earnings.epsActual}")
+                // 로그 출력 (디버깅용)
+                println("총 ${result.earningsDates.size}개의 실적 일정")
+                result.earningsDates.take(3).forEach { earnings ->
+                    println(
+                        "날짜: ${earnings.earningsDate}, 타입: ${earnings.eventType}, " +
+                            "EPS 추정: ${earnings.epsEstimate}, EPS 실제: ${earnings.epsActual}",
+                    )
+                }
             }
-        }
 
         @Test
         @DisplayName("MSFT의 실적 발표 일정을 조회할 수 있다")
-        fun `returns earnings dates for MSFT`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.MSFT
+        fun `returns earnings dates for MSFT`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.MSFT
 
-            // When
-            val result = ufc.yahoo.visualization(symbol, limit = 8)
+                // When
+                val result = ufc.yahoo.visualization(symbol, limit = 8)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(8)
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(8)
+            }
 
         @Test
         @DisplayName("limit 파라미터가 올바르게 적용된다")
-        fun `respects limit parameter`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
-            val limit = 5
+        fun `respects limit parameter`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
+                val limit = 5
 
-            // When
-            val result = ufc.yahoo.visualization(symbol, limit = limit)
+                // When
+                val result = ufc.yahoo.visualization(symbol, limit = limit)
 
-            // Then
-            assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(limit)
-        }
+                // Then
+                assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(limit)
+            }
     }
 
     @Nested
     @DisplayName("이벤트 타입 검증")
     inner class EventTypeValidation {
-
         @Test
         @DisplayName("이벤트 타입이 올바르게 파싱된다")
-        fun `parses event types correctly`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
+        fun `parses event types correctly`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
 
-            // When
-            val result = ufc.yahoo.visualization(symbol, limit = 20)
+                // When
+                val result = ufc.yahoo.visualization(symbol, limit = 20)
 
-            // Then
-            assertThat(result.earningsDates).isNotEmpty()
+                // Then
+                assertThat(result.earningsDates).isNotEmpty()
 
-            // 모든 이벤트 타입이 UNKNOWN이 아님을 확인
-            val hasKnownEventTypes = result.earningsDates.any {
-                it.eventType != EarningsEventType.UNKNOWN
+                // 모든 이벤트 타입이 UNKNOWN이 아님을 확인
+                val hasKnownEventTypes =
+                    result.earningsDates.any {
+                        it.eventType != EarningsEventType.UNKNOWN
+                    }
+                assertThat(hasKnownEventTypes).isTrue()
+
+                // 이벤트 타입 통계
+                val eventTypeCounts = result.earningsDates.groupingBy { it.eventType }.eachCount()
+                println("이벤트 타입 분포: $eventTypeCounts")
             }
-            assertThat(hasKnownEventTypes).isTrue()
-
-            // 이벤트 타입 통계
-            val eventTypeCounts = result.earningsDates.groupingBy { it.eventType }.eachCount()
-            println("이벤트 타입 분포: $eventTypeCounts")
-        }
 
         @Test
         @DisplayName("과거 실적은 epsActual과 surprisePercent를 포함한다")
-        fun `past earnings include actual EPS and surprise`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
+        fun `past earnings include actual EPS and surprise`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
 
-            // When
-            val result = ufc.yahoo.visualization(symbol, limit = 20)
+                // When
+                val result = ufc.yahoo.visualization(symbol, limit = 20)
 
-            // Then
-            val pastEarningsWithActuals = result.earningsDates.filter {
-                it.epsActual != null && it.surprisePercent != null
+                // Then
+                val pastEarningsWithActuals =
+                    result.earningsDates.filter {
+                        it.epsActual != null && it.surprisePercent != null
+                    }
+
+                // 최소 하나의 과거 실적 데이터가 있어야 함
+                assertThat(pastEarningsWithActuals).isNotEmpty()
+
+                println("실제 EPS가 있는 과거 실적: ${pastEarningsWithActuals.size}개")
             }
-
-            // 최소 하나의 과거 실적 데이터가 있어야 함
-            assertThat(pastEarningsWithActuals).isNotEmpty()
-
-            println("실제 EPS가 있는 과거 실적: ${pastEarningsWithActuals.size}개")
-        }
     }
 
     @Nested
     @DisplayName("엣지 케이스")
     inner class EdgeCases {
-
         @Test
         @DisplayName("존재하지 않는 심볼은 빈 결과를 반환한다")
-        fun `returns empty result for non-existent symbol`() = integrationTest {
-            // Given
-            val symbol = "NONEXISTENTSYMBOL12345"
+        fun `returns empty result for non-existent symbol`() =
+            integrationTest {
+                // Given
+                val symbol = "NONEXISTENTSYMBOL12345"
 
-            // When
-            val result = ufc.yahoo.visualization(symbol)
+                // When
+                val result = ufc.yahoo.visualization(symbol)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.earningsDates).isEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.earningsDates).isEmpty()
+            }
 
         @Test
         @DisplayName("ETF는 빈 결과를 반환한다 (실적 발표가 없음)")
-        fun `returns empty result for ETF`() = integrationTest {
-            // Given
-            val etfSymbol = "SPY" // S&P 500 ETF
+        fun `returns empty result for ETF`() =
+            integrationTest {
+                // Given
+                val etfSymbol = "SPY" // S&P 500 ETF
 
-            // When
-            val result = ufc.yahoo.visualization(etfSymbol)
+                // When
+                val result = ufc.yahoo.visualization(etfSymbol)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.earningsDates).isEmpty()
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.earningsDates).isEmpty()
+            }
     }
 
     @Nested
     @DisplayName("Ufc 파사드 통합 테스트")
     inner class UfcFacadeIntegration {
-
         @Test
         @DisplayName("Ufc 파사드를 통해 실적 일정을 조회할 수 있다")
-        fun `can call visualization through Ufc facade`() = integrationTest {
-            // Given
-            val symbol = TestFixtures.Symbols.AAPL
+        fun `can call visualization through Ufc facade`() =
+            integrationTest {
+                // Given
+                val symbol = TestFixtures.Symbols.AAPL
 
-            // When
-            val result = ufc.visualization(symbol, limit = 10)
+                // When
+                val result = ufc.visualization(symbol, limit = 10)
 
-            // Then
-            assertThat(result).isNotNull()
-            assertThat(result.symbol).isEqualTo(symbol)
-            assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(10)
-        }
+                // Then
+                assertThat(result).isNotNull()
+                assertThat(result.symbol).isEqualTo(symbol)
+                assertThat(result.earningsDates).hasSizeLessThanOrEqualTo(10)
+            }
     }
 }
