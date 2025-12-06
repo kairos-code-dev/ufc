@@ -1,4 +1,4 @@
-package examples
+package com.ulalax.ufc.examples
 
 import com.ulalax.ufc.api.Ufc
 import com.ulalax.ufc.domain.model.chart.ChartEventType

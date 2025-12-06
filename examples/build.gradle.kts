@@ -42,7 +42,7 @@ dependencies {
 
 // Application plugin configuration
 application {
-    mainClass.set("examples.QuoteExampleKt") // Default main class
+    mainClass.set("com.ulalax.ufc.examples.QuoteExampleKt") // Default main class
 }
 
 // Task to run QuoteExample
@@ -50,7 +50,7 @@ tasks.register<JavaExec>("runQuoteExample") {
     group = "examples"
     description = "Run Quote Example"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("examples.QuoteExampleKt")
+    mainClass.set("com.ulalax.ufc.examples.QuoteExampleKt")
 }
 
 // Task to run ChartExample
@@ -58,7 +58,7 @@ tasks.register<JavaExec>("runChartExample") {
     group = "examples"
     description = "Run Chart Example"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("examples.ChartExampleKt")
+    mainClass.set("com.ulalax.ufc.examples.ChartExampleKt")
 }
 
 // Task to run ScreenerExample
@@ -66,7 +66,7 @@ tasks.register<JavaExec>("runScreenerExample") {
     group = "examples"
     description = "Run Screener Example"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("examples.ScreenerExampleKt")
+    mainClass.set("com.ulalax.ufc.examples.ScreenerExampleKt")
 }
 
 // Task to run OptionsExample
@@ -74,7 +74,7 @@ tasks.register<JavaExec>("runOptionsExample") {
     group = "examples"
     description = "Run Options Example"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("examples.OptionsExampleKt")
+    mainClass.set("com.ulalax.ufc.examples.OptionsExampleKt")
 }
 
 // Task to run FredExample
@@ -82,7 +82,7 @@ tasks.register<JavaExec>("runFredExample") {
     group = "examples"
     description = "Run FRED Example (requires FRED_API_KEY)"
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("examples.FredExampleKt")
+    mainClass.set("com.ulalax.ufc.examples.FredExampleKt")
 
     // Load FRED API key from environment or local.properties
     val fredApiKey = System.getenv("FRED_API_KEY")
@@ -104,7 +104,7 @@ tasks.named<JavaExec>("run") {
     val argsListSnapshot = argsList
     if (argsListSnapshot.isNotEmpty()) {
         val exampleName = argsListSnapshot[0]
-        mainClass.set("examples.${exampleName}Kt")
+        mainClass.set("com.ulalax.ufc.examples.${exampleName}Kt")
     }
 }
 
