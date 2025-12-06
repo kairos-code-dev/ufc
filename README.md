@@ -178,25 +178,25 @@ try {
 
 ## API Documentation
 
-Detailed API specifications are available in the [docs/specs](docs/specs) directory:
+Full API documentation is available at **[kairos-code-dev.github.io/ufc](https://kairos-code-dev.github.io/ufc/)**
 
-| API | Description |
-|-----|-------------|
-| [Quote API](docs/specs/quote-api-spec.md) | Real-time market data |
-| [QuoteSummary API](docs/specs/quote-summary-api-spec.md) | Detailed company information (37 modules) |
-| [Chart API](docs/specs/chart-api-spec.md) | Historical OHLCV data |
-| [Options API](docs/specs/options-api-spec.md) | Options chains and Greeks |
-| [Screener API](docs/specs/screener-api-spec.md) | Stock screening |
-| [Search API](docs/specs/search-api-spec.md) | Symbol search |
-| [Lookup API](docs/specs/lookup-api-spec.md) | Symbol lookup |
-| [Market API](docs/specs/market-api-spec.md) | Market summary |
-| [Earnings Calendar API](docs/specs/earnings-calendar-api-spec.md) | Earnings dates |
-| [Fundamentals Timeseries API](docs/specs/fundamentals-timeseries-api-spec.md) | Financial statement timeseries |
-| [Visualization API](docs/specs/visualization-api-spec.md) | Visualization data |
-| [WebSocket Streaming API](docs/specs/websocket-streaming-api-spec.md) | Real-time streaming |
-| [FRED API](docs/specs/fred-api-spec.md) | Federal Reserve economic data |
-| [Business Insider API](docs/specs/businessinsider-isin-api-spec.md) | ISIN lookup |
-| [UFC Facade API](docs/specs/ufc-facade-api-spec.md) | Main client interface |
+### Key Classes
+
+| Class | Description |
+|-------|-------------|
+| [Ufc](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.api/-ufc/index.html) | Main facade - unified entry point for all APIs |
+| [UfcConfig](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.api/-ufc-config/index.html) | Configuration for timeouts, rate limits, API keys |
+| [YahooClient](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.infrastructure.yahoo/-yahoo-client/index.html) | Yahoo Finance API client |
+| [FredClient](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.infrastructure.fred/-fred-client/index.html) | FRED API client |
+
+### Key Enums
+
+| Enum | Description |
+|------|-------------|
+| [QuoteSummaryModule](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.domain.model.quote/-quote-summary-module/index.html) | 37 modules for detailed company data |
+| [Interval](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.domain.model.chart/-interval/index.html) | Chart data intervals (1m, 5m, 1d, etc.) |
+| [Period](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.domain.model.chart/-period/index.html) | Chart data periods (1d, 1mo, 1y, etc.) |
+| [ErrorCode](https://kairos-code-dev.github.io/ufc/ufc/com.ulalax.ufc.domain.exception/-error-code/index.html) | Error codes for exception handling |
 
 ## Configuration
 
