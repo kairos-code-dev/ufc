@@ -20,10 +20,6 @@ enum class ErrorCode(
 ) {
     // 1000s: Network/WebSocket errors
     WEBSOCKET_CONNECTION_FAILED(1010, "WebSocket connection failed.", true),
-    WEBSOCKET_HANDSHAKE_FAILED(1011, "WebSocket handshake failed.", true),
-    WEBSOCKET_CLOSED_BY_SERVER(1012, "Server closed WebSocket connection.", true),
-    WEBSOCKET_PROTOCOL_ERROR(1013, "WebSocket protocol error occurred.", false),
-    WEBSOCKET_MESSAGE_TOO_LARGE(1014, "WebSocket message is too large.", false),
     STREAMING_RECONNECTION_FAILED(1020, "Reconnection failed.", false),
 
     // 2000s: Authentication errors
@@ -43,8 +39,6 @@ enum class ErrorCode(
 
     // 6000s: Parameter/Subscription errors
     INVALID_PARAMETER(6001, "Invalid parameter.", false),
-    STREAMING_SUBSCRIPTION_FAILED(6010, "Streaming subscription failed.", false),
-    STREAMING_MAX_SUBSCRIPTIONS_EXCEEDED(6011, "Maximum subscription limit exceeded.", false),
 
     // 7000s: Server errors
     EXTERNAL_API_ERROR(7004, "External API error occurred.", true),
