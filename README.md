@@ -234,6 +234,43 @@ try {
 }
 ```
 
+## Examples
+
+The [`examples/`](examples/) directory contains runnable example applications demonstrating various features:
+
+| Example | Description |
+|---------|-------------|
+| [QuoteExample](examples/src/main/kotlin/com/ulalax/ufc/examples/QuoteExample.kt) | Real-time quotes and market data |
+| [ChartExample](examples/src/main/kotlin/com/ulalax/ufc/examples/ChartExample.kt) | Historical OHLCV chart data |
+| [ScreenerExample](examples/src/main/kotlin/com/ulalax/ufc/examples/ScreenerExample.kt) | Stock screening with custom queries |
+| [OptionsExample](examples/src/main/kotlin/com/ulalax/ufc/examples/OptionsExample.kt) | Options chain and Greeks data |
+| [FredExample](examples/src/main/kotlin/com/ulalax/ufc/examples/FredExample.kt) | FRED economic data (requires API key) |
+
+### Running Examples
+
+```bash
+# Run individual examples
+./gradlew :examples:runQuoteExample
+./gradlew :examples:runChartExample
+./gradlew :examples:runScreenerExample
+./gradlew :examples:runOptionsExample
+./gradlew :examples:runFredExample  # Requires FRED_API_KEY environment variable
+```
+
+### More Examples
+
+For comprehensive usage examples covering edge cases and advanced features, refer to the **integration tests**:
+
+- [`src/test/kotlin/com/ulalax/ufc/integration/`](src/test/kotlin/com/ulalax/ufc/integration/) - Integration tests organized by API
+  - `yahoo/QuoteSpec.kt` - Quote API usage patterns
+  - `yahoo/ChartSpec.kt` - Chart data with various intervals and periods
+  - `yahoo/OptionsSpec.kt` - Options chain filtering and Greeks
+  - `yahoo/ScreenerSpec.kt` - Custom and predefined screener queries
+  - `yahoo/QuoteSummarySpec.kt` - All 37 QuoteSummary modules
+  - `fred/FredSpec.kt` - FRED economic data series
+
+These tests serve as living documentation and demonstrate real-world API responses.
+
 ## Building from Source
 
 ```bash
