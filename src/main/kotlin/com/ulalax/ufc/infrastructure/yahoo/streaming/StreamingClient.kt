@@ -4,7 +4,6 @@ import com.ulalax.ufc.domain.exception.ErrorCode
 import com.ulalax.ufc.domain.exception.UfcException
 import com.ulalax.ufc.domain.model.streaming.MarketHours
 import com.ulalax.ufc.domain.model.streaming.QuoteType
-import com.ulalax.ufc.domain.model.streaming.StreamingClientConfig
 import com.ulalax.ufc.domain.model.streaming.StreamingEvent
 import com.ulalax.ufc.domain.model.streaming.StreamingPrice
 import com.ulalax.ufc.domain.model.streaming.StreamingQuote
