@@ -173,8 +173,8 @@ val unitTest =
             excludeTags("integration")
         }
 
-        // 유닛 테스트는 순차 실행
-        maxParallelForks = 1
+        // 유닛 테스트 병렬 실행 (CPU 스레드 수)
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
 
         // 테스트 출력 설정
         testLogging {
@@ -194,8 +194,8 @@ val integrationTest =
             includeTags("integration")
         }
 
-        // 통합 테스트 순차 실행 (Rate Limiting 방지)
-        maxParallelForks = 10
+        // 통합 테스트 병렬 실행 (CPU 스레드 수)
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
 
         // 타임아웃 증가 (실제 API 호출이 느릴 수 있음)
         timeout.set(Duration.ofMinutes(5))
@@ -219,8 +219,8 @@ tasks {
         useJUnitPlatform {
         }
 
-        // 모든 테스트 순차 실행 (Rate Limiting 방지)
-        maxParallelForks = 10
+        // 모든 테스트 병렬 실행 (CPU 스레드 수)
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
 
         // 타임아웃 증가 (통합 테스트 포함)
         timeout.set(Duration.ofMinutes(15))
