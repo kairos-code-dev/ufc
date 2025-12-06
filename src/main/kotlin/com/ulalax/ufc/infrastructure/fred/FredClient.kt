@@ -8,32 +8,37 @@ import com.ulalax.ufc.domain.model.series.FredSeriesInfo
 import java.time.LocalDate
 
 /**
- * FRED (Federal Reserve Economic Data) API 클라이언트
+ * FRED (Federal Reserve Economic Data) API client.
  *
- * 미국 연방준비제도(Federal Reserve)의 경제 데이터를 조회하는 클라이언트입니다.
+ * A client for querying economic data from the Federal Reserve Economic Data (FRED) system.
+ * FRED is a database of hundreds of thousands of economic time series maintained by the
+ * Federal Reserve Bank of St. Louis.
  *
- * 사용 예시:
+ * **Note:** A FRED API key is required to use this client. You can obtain a free API key at
+ * https://fred.stlouisfed.org/docs/api/api_key.html
+ *
+ * Usage example:
  * ```kotlin
  * val fred = FredClient.create(apiKey = "your-api-key")
  *
- * // GDP 데이터 조회
+ * // Fetch GDP data
  * val gdp = fred.series("GDP")
  *
- * // 실업률 데이터 조회 (기간 지정)
+ * // Fetch unemployment rate data with date range
  * val unrate = fred.series(
  *     "UNRATE",
  *     startDate = LocalDate.of(2020, 1, 1),
  *     endDate = LocalDate.of(2023, 12, 31)
  * )
  *
- * // 시계열 메타데이터만 조회
+ * // Fetch only series metadata
  * val info = fred.seriesInfo("GDP")
  * println("Title: ${info.title}, Frequency: ${info.frequency}")
  *
  * fred.close()
  * ```
  *
- * 또는 use 블록을 사용하여 자동으로 close:
+ * Alternatively, use a `use` block for automatic resource cleanup:
  * ```kotlin
  * FredClient.create("your-api-key").use { fred ->
  *     val gdp = fred.series("GDP")
@@ -41,8 +46,8 @@ import java.time.LocalDate
  * }
  * ```
  *
- * @property httpClient FRED HTTP 클라이언트
- * @property config 클라이언트 설정
+ * @property httpClient The FRED HTTP client for making API requests
+ * @property config Client configuration settings
  */
 class FredClient private constructor(
     private val httpClient: FredHttpClient,
@@ -50,18 +55,18 @@ class FredClient private constructor(
 ) : AutoCloseable {
 
     /**
-     * FRED 시계열 데이터를 조회합니다.
+     * Fetches FRED time series data.
      *
-     * 시계열 메타데이터와 관측값을 함께 조회합니다.
+     * Retrieves both series metadata and observation values for the specified series.
      *
-     * @param seriesId 시계열 ID (예: "GDP", "UNRATE", "DFF")
-     * @param startDate 시작 날짜 (null이면 시계열의 첫 데이터부터)
-     * @param endDate 종료 날짜 (null이면 시계열의 마지막 데이터까지)
-     * @param frequency 데이터 주기 (null이면 원본 주기 사용)
-     * @return FRED 시계열 데이터 (메타데이터 + 관측값)
-     * @throws IllegalArgumentException seriesId가 비어있을 때
-     * @throws NoSuchElementException 시계열을 찾을 수 없을 때
-     * @throws IllegalStateException API 인증 실패 또는 Rate Limit 초과
+     * @param seriesId The series ID (e.g., "GDP", "UNRATE", "DFF")
+     * @param startDate The start date for observations (null to fetch from the beginning of the series)
+     * @param endDate The end date for observations (null to fetch to the end of the series)
+     * @param frequency The data frequency (null to use the original frequency)
+     * @return FRED series data containing metadata and observations
+     * @throws IllegalArgumentException if seriesId is blank
+     * @throws NoSuchElementException if the series cannot be found
+     * @throws IllegalStateException if API authentication fails or rate limit is exceeded
      */
     suspend fun series(
         seriesId: String,
@@ -73,24 +78,25 @@ class FredClient private constructor(
     }
 
     /**
-     * FRED 시계열 메타데이터만 조회합니다.
+     * Fetches FRED series metadata only.
      *
-     * 관측값 없이 시계열의 기본 정보(제목, 주기, 단위 등)만 조회합니다.
+     * Retrieves only the series basic information (title, frequency, units, etc.)
+     * without observation values.
      *
-     * @param seriesId 시계열 ID (예: "GDP", "UNRATE")
-     * @return 시계열 메타데이터
-     * @throws IllegalArgumentException seriesId가 비어있을 때
-     * @throws NoSuchElementException 시계열을 찾을 수 없을 때
-     * @throws IllegalStateException API 인증 실패 또는 Rate Limit 초과
+     * @param seriesId The series ID (e.g., "GDP", "UNRATE")
+     * @return Series metadata
+     * @throws IllegalArgumentException if seriesId is blank
+     * @throws NoSuchElementException if the series cannot be found
+     * @throws IllegalStateException if API authentication fails or rate limit is exceeded
      */
     suspend fun seriesInfo(seriesId: String): FredSeriesInfo {
         return httpClient.fetchSeriesInfo(seriesId)
     }
 
     /**
-     * 클라이언트 리소스를 정리합니다.
+     * Closes the client and releases resources.
      *
-     * HTTP 클라이언트를 닫고 연결을 종료합니다.
+     * Closes the HTTP client and terminates all connections.
      */
     override fun close() {
         httpClient.close()
@@ -98,27 +104,29 @@ class FredClient private constructor(
 
     companion object {
         /**
-         * FredClient 인스턴스를 생성합니다.
+         * Creates a FredClient instance with default configuration.
          *
-         * 기본 설정을 사용하여 클라이언트를 생성합니다.
+         * **Note:** A FRED API key is required. You can obtain a free API key at
+         * https://fred.stlouisfed.org/docs/api/api_key.html
          *
-         * @param apiKey FRED API Key (https://fred.stlouisfed.org/docs/api/api_key.html)
-         * @return FredClient 인스턴스
-         * @throws IllegalArgumentException apiKey가 비어있을 때
+         * @param apiKey The FRED API key
+         * @return A new FredClient instance
+         * @throws IllegalArgumentException if apiKey is blank
          */
         fun create(apiKey: String): FredClient {
             return create(apiKey, FredClientConfig())
         }
 
         /**
-         * FredClient 인스턴스를 생성합니다.
+         * Creates a FredClient instance with custom configuration.
          *
-         * 사용자 정의 설정을 사용하여 클라이언트를 생성합니다.
+         * **Note:** A FRED API key is required. You can obtain a free API key at
+         * https://fred.stlouisfed.org/docs/api/api_key.html
          *
-         * @param apiKey FRED API Key
-         * @param config 클라이언트 설정
-         * @return FredClient 인스턴스
-         * @throws IllegalArgumentException apiKey가 비어있을 때
+         * @param apiKey The FRED API key
+         * @param config Client configuration settings
+         * @return A new FredClient instance
+         * @throws IllegalArgumentException if apiKey is blank
          */
         fun create(apiKey: String, config: FredClientConfig): FredClient {
             require(apiKey.isNotBlank()) { "FRED API Key는 빈 문자열이 될 수 없습니다" }

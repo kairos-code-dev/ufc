@@ -65,20 +65,21 @@ import kotlinx.serialization.json.*
 import org.slf4j.LoggerFactory
 
 /**
- * Yahoo Finance API 클라이언트
+ * Yahoo Finance API Client
  *
- * Yahoo Finance API에 접근하기 위한 간단한 클라이언트 인터페이스를 제공합니다.
+ * Provides a simple client interface to access the Yahoo Finance API.
+ * This client handles authentication, rate limiting, and response parsing automatically.
  *
- * 사용 예시:
+ * Usage example:
  * ```kotlin
  * val yahoo = YahooClient.create()
  * val quote = yahoo.quoteSummary("AAPL", QuoteSummaryModule.PRICE)
  * val chart = yahoo.chart("AAPL", Interval.OneDay, Period.OneYear)
  * ```
  *
- * @property httpClient Ktor HTTP 클라이언트
- * @property authenticator Yahoo Finance 인증 관리자
- * @property rateLimiter Rate Limiter
+ * @property httpClient Ktor HTTP client for making API requests
+ * @property authenticator Yahoo Finance authentication manager
+ * @property rateLimiter Rate limiter to prevent API throttling
  */
 class YahooClient internal constructor(
     private val httpClient: HttpClient,
@@ -96,10 +97,10 @@ class YahooClient internal constructor(
         }
 
         /**
-         * YahooClient 인스턴스를 생성합니다.
+         * Creates a new YahooClient instance with the specified configuration.
          *
-         * @param config 클라이언트 설정 (옵션)
-         * @return YahooClient 인스턴스
+         * @param config Client configuration (optional). Defaults to [YahooClientConfig] with standard settings.
+         * @return A new YahooClient instance ready to make API calls
          */
         fun create(config: YahooClientConfig = YahooClientConfig()): YahooClient {
             // GlobalRateLimiters에서 공유 Rate Limiter 획득
@@ -142,12 +143,12 @@ class YahooClient internal constructor(
     }
 
     /**
-     * QuoteSummary API를 호출하여 주식 정보를 조회합니다.
+     * Fetches quote summary data for a given symbol from the Yahoo Finance QuoteSummary API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param modules 조회할 모듈들
-     * @return QuoteSummaryModuleResult
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "GOOGL")
+     * @param modules Variable number of [QuoteSummaryModule] to retrieve (e.g., PRICE, FINANCIAL_DATA, EARNINGS)
+     * @return [QuoteSummaryModuleResult] containing the requested module data
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun quoteSummary(
         symbol: String,
@@ -157,12 +158,12 @@ class YahooClient internal constructor(
     }
 
     /**
-     * QuoteSummary API를 호출하여 주식 정보를 조회합니다.
+     * Fetches quote summary data for a given symbol from the Yahoo Finance QuoteSummary API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param modules 조회할 모듈 Set
-     * @return QuoteSummaryModuleResult
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "GOOGL")
+     * @param modules Set of [QuoteSummaryModule] to retrieve
+     * @return [QuoteSummaryModuleResult] containing the requested module data
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun quoteSummary(
         symbol: String,
@@ -514,14 +515,14 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Chart API를 호출하여 차트 데이터를 조회합니다.
+     * Fetches historical chart data for a given symbol from the Yahoo Finance Chart API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param interval 데이터 간격
-     * @param period 조회 기간
-     * @param events 조회할 이벤트 타입들 (옵션)
-     * @return ChartData
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "TSLA")
+     * @param interval The data interval (e.g., [Interval.OneDay], [Interval.OneHour])
+     * @param period The time period to retrieve data for (e.g., [Period.OneYear], [Period.OneMonth])
+     * @param events Optional event types to include (e.g., [ChartEventType.DIVIDENDS], [ChartEventType.SPLITS])
+     * @return [ChartData] containing OHLCV data and metadata
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun chart(
         symbol: String,
@@ -683,17 +684,17 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Earnings Calendar API를 호출하여 실적 발표 일정을 조회합니다.
+     * Fetches earnings calendar data for a given symbol from the Yahoo Finance Earnings Calendar.
      *
-     * HTML 스크래핑을 통해 데이터를 수집하므로, Yahoo Finance 웹 페이지 구조 변경 시
-     * 파싱이 실패할 수 있습니다.
+     * Note: This method uses HTML scraping to collect data. If Yahoo Finance changes their
+     * web page structure, parsing may fail.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param limit 조회할 레코드 수 (기본값: 12, 최대: 100)
-     * @param offset 페이지네이션 오프셋 (기본값: 0)
-     * @return EarningsCalendar
-     * @throws ApiException API 호출 실패 시
-     * @throws DataParsingException HTML 파싱 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "MSFT")
+     * @param limit The number of records to retrieve (default: 12, max: 100)
+     * @param offset Pagination offset for retrieving additional results (default: 0)
+     * @return [EarningsCalendar] containing earnings event data
+     * @throws ApiException If the API call fails or returns an error response
+     * @throws DataParsingException If HTML parsing fails or success rate is below 50%
      */
     suspend fun earningsCalendar(
         symbol: String,
@@ -957,22 +958,23 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Fundamentals Timeseries API를 호출하여 재무제표 시계열 데이터를 조회합니다.
+     * Fetches fundamentals timeseries data from the Yahoo Finance Fundamentals Timeseries API.
      *
-     * Yahoo Finance의 재무제표 항목별 시계열 데이터를 조회합니다.
-     * 손익계산서, 대차대조표, 현금흐름표의 각 항목에 대한 연간, 분기별, Trailing 데이터를 제공합니다.
+     * Retrieves timeseries data for financial statement items from Yahoo Finance.
+     * Provides annual, quarterly, and trailing data for items from income statements,
+     * balance sheets, and cash flow statements.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param types 조회할 재무 항목 타입 목록
-     * @param startDate 조회 시작 날짜 (기본값: 5년 전)
-     * @param endDate 조회 종료 날짜 (기본값: 오늘)
-     * @return FundamentalsTimeseriesResult 타입별 시계열 데이터
-     * @throws IllegalArgumentException symbol이 공백이거나 types가 빈 리스트인 경우
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "GOOGL")
+     * @param types List of [FundamentalsType] to retrieve (e.g., ANNUAL_TOTAL_REVENUE, QUARTERLY_NET_INCOME)
+     * @param startDate Start date for the query (default: 5 years ago)
+     * @param endDate End date for the query (default: today)
+     * @return [FundamentalsTimeseriesResult] containing timeseries data organized by type
+     * @throws IllegalArgumentException If symbol is blank or types list is empty
+     * @throws ApiException If the API call fails or returns an error response
      *
-     * ## 사용 예시
+     * Usage examples:
      * ```kotlin
-     * // 연간 매출과 분기별 순이익 조회
+     * // Retrieve annual revenue and quarterly net income
      * val result = yahooClient.fundamentalsTimeseries(
      *     "AAPL",
      *     listOf(
@@ -981,7 +983,7 @@ class YahooClient internal constructor(
      *     )
      * )
      *
-     * // 특정 기간 데이터 조회
+     * // Retrieve data for a specific date range
      * val result = yahooClient.fundamentalsTimeseries(
      *     "AAPL",
      *     listOf(FundamentalsType.TRAILING_EPS),
@@ -1132,13 +1134,13 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Lookup API를 호출하여 금융상품을 검색합니다.
+     * Searches for financial instruments using the Yahoo Finance Lookup API.
      *
-     * @param query 검색 키워드 (빈 문자열 불가)
-     * @param type 검색할 금융상품 타입 (기본값: ALL)
-     * @param count 최대 결과 개수 (기본값: 25, 범위: 1-100)
-     * @return LookupResult
-     * @throws ApiException API 호출 실패 시
+     * @param query Search keyword (cannot be empty)
+     * @param type Type of financial instrument to search for (default: [LookupType.ALL])
+     * @param count Maximum number of results to return (default: 25, range: 1-100)
+     * @return [LookupResult] containing matching financial instruments
+     * @throws ApiException If the API call fails, returns an error response, or if parameters are invalid
      */
     suspend fun lookup(
         query: String,
@@ -1280,11 +1282,11 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Market Summary API를 호출하여 시장 요약 정보를 조회합니다.
+     * Fetches market summary information from the Yahoo Finance Market Summary API.
      *
-     * @param market 조회할 시장 코드
-     * @return MarketSummaryResult
-     * @throws ApiException API 호출 실패 시
+     * @param market The [MarketCode] to query (e.g., US, KR, JP)
+     * @return [MarketSummaryResult] containing market summary data including indices and major stocks
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun marketSummary(market: MarketCode): MarketSummaryResult {
         logger.debug("Calling Yahoo Finance Market Summary API: market={}", market.code)
@@ -1377,11 +1379,11 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Market Time API를 호출하여 시장 시간 정보를 조회합니다.
+     * Fetches market time information from the Yahoo Finance Market Time API.
      *
-     * @param market 조회할 시장 코드
-     * @return MarketTimeResult
-     * @throws ApiException API 호출 실패 시
+     * @param market The [MarketCode] to query (e.g., US, KR, JP)
+     * @return [MarketTimeResult] containing market hours, timezone, and current market state
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun marketTime(market: MarketCode): MarketTimeResult {
         logger.debug("Calling Yahoo Finance Market Time API: market={}", market.code)
@@ -1529,12 +1531,12 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Options API를 호출하여 옵션 체인 데이터를 조회합니다.
+     * Fetches options chain data from the Yahoo Finance Options API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param expirationDate 만기일 Unix Timestamp (초 단위, 선택적)
-     * @return OptionsData
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "TSLA")
+     * @param expirationDate Optional expiration date as Unix timestamp in seconds. If null, returns the nearest expiration date.
+     * @return [OptionsData] containing options chain with calls, puts, and underlying quote information
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun options(
         symbol: String,
@@ -1692,11 +1694,11 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Quote API를 호출하여 실시간 시장 데이터를 조회합니다.
+     * Fetches real-time market data for a single symbol from the Yahoo Finance Quote API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @return QuoteData
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "GOOGL")
+     * @return [QuoteData] containing real-time market data including price, volume, and market state
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun quote(symbol: String): QuoteData {
         logger.debug("Calling Yahoo Finance Quote API: symbol={}", symbol)
@@ -1754,11 +1756,11 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Quote API를 호출하여 여러 심볼의 실시간 시장 데이터를 조회합니다.
+     * Fetches real-time market data for multiple symbols from the Yahoo Finance Quote API.
      *
-     * @param symbols 조회할 심볼 목록 (예: listOf("AAPL", "GOOGL", "MSFT"))
-     * @return List<QuoteData>
-     * @throws ApiException API 호출 실패 시
+     * @param symbols List of stock symbols to query (e.g., listOf("AAPL", "GOOGL", "MSFT"))
+     * @return List of [QuoteData] containing real-time market data for each symbol. Symbols that fail to retrieve will be omitted.
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun quote(symbols: List<String>): List<QuoteData> {
         if (symbols.isEmpty()) {
@@ -2050,15 +2052,15 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Screener API를 호출하여 커스텀 쿼리로 종목을 검색합니다.
+     * Searches for stocks using a custom query with the Yahoo Finance Screener API.
      *
-     * @param query ScreenerQuery (커스텀 필터 조건)
-     * @param sortField 정렬 기준 필드 (기본값: TICKER)
-     * @param sortAsc 오름차순 정렬 여부 (기본값: false)
-     * @param size 결과 개수 (기본값: 100, 최대: 250)
-     * @param offset 페이지네이션 오프셋 (기본값: 0)
-     * @return ScreenerResult
-     * @throws ApiException API 호출 실패 시
+     * @param query [ScreenerQuery] containing custom filter conditions
+     * @param sortField Field to sort results by (default: [ScreenerSortField.TICKER])
+     * @param sortAsc Whether to sort in ascending order (default: false)
+     * @param size Number of results to return (default: 100, max: 250)
+     * @param offset Pagination offset for retrieving additional results (default: 0)
+     * @return [ScreenerResult] containing matching stocks with their data
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun screener(
         query: ScreenerQuery,
@@ -2145,14 +2147,14 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Screener API를 호출하여 Predefined Query로 종목을 검색합니다 (String ID).
+     * Searches for stocks using a predefined screener query with the Yahoo Finance Screener API.
      *
-     * @param predefinedId Predefined Screener ID (예: "day_gainers")
-     * @param count 결과 개수 (1-250)
-     * @param sortField 커스텀 정렬 필드 (null이면 기본값 사용)
-     * @param sortAsc 커스텀 정렬 방향 (null이면 기본값 사용)
-     * @return ScreenerResult
-     * @throws ApiException API 호출 실패 시
+     * @param predefinedId Predefined screener ID (e.g., "day_gainers", "most_actives")
+     * @param count Number of results to return (range: 1-250)
+     * @param sortField Custom sort field (if null, uses the predefined screener's default)
+     * @param sortAsc Custom sort direction (if null, uses the predefined screener's default)
+     * @return [ScreenerResult] containing matching stocks with their data
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun screener(
         predefinedId: String,
@@ -2224,14 +2226,14 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Screener API를 호출하여 Predefined Query로 종목을 검색합니다 (Enum).
+     * Searches for stocks using a predefined screener query with the Yahoo Finance Screener API.
      *
-     * @param predefined PredefinedScreener Enum
-     * @param count 결과 개수 (1-250)
-     * @param sortField 커스텀 정렬 필드 (null이면 기본값 사용)
-     * @param sortAsc 커스텀 정렬 방향 (null이면 기본값 사용)
-     * @return ScreenerResult
-     * @throws ApiException API 호출 실패 시
+     * @param predefined [PredefinedScreener] enum value (e.g., DAY_GAINERS, MOST_ACTIVES)
+     * @param count Number of results to return (range: 1-250)
+     * @param sortField Custom sort field (if null, uses the predefined screener's default)
+     * @param sortAsc Custom sort direction (if null, uses the predefined screener's default)
+     * @return [ScreenerResult] containing matching stocks with their data
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun screener(
         predefined: PredefinedScreener,
@@ -2377,14 +2379,14 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Search API를 호출하여 심볼 및 뉴스를 검색합니다.
+     * Searches for symbols and news using the Yahoo Finance Search API.
      *
-     * @param query 검색어
-     * @param quotesCount 반환할 종목 수 (기본값: 8)
-     * @param newsCount 반환할 뉴스 수 (기본값: 8)
-     * @param enableFuzzyQuery 퍼지 검색 활성화 여부 (기본값: false)
-     * @return SearchResponse
-     * @throws ApiException API 호출 실패 시
+     * @param query Search query string
+     * @param quotesCount Number of quote results to return (default: 8)
+     * @param newsCount Number of news results to return (default: 8)
+     * @param enableFuzzyQuery Whether to enable fuzzy search matching (default: false)
+     * @return [SearchResponse] containing matching quotes and news articles
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun search(
         query: String,
@@ -2522,13 +2524,13 @@ class YahooClient internal constructor(
     }
 
     /**
-     * Visualization API를 호출하여 실적 발표 일정을 조회합니다.
+     * Fetches earnings calendar data using the Yahoo Finance Visualization API.
      *
-     * @param symbol 조회할 심볼 (예: "AAPL")
-     * @param limit 반환할 결과 수 (1-100, 기본값: 12)
-     * @return VisualizationEarningsCalendar
-     * @throws ValidationException 파라미터 검증 실패 시
-     * @throws ApiException API 호출 실패 시
+     * @param symbol The stock symbol to query (e.g., "AAPL", "TSLA")
+     * @param limit Number of results to return (range: 1-100, default: 12)
+     * @return [VisualizationEarningsCalendar] containing earnings dates with estimates and actuals
+     * @throws ValidationException If parameter validation fails
+     * @throws ApiException If the API call fails or returns an error response
      */
     suspend fun visualization(
         symbol: String,
@@ -2660,7 +2662,10 @@ class YahooClient internal constructor(
     }
 
     /**
-     * 리소스를 정리합니다.
+     * Closes the client and releases all resources.
+     *
+     * This method closes the underlying HTTP client and should be called when the client
+     * is no longer needed to free up system resources.
      */
     override fun close() {
         httpClient.close()

@@ -1,15 +1,15 @@
 package com.ulalax.ufc.domain.exception
 
 /**
- * UFC 애플리케이션의 기본 예외 클래스입니다.
+ * Base exception class for the UFC application.
  *
- * 모든 UFC 애플리케이션 예외는 이 클래스를 상속합니다.
- * ErrorCode를 통해 구조화된 에러 정보를 관리합니다.
+ * All UFC application exceptions inherit from this class.
+ * Manages structured error information through ErrorCode.
  *
- * @property errorCode 에러 코드
- * @property message 에러 메시지
- * @property cause 원인 예외
- * @property metadata 추가 메타데이터 (Key-Value)
+ * @property errorCode The error code
+ * @property message The error message
+ * @property cause The cause exception
+ * @property metadata Additional metadata (key-value pairs)
  */
 open class UfcException(
     val errorCode: ErrorCode,
@@ -19,21 +19,21 @@ open class UfcException(
 ) : RuntimeException(message ?: errorCode.message, cause) {
 
     /**
-     * 메타데이터에서 특정 키의 값을 조회합니다.
+     * Retrieves a value from metadata for a specific key.
      *
-     * @param key 조회할 메타데이터 키
-     * @return 해당 키의 값, 없으면 null
+     * @param key The metadata key to look up
+     * @return The value for the key, or null if not found
      */
     inline fun <reified T> getMeta(key: String): T? {
         return metadata[key] as? T
     }
 
     /**
-     * 메타데이터 항목을 추가한 새로운 UfcException을 생성합니다.
+     * Creates a new UfcException with an additional metadata entry.
      *
-     * @param key 메타데이터 키
-     * @param value 메타데이터 값
-     * @return 새로운 UfcException 인스턴스
+     * @param key The metadata key
+     * @param value The metadata value
+     * @return A new UfcException instance
      */
     fun withMeta(key: String, value: Any): UfcException {
         val newMetadata = metadata.toMutableMap().apply { put(key, value) }
@@ -41,10 +41,10 @@ open class UfcException(
     }
 
     /**
-     * 여러 메타데이터 항목을 추가한 새로운 UfcException을 생성합니다.
+     * Creates a new UfcException with multiple additional metadata entries.
      *
-     * @param newMetadata 추가할 메타데이터
-     * @return 새로운 UfcException 인스턴스
+     * @param newMetadata The metadata to add
+     * @return A new UfcException instance
      */
     fun withMeta(newMetadata: Map<String, Any>): UfcException {
         val mergedMetadata = metadata.toMutableMap().apply { putAll(newMetadata) }
@@ -58,10 +58,10 @@ open class UfcException(
 }
 
 /**
- * API 호출 관련 예외입니다.
+ * Exception for API call-related errors.
  *
- * @property statusCode HTTP 상태 코드
- * @property responseBody API 응답 본문
+ * @property statusCode HTTP status code
+ * @property responseBody API response body
  */
 class ApiException(
     errorCode: ErrorCode = ErrorCode.EXTERNAL_API_ERROR,
@@ -86,9 +86,9 @@ class ApiException(
 }
 
 /**
- * 데이터 파싱 관련 예외입니다.
+ * Exception for data parsing-related errors.
  *
- * @property sourceData 파싱 실패한 원본 데이터
+ * @property sourceData The original data that failed to parse
  */
 class DataParsingException(
     errorCode: ErrorCode = ErrorCode.JSON_PARSING_ERROR,
@@ -110,7 +110,7 @@ class DataParsingException(
 }
 
 /**
- * 설정 관련 예외입니다.
+ * Exception for configuration-related errors.
  */
 class ConfigException(
     errorCode: ErrorCode = ErrorCode.CONFIGURATION_ERROR,
@@ -129,9 +129,9 @@ class ConfigException(
 }
 
 /**
- * 유효성 검사 실패 예외입니다.
+ * Exception for validation failures.
  *
- * @property field 유효성 검사 실패한 필드명
+ * @property field The field name that failed validation
  */
 class ValidationException(
     errorCode: ErrorCode = ErrorCode.INVALID_PARAMETER,
@@ -153,7 +153,7 @@ class ValidationException(
 }
 
 /**
- * 네트워크 관련 예외입니다.
+ * Exception for network-related errors.
  */
 class NetworkException(
     errorCode: ErrorCode,
@@ -163,9 +163,9 @@ class NetworkException(
 ) : UfcException(errorCode, message, cause, metadata)
 
 /**
- * Rate Limiting 관련 예외입니다.
+ * Exception for rate limiting-related errors.
  *
- * @property retryAfterSeconds 재시도 권장 시간 (초)
+ * @property retryAfterSeconds Recommended retry time in seconds
  */
 class RateLimitException(
     errorCode: ErrorCode = ErrorCode.RATE_LIMIT_EXCEEDED,

@@ -1,64 +1,64 @@
 package com.ulalax.ufc.domain.exception
 
 /**
- * UFC 애플리케이션에서 사용되는 에러 코드 정의.
+ * Error code definitions used in the UFC application.
  *
- * 에러 코드 범위:
- * - 1000번대: 네트워크/WebSocket 오류
- * - 2000번대: 인증 오류
- * - 3000번대: Rate Limiting 오류
- * - 4000번대: 데이터 오류
- * - 5000번대: 파싱 오류
- * - 6000번대: 파라미터/구독 오류
- * - 7000번대: 서버 오류
- * - 9000번대: 기타 오류
+ * Error code ranges:
+ * - 1000s: Network/WebSocket errors
+ * - 2000s: Authentication errors
+ * - 3000s: Rate limiting errors
+ * - 4000s: Data errors
+ * - 5000s: Parsing errors
+ * - 6000s: Parameter/Subscription errors
+ * - 7000s: Server errors
+ * - 9000s: Other errors
  */
 enum class ErrorCode(
     val code: Int,
     val message: String,
     val isRetryableFlag: Boolean = false
 ) {
-    // 1000번대: 네트워크/WebSocket 오류
-    WEBSOCKET_CONNECTION_FAILED(1010, "WebSocket 연결에 실패했습니다.", true),
-    WEBSOCKET_HANDSHAKE_FAILED(1011, "WebSocket 핸드셰이크에 실패했습니다.", true),
-    WEBSOCKET_CLOSED_BY_SERVER(1012, "서버가 WebSocket 연결을 종료했습니다.", true),
-    WEBSOCKET_PROTOCOL_ERROR(1013, "WebSocket 프로토콜 오류가 발생했습니다.", false),
-    WEBSOCKET_MESSAGE_TOO_LARGE(1014, "WebSocket 메시지가 너무 큽니다.", false),
-    STREAMING_RECONNECTION_FAILED(1020, "재연결에 실패했습니다.", false),
+    // 1000s: Network/WebSocket errors
+    WEBSOCKET_CONNECTION_FAILED(1010, "WebSocket connection failed.", true),
+    WEBSOCKET_HANDSHAKE_FAILED(1011, "WebSocket handshake failed.", true),
+    WEBSOCKET_CLOSED_BY_SERVER(1012, "Server closed WebSocket connection.", true),
+    WEBSOCKET_PROTOCOL_ERROR(1013, "WebSocket protocol error occurred.", false),
+    WEBSOCKET_MESSAGE_TOO_LARGE(1014, "WebSocket message is too large.", false),
+    STREAMING_RECONNECTION_FAILED(1020, "Reconnection failed.", false),
 
-    // 2000번대: 인증 오류
-    AUTHENTICATION_FAILED(2001, "인증에 실패했습니다.", false),
+    // 2000s: Authentication errors
+    AUTHENTICATION_FAILED(2001, "Authentication failed.", false),
 
-    // 3000번대: Rate Limiting 오류
-    RATE_LIMIT_EXCEEDED(3001, "Rate Limit을 초과했습니다.", true),
+    // 3000s: Rate limiting errors
+    RATE_LIMIT_EXCEEDED(3001, "Rate limit exceeded.", true),
 
-    // 4000번대: 데이터 오류
-    DATA_NOT_FOUND(4001, "요청한 데이터를 찾을 수 없습니다.", false),
-    INVALID_SYMBOL(4002, "유효하지 않은 심볼입니다.", false),
+    // 4000s: Data errors
+    DATA_NOT_FOUND(4001, "Requested data not found.", false),
+    INVALID_SYMBOL(4002, "Invalid symbol.", false),
 
-    // 5000번대: 파싱 오류
-    JSON_PARSING_ERROR(5001, "JSON 파싱 중 오류가 발생했습니다.", false),
-    DATA_PARSING_ERROR(5010, "데이터 파싱 중 오류가 발생했습니다.", false),
-    PROTOBUF_DECODING_ERROR(5011, "Protobuf 디코딩 중 오류가 발생했습니다.", false),
+    // 5000s: Parsing errors
+    JSON_PARSING_ERROR(5001, "JSON parsing error occurred.", false),
+    DATA_PARSING_ERROR(5010, "Data parsing error occurred.", false),
+    PROTOBUF_DECODING_ERROR(5011, "Protobuf decoding error occurred.", false),
 
-    // 6000번대: 파라미터/구독 오류
-    INVALID_PARAMETER(6001, "유효하지 않은 파라미터입니다.", false),
-    STREAMING_SUBSCRIPTION_FAILED(6010, "스트리밍 구독에 실패했습니다.", false),
-    STREAMING_MAX_SUBSCRIPTIONS_EXCEEDED(6011, "최대 구독 개수를 초과했습니다.", false),
+    // 6000s: Parameter/Subscription errors
+    INVALID_PARAMETER(6001, "Invalid parameter.", false),
+    STREAMING_SUBSCRIPTION_FAILED(6010, "Streaming subscription failed.", false),
+    STREAMING_MAX_SUBSCRIPTIONS_EXCEEDED(6011, "Maximum subscription limit exceeded.", false),
 
-    // 7000번대: 서버 오류
-    EXTERNAL_API_ERROR(7004, "외부 API 오류가 발생했습니다.", true),
+    // 7000s: Server errors
+    EXTERNAL_API_ERROR(7004, "External API error occurred.", true),
 
-    // 9000번대: 기타 오류
-    CONFIGURATION_ERROR(9002, "설정 오류가 발생했습니다.", false),
+    // 9000s: Other errors
+    CONFIGURATION_ERROR(9002, "Configuration error occurred.", false),
 }
 
 /**
- * ErrorCode의 재시도 가능 여부를 반환합니다.
+ * Returns whether the ErrorCode is retryable.
  *
- * 일반적으로 네트워크, 타임아웃, 서버 오류는 재시도 가능합니다.
- * 인증 오류, 파라미터 오류는 재시도 불가능합니다.
+ * Generally, network, timeout, and server errors are retryable.
+ * Authentication and parameter errors are not retryable.
  *
- * @return 재시도 가능하면 true, 불가능하면 false
+ * @return true if retryable, false otherwise
  */
 fun ErrorCode.isRetryable(): Boolean = this.isRetryableFlag

@@ -1,83 +1,83 @@
 package com.ulalax.ufc.domain.model.chart
 
 /**
- * 데이터 조회 기간을 나타내는 열거형입니다.
+ * Enum representing data query periods.
  *
- * Yahoo Finance API와 주로 호환되는 기간 정의입니다.
+ * Period definitions primarily compatible with Yahoo Finance API.
  *
- * @property value API 요청 시 사용되는 값
+ * @property value The value used in API requests
  */
 enum class Period(val value: String) {
     /**
-     * 1일 기간
+     * 1 day period
      */
     OneDay("1d"),
 
     /**
-     * 5일 기간
+     * 5 days period
      */
     FiveDays("5d"),
 
     /**
-     * 1개월 기간
+     * 1 month period
      */
     OneMonth("1mo"),
 
     /**
-     * 3개월 기간
+     * 3 months period
      */
     ThreeMonths("3mo"),
 
     /**
-     * 6개월 기간
+     * 6 months period
      */
     SixMonths("6mo"),
 
     /**
-     * 1년 기간
+     * 1 year period
      */
     OneYear("1y"),
 
     /**
-     * 2년 기간
+     * 2 years period
      */
     TwoYears("2y"),
 
     /**
-     * 5년 기간
+     * 5 years period
      */
     FiveYears("5y"),
 
     /**
-     * 10년 기간
+     * 10 years period
      */
     TenYears("10y"),
 
     /**
-     * 연초 이후 기간 (Year-To-Date)
+     * Year-to-date period
      */
     YearToDate("ytd"),
 
     /**
-     * 최대 기간 (전체 이력)
+     * Maximum period (entire history)
      */
     Max("max"),
 }
 
 /**
- * 문자열 값으로부터 Period 열거형을 찾습니다.
+ * Finds a Period enum from a string value.
  *
- * @param value 조회할 값
- * @return 해당하는 Period, 없으면 null
+ * @param value The value to look up
+ * @return The corresponding Period, or null if not found
  */
 fun periodFromValue(value: String): Period? {
     return Period.values().find { it.value == value }
 }
 
 /**
- * Period를 읽기 쉬운 한글 문자열로 변환합니다.
+ * Converts Period to a human-readable Korean string.
  *
- * @return 한글 표현
+ * @return Korean representation
  */
 fun Period.toKoreanString(): String = when (this) {
     Period.OneDay -> "1일"

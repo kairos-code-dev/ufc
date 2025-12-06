@@ -1,84 +1,84 @@
 package com.ulalax.ufc.domain.model.chart
 
 /**
- * 데이터 조회 간격(시간 단위)을 나타내는 열거형입니다.
+ * Enum representing data query intervals (time units).
  *
- * Yahoo Finance API와 호환되는 간격 정의입니다.
+ * Interval definitions compatible with Yahoo Finance API.
  *
- * @property value API 요청 시 사용되는 값
- * @property minutes 간격을 분 단위로 나타낸 값
+ * @property value The value used in API requests
+ * @property minutes The interval represented in minutes
  */
 enum class Interval(val value: String, val minutes: Int) {
     /**
-     * 1분 간격
+     * 1 minute interval
      */
     OneMinute("1m", 1),
 
     /**
-     * 2분 간격
+     * 2 minutes interval
      */
     TwoMinutes("2m", 2),
 
     /**
-     * 5분 간격
+     * 5 minutes interval
      */
     FiveMinutes("5m", 5),
 
     /**
-     * 15분 간격
+     * 15 minutes interval
      */
     FifteenMinutes("15m", 15),
 
     /**
-     * 30분 간격
+     * 30 minutes interval
      */
     ThirtyMinutes("30m", 30),
 
     /**
-     * 1시간 간격
+     * 1 hour interval
      */
     OneHour("1h", 60),
 
     /**
-     * 1일 간격
+     * 1 day interval
      */
     OneDay("1d", 1440),
 
     /**
-     * 5일 간격
+     * 5 days interval
      */
     FiveDays("5d", 7200),
 
     /**
-     * 1주일 간격
+     * 1 week interval
      */
     OneWeek("1wk", 10080),
 
     /**
-     * 1개월 간격
+     * 1 month interval
      */
     OneMonth("1mo", 43200),
 
     /**
-     * 3개월 간격
+     * 3 months interval
      */
     ThreeMonths("3mo", 129600),
 }
 
 /**
- * 문자열 값으로부터 Interval 열거형을 찾습니다.
+ * Finds an Interval enum from a string value.
  *
- * @param value 조회할 값
- * @return 해당하는 Interval, 없으면 null
+ * @param value The value to look up
+ * @return The corresponding Interval, or null if not found
  */
 fun intervalFromValue(value: String): Interval? {
     return Interval.values().find { it.value == value }
 }
 
 /**
- * Interval을 읽기 쉬운 한글 문자열로 변환합니다.
+ * Converts Interval to a human-readable Korean string.
  *
- * @return 한글 표현
+ * @return Korean representation
  */
 fun Interval.toKoreanString(): String = when (this) {
     Interval.OneMinute -> "1분"
@@ -95,19 +95,19 @@ fun Interval.toKoreanString(): String = when (this) {
 }
 
 /**
- * Interval 값이 분 단위 데이터에 적합한지 확인합니다.
+ * Checks if the Interval value is suitable for intraday data.
  *
- * @return 분 단위 간격이면 true
+ * @return true if interval is less than daily
  */
 fun Interval.isIntraday(): Boolean {
-    return this.minutes < 1440  // 1440분 = 1일
+    return this.minutes < 1440  // 1440 minutes = 1 day
 }
 
 /**
- * Interval 값이 일 단위 이상의 데이터에 적합한지 확인합니다.
+ * Checks if the Interval value is suitable for daily or longer period data.
  *
- * @return 일 단위 이상 간격이면 true
+ * @return true if interval is daily or longer
  */
 fun Interval.isDailyOrLonger(): Boolean {
-    return this.minutes >= 1440  // 1440분 = 1일
+    return this.minutes >= 1440  // 1440 minutes = 1 day
 }

@@ -1,12 +1,12 @@
 package com.ulalax.ufc.domain.model.quote
 
 /**
- * Yahoo Finance QuoteSummary API에서 지원하는 모듈
+ * Modules supported by the Yahoo Finance QuoteSummary API
  *
- * QuoteSummary API는 다양한 모듈을 통해 주식, ETF, 뮤추얼 펀드 등의
- * 상세 정보를 제공합니다. 각 모듈은 특정 카테고리의 데이터를 나타냅니다.
+ * The QuoteSummary API provides detailed information about stocks, ETFs, mutual funds, etc.
+ * through various modules. Each module represents data for a specific category.
  *
- * 사용 예시:
+ * Usage example:
  * ```kotlin
  * val modules = setOf(
  *     QuoteSummaryModule.PRICE,
@@ -16,285 +16,285 @@ package com.ulalax.ufc.domain.model.quote
  * val result = quoteSummaryService.getQuoteSummary("AAPL", modules)
  * ```
  *
- * @property apiValue Yahoo Finance API에서 사용하는 모듈 식별자
+ * @property apiValue The module identifier used by the Yahoo Finance API
  */
 enum class QuoteSummaryModule(val apiValue: String) {
     /**
-     * 기본 가격 정보
+     * Basic price information
      *
-     * 현재가, 거래소, 심볼, 52주 최고/최저가 등 기본적인 가격 데이터를 포함합니다.
+     * Includes basic price data such as current price, exchange, symbol, 52-week high/low, etc.
      */
     PRICE("price"),
 
     /**
-     * 상세 요약 정보
+     * Detailed summary information
      *
-     * 배당금, PER, 베타, 거래량, 시가총액 등 주요 통계 데이터를 포함합니다.
+     * Includes key statistics data such as dividends, P/E ratio, beta, volume, market cap, etc.
      */
     SUMMARY_DETAIL("summaryDetail"),
 
     /**
-     * 자산 프로필 정보
+     * Asset profile information
      *
-     * 회사 소개, 섹터, 산업, 웹사이트, 주소, 직원 수 등 기업 프로필 정보를 포함합니다.
+     * Includes company profile information such as description, sector, industry, website, address, employee count, etc.
      */
     ASSET_PROFILE("assetProfile"),
 
     /**
-     * 요약 프로필 정보
+     * Summary profile information
      *
-     * assetProfile과 유사하나 더 간략한 형태의 프로필 정보를 포함합니다.
+     * Similar to assetProfile but in a more condensed format.
      */
     SUMMARY_PROFILE("summaryProfile"),
 
     /**
-     * 자산 타입 정보
+     * Asset type information
      *
-     * EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY 등 자산의 타입 정보를 포함합니다.
+     * Includes asset type information such as EQUITY, ETF, MUTUALFUND, INDEX, CRYPTOCURRENCY, etc.
      */
     QUOTE_TYPE("quoteType"),
 
     /**
-     * 기본 주요 통계
+     * Default key statistics
      *
-     * 발행주식수, ISIN, CUSIP 등 주요 통계 데이터를 포함합니다.
+     * Includes key statistics data such as shares outstanding, ISIN, CUSIP, etc.
      */
     DEFAULT_KEY_STATISTICS("defaultKeyStatistics"),
 
     /**
-     * 재무 데이터
+     * Financial data
      *
-     * 현금 흐름, 부채, ROE, ROA, PEG 비율, 목표 가격 등 재무 정보를 포함합니다.
+     * Includes financial information such as cash flow, debt, ROE, ROA, PEG ratio, target price, etc.
      */
     FINANCIAL_DATA("financialData"),
 
     /**
-     * 캘린더 이벤트
+     * Calendar events
      *
-     * 배당금 날짜, 실적 발표 날짜 등 주요 이벤트 정보를 포함합니다.
+     * Includes information about key events such as dividend dates, earnings announcement dates, etc.
      */
     CALENDAR_EVENTS("calendarEvents"),
 
     /**
-     * 수익 추이
+     * Earnings trend
      *
-     * 분기별 실적 추정치와 실제 수익 비교 데이터를 포함합니다.
+     * Includes quarterly earnings estimates and actual earnings comparison data.
      */
     EARNINGS_TREND("earningsTrend"),
 
     /**
-     * 수익 이력
+     * Earnings history
      *
-     * 과거 실적 발표 이력 데이터를 포함합니다.
+     * Includes historical earnings announcement data.
      */
     EARNINGS_HISTORY("earningsHistory"),
 
     /**
-     * 실적 발표 날짜
+     * Earnings dates
      *
-     * 다음 실적 발표 예정일 정보를 포함합니다.
+     * Includes information about upcoming earnings announcement dates.
      */
     EARNINGS_DATES("earningsDates"),
 
     /**
-     * 주요 주주
+     * Major holders
      *
-     * 기관 투자자 및 주요 주주 정보를 포함합니다.
+     * Includes information about institutional investors and major shareholders.
      */
     MAJOR_HOLDERS("majorHolders"),
 
     /**
-     * 내부자 거래
+     * Insider transactions
      *
-     * 임원 및 내부자의 주식 매수/매도 내역을 포함합니다.
+     * Includes buy/sell transaction history by executives and insiders.
      */
     INSIDER_TRANSACTIONS("insiderTransactions"),
 
     /**
-     * 내부자 보유 정보
+     * Insider holders
      *
-     * 내부자 및 기관의 보유 지분 상세 정보를 포함합니다.
+     * Includes detailed ownership information by insiders and institutions.
      */
     INSIDER_HOLDERS("insiderHolders"),
 
     /**
-     * 기관 투자자 보유 정보
+     * Institutional ownership
      *
-     * 뮤추얼 펀드 등 기관 투자자의 보유 내역을 포함합니다.
+     * Includes ownership details by institutional investors such as mutual funds.
      */
     INSTITUTION_OWNERSHIP("institutionOwnership"),
 
     /**
-     * 펀드 보유 정보
+     * Fund ownership
      *
-     * 뮤추얼 펀드의 보유 지분 정보를 포함합니다.
+     * Includes ownership information by mutual funds.
      */
     FUND_OWNERSHIP("fundOwnership"),
 
     /**
-     * 추천 동향
+     * Recommendation trend
      *
-     * 애널리스트의 매수/매도/보유 추천 정보를 포함합니다.
+     * Includes analyst buy/sell/hold recommendation information.
      */
     RECOMMENDATION_TREND("recommendationTrend"),
 
     /**
-     * 업그레이드/다운그레이드 이력
+     * Upgrade/downgrade history
      *
-     * 애널리스트의 등급 변경 이력을 포함합니다.
+     * Includes analyst rating change history.
      */
     UPGRADE_DOWNGRADE_HISTORY("upgradeDowngradeHistory"),
 
     /**
-     * 재무제표 - 손익계산서
+     * Financial statements - Income statement
      *
-     * 연간 및 분기별 손익계산서 데이터를 포함합니다.
+     * Includes annual and quarterly income statement data.
      */
     INCOME_STATEMENT_HISTORY("incomeStatementHistory"),
 
     /**
-     * 재무제표 - 분기별 손익계산서
+     * Financial statements - Quarterly income statement
      *
-     * 분기별 손익계산서 데이터를 포함합니다.
+     * Includes quarterly income statement data.
      */
     INCOME_STATEMENT_HISTORY_QUARTERLY("incomeStatementHistoryQuarterly"),
 
     /**
-     * 재무제표 - 대차대조표
+     * Financial statements - Balance sheet
      *
-     * 연간 대차대조표 데이터를 포함합니다.
+     * Includes annual balance sheet data.
      */
     BALANCE_SHEET_HISTORY("balanceSheetHistory"),
 
     /**
-     * 재무제표 - 분기별 대차대조표
+     * Financial statements - Quarterly balance sheet
      *
-     * 분기별 대차대조표 데이터를 포함합니다.
+     * Includes quarterly balance sheet data.
      */
     BALANCE_SHEET_HISTORY_QUARTERLY("balanceSheetHistoryQuarterly"),
 
     /**
-     * 재무제표 - 현금흐름표
+     * Financial statements - Cash flow statement
      *
-     * 연간 현금흐름표 데이터를 포함합니다.
+     * Includes annual cash flow statement data.
      */
     CASHFLOW_STATEMENT_HISTORY("cashflowStatementHistory"),
 
     /**
-     * 재무제표 - 분기별 현금흐름표
+     * Financial statements - Quarterly cash flow statement
      *
-     * 분기별 현금흐름표 데이터를 포함합니다.
+     * Includes quarterly cash flow statement data.
      */
     CASHFLOW_STATEMENT_HISTORY_QUARTERLY("cashflowStatementHistoryQuarterly"),
 
     /**
-     * 펀드의 상위 보유 종목
+     * Top holdings of fund
      *
-     * ETF 및 뮤추얼 펀드의 주요 보유 종목 정보를 포함합니다.
+     * Includes information about major holdings of ETFs and mutual funds.
      */
     TOP_HOLDINGS("topHoldings"),
 
     /**
-     * 펀드 프로필
+     * Fund profile
      *
-     * 펀드의 카테고리, 가족, 수수료 등 펀드 관련 정보를 포함합니다.
+     * Includes fund-related information such as category, family, fees, etc.
      */
     FUND_PROFILE("fundProfile"),
 
     /**
-     * 펀드 성과
+     * Fund performance
      *
-     * 펀드의 수익률 및 성과 지표를 포함합니다.
+     * Includes fund returns and performance metrics.
      */
     FUND_PERFORMANCE("fundPerformance"),
 
     /**
-     * 주식 분할 및 배당금 이력
+     * Stock splits and dividend history
      *
-     * 주식 분할 및 배당금 지급 이력을 포함합니다.
+     * Includes stock split and dividend payment history.
      */
     SEC_FILINGS("secFilings"),
 
     /**
-     * 가격 이력
+     * Price history
      *
-     * 과거 가격 데이터를 포함합니다.
+     * Includes historical price data.
      */
     PRICE_HISTORY("priceHistory"),
 
     /**
-     * 색인 추세
+     * Index trend
      *
-     * 시장 지수 관련 추세 정보를 포함합니다.
+     * Includes market index-related trend information.
      */
     INDEX_TREND("indexTrend"),
 
     /**
-     * 산업 추세
+     * Industry trend
      *
-     * 업종별 추세 정보를 포함합니다.
+     * Includes industry-specific trend information.
      */
     INDUSTRY_TREND("industryTrend"),
 
     /**
-     * 섹터 추세
+     * Sector trend
      *
-     * 섹터별 추세 정보를 포함합니다.
+     * Includes sector-specific trend information.
      */
     SECTOR_TREND("sectorTrend"),
 
     /**
-     * 실적 연혁
+     * Earnings history
      *
-     * 과거 실적 발표 및 EPS 이력을 포함합니다.
+     * Includes historical earnings announcements and EPS data.
      */
     EARNINGS("earnings"),
 
     /**
-     * 페이지 뷰 정보
+     * Page views information
      *
-     * 심볼에 대한 페이지 조회 통계를 포함합니다.
+     * Includes page view statistics for the symbol.
      */
     PAGE_VIEWS("pageViews"),
 
     /**
-     * ESG 점수
+     * ESG scores
      *
-     * 환경(E), 사회(S), 거버넌스(G) 관련 평가 점수를 포함합니다.
+     * Includes Environmental (E), Social (S), and Governance (G) rating scores.
      */
     ESG_SCORES("esgScores"),
 
     /**
-     * 순자산 가치
+     * Net asset value
      *
-     * ETF 및 뮤추얼 펀드의 NAV 정보를 포함합니다.
+     * Includes NAV information for ETFs and mutual funds.
      */
     NET_SHARE_PURCHASE_ACTIVITY("netSharePurchaseActivity");
 
     companion object {
         /**
-         * API 값으로부터 QuoteSummaryModule을 찾습니다.
+         * Finds QuoteSummaryModule from API value.
          *
-         * @param apiValue Yahoo Finance API 모듈 식별자
-         * @return 해당하는 QuoteSummaryModule 또는 null
+         * @param apiValue Yahoo Finance API module identifier
+         * @return The corresponding QuoteSummaryModule or null
          */
         fun fromApiValue(apiValue: String): QuoteSummaryModule? {
             return entries.find { it.apiValue == apiValue }
         }
 
         /**
-         * 모든 모듈의 Set을 반환합니다.
+         * Returns a Set of all modules.
          *
-         * @return 모든 QuoteSummaryModule의 Set
+         * @return A Set of all QuoteSummaryModules
          */
         fun allModules(): Set<QuoteSummaryModule> {
             return entries.toSet()
         }
 
         /**
-         * 주식(EQUITY)에 일반적으로 사용되는 모듈 Set을 반환합니다.
+         * Returns a Set of modules commonly used for stocks (EQUITY).
          *
-         * @return 주식 관련 주요 모듈의 Set
+         * @return A Set of key modules for stocks
          */
         fun stockModules(): Set<QuoteSummaryModule> {
             return setOf(
@@ -313,9 +313,9 @@ enum class QuoteSummaryModule(val apiValue: String) {
         }
 
         /**
-         * ETF 및 펀드에 일반적으로 사용되는 모듈 Set을 반환합니다.
+         * Returns a Set of modules commonly used for ETFs and funds.
          *
-         * @return 펀드 관련 주요 모듈의 Set
+         * @return A Set of key modules for funds
          */
         fun fundModules(): Set<QuoteSummaryModule> {
             return setOf(
@@ -331,16 +331,16 @@ enum class QuoteSummaryModule(val apiValue: String) {
 }
 
 /**
- * QuoteSummaryModule을 API 파라미터 문자열로 변환합니다.
+ * Converts QuoteSummaryModule to API parameter string.
  *
- * @return API 파라미터 값
+ * @return API parameter value
  */
 fun QuoteSummaryModule.toApiValue(): String = apiValue
 
 /**
- * QuoteSummaryModule Set을 쉼표로 구분된 API 파라미터 문자열로 변환합니다.
+ * Converts a Set of QuoteSummaryModules to a comma-separated API parameter string.
  *
- * @return 쉼표로 구분된 모듈 문자열
+ * @return Comma-separated module string
  */
 fun Set<QuoteSummaryModule>.toApiValue(): String {
     return joinToString(",") { it.apiValue }
