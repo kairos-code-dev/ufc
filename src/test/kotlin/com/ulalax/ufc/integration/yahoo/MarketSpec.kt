@@ -136,7 +136,8 @@ class MarketSpec : IntegrationTestBase() {
                 MarketState.PRE,
                 MarketState.REGULAR,
                 MarketState.POST,
-                MarketState.CLOSED
+                MarketState.CLOSED,
+                MarketState.UNKNOWN
             )
         }
     }

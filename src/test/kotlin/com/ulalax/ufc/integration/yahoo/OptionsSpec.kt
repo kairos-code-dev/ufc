@@ -158,12 +158,13 @@ class OptionsSpec : IntegrationTestBase() {
 
             // When
             val result = ufc.yahoo.options(symbol)
-            val firstStrike = result.strikes.first()
+            // 실제 콜 옵션 체인에 존재하는 행사가 사용
+            val callStrike = result.optionsChain.calls.first().strike
 
             // Then
-            val callOption = result.optionsChain.findCall(firstStrike)
+            val callOption = result.optionsChain.findCall(callStrike)
             assertThat(callOption).isNotNull()
-            assertThat(callOption!!.strike).isEqualTo(firstStrike)
+            assertThat(callOption!!.strike).isEqualTo(callStrike)
         }
 
         @Test
@@ -174,12 +175,13 @@ class OptionsSpec : IntegrationTestBase() {
 
             // When
             val result = ufc.yahoo.options(symbol)
-            val firstStrike = result.strikes.first()
+            // 실제 풋 옵션 체인에 존재하는 행사가 사용
+            val putStrike = result.optionsChain.puts.first().strike
 
             // Then
-            val putOption = result.optionsChain.findPut(firstStrike)
+            val putOption = result.optionsChain.findPut(putStrike)
             assertThat(putOption).isNotNull()
-            assertThat(putOption!!.strike).isEqualTo(firstStrike)
+            assertThat(putOption!!.strike).isEqualTo(putStrike)
         }
 
         @Test
