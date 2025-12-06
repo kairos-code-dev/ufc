@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2025-12-05
+## [0.5.0] - 2025-12-06 (Beta)
 
-Initial release of UFC (US Free Financial Data Collector), a Kotlin library for collecting financial data from Yahoo Finance and FRED.
+Beta release of UFC (US Free Financial Data Collector), a Kotlin library for collecting financial data from Yahoo Finance and FRED. APIs may change before the stable 1.0 release.
 
 ### Added
 
@@ -195,5 +195,5 @@ Initial release of UFC (US Free Financial Data Collector), a Kotlin library for 
 - Comprehensive README with quick start examples
 - CLAUDE.md for AI assistant guidance
 
-[Unreleased]: https://github.com/kairos-code-dev/ufc/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/kairos-code-dev/ufc/releases/tag/v1.0.0
+[Unreleased]: https://github.com/kairos-code-dev/ufc/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/kairos-code-dev/ufc/releases/tag/v0.5.0

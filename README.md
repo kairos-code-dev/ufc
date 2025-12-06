@@ -5,6 +5,8 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
+> **Note**: This is a beta release (v0.5.0). APIs may change before the stable 1.0 release.
+
 A Kotlin library for collecting financial data from Yahoo Finance and FRED (Federal Reserve Economic Data). Inspired by Python's [yfinance](https://github.com/ranaroussi/yfinance) and [fredapi](https://github.com/mortada/fredapi) libraries.
 
 ## Features
@@ -40,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.kairos-code-dev:ufc:1.0.0")
+    implementation("com.github.kairos-code-dev:ufc:0.5.0")
 }
 ```
 
@@ -52,7 +54,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.kairos-code-dev:ufc:1.0.0'
+    implementation 'com.github.kairos-code-dev:ufc:0.5.0'
 }
 ```
 

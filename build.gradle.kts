@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.github.kairos-code-dev"
-version = "1.0.0"
+version = "0.5.0"
 
 // Java 호환성 설정
 java {
